@@ -1,15 +1,19 @@
-// Presets Data for Egyptian 3D Printing Market
+// Presets Data for Egyptian 3D Printing Market - Expanded & Updated
 const PRESETS = {
   filaments: [
-    { id: 'esun-pla', name: 'eSUN PLA (1 كجم)', price: 700, weight: 1000, type: 'PLA', brand: 'eSUN', notes: 'متوسط سعر أمازون مصر / المتاجر المحلية' },
-    { id: 'esun-pla-plus', name: 'eSUN PLA+ (1 كجم)', price: 800, weight: 1000, type: 'PLA+', brand: 'eSUN', notes: 'خامة صلبة ومقاومة للصدمات' },
-    { id: 'kingroon-pla', name: 'Kingroon PLA (1 كجم)', price: 650, weight: 1000, type: 'PLA', brand: 'Kingroon', notes: 'خامة اقتصادية ممتازة' },
-    { id: 'sunlu-petg', name: 'SUNLU / eSUN PETG (1 كجم)', price: 750, weight: 1000, type: 'PETG', brand: 'SUNLU', notes: 'مقاوم للحرارة والرطوبة' },
-    { id: 'esun-abs', name: 'eSUN ABS+ (1 كجم)', price: 850, weight: 1000, type: 'ABS+', brand: 'eSUN', notes: 'يحتاج صندوق مغلق (Enclosure)' },
-    { id: 'esun-tpu', name: 'eSUN TPU 95A مرن (1 كجم)', price: 1100, weight: 1000, type: 'TPU', brand: 'eSUN', notes: 'خامة مطاطية مرنة للمنتجات الميكانيكية' },
-    { id: 'polymaker-pla', name: 'Polymaker PolyLite PLA (1 كجم)', price: 950, weight: 1000, type: 'PLA', brand: 'Polymaker', notes: 'جودة فائقة وتشطيب احترافي' },
-    { id: 'creality-pla', name: 'Creality Ender PLA (1 كجم)', price: 680, weight: 1000, type: 'PLA', brand: 'Creality', notes: 'خامة قياسية متوفرة بكثرة' },
-    { id: 'elegoo-resin-standard', name: 'Elegoo Standard Resin (1 كجم)', price: 1250, weight: 1000, type: 'Resin', brand: 'Elegoo', notes: 'لطابعات الراتنج ثلاثية الأبعاد' }
+    { id: 'esun-pla', name: 'eSUN PLA (1 كجم)', price: 700, weight: 1000, type: 'PLA', brand: 'eSUN', density: 1.24, notes: 'متوسط سعر أمازون مصر / المتاجر المحلية' },
+    { id: 'esun-pla-plus', name: 'eSUN PLA+ (1 كجم)', price: 800, weight: 1000, type: 'PLA+', brand: 'eSUN', density: 1.25, notes: 'صلابة أعلى ومقاومة للصدمات' },
+    { id: 'kingroon-pla', name: 'Kingroon PLA (1 كجم)', price: 650, weight: 1000, type: 'PLA', brand: 'Kingroon', density: 1.24, notes: 'خامة اقتصادية ممتازة' },
+    { id: 'sunlu-pla-matte', name: 'SUNLU Matte PLA مطفي (1 كجم)', price: 820, weight: 1000, type: 'PLA Matte', brand: 'SUNLU', density: 1.24, notes: 'ملمس مطفي يخفي خطوط الطباعة' },
+    { id: 'sunlu-petg', name: 'SUNLU / eSUN PETG (1 كجم)', price: 750, weight: 1000, type: 'PETG', brand: 'SUNLU', density: 1.27, notes: 'مقاوم للحرارة والرطوبة والأشعة' },
+    { id: 'esun-abs', name: 'eSUN ABS+ (1 كجم)', price: 850, weight: 1000, type: 'ABS+', brand: 'eSUN', density: 1.06, notes: 'يحتاج صندوق مغلق (Enclosure)' },
+    { id: 'esun-asa', name: 'eSUN ASA خارجي (1 كجم)', price: 950, weight: 1000, type: 'ASA', brand: 'eSUN', density: 1.07, notes: 'مقاوم للشمس وظروف الجو الخارجية' },
+    { id: 'esun-tpu', name: 'eSUN TPU 95A مرن (1 كجم)', price: 1100, weight: 1000, type: 'TPU', brand: 'eSUN', density: 1.21, notes: 'خامة مطاطية مرنة للمنتجات الميكانيكية' },
+    { id: 'polymaker-pla', name: 'Polymaker PolyLite PLA (1 كجم)', price: 950, weight: 1000, type: 'PLA', brand: 'Polymaker', density: 1.24, notes: 'جودة فائقة وتشطيب احترافي عالي الدقة' },
+    { id: 'creality-pla', name: 'Creality Ender PLA (1 كجم)', price: 680, weight: 1000, type: 'PLA', brand: 'Creality', density: 1.24, notes: 'خامة قياسية متوفرة بكثرة' },
+    { id: 'carbon-fiber-pla', name: 'PLA Carbon Fiber ألياف كربون (1 كجم)', price: 1400, weight: 1000, type: 'PLA-CF', brand: 'eSUN / Eryone', density: 1.28, notes: 'صلابة هيكلية فائقة ومظهر غير لامع' },
+    { id: 'elegoo-resin-standard', name: 'Elegoo Standard Resin راتنج (1 كجم)', price: 1250, weight: 1000, type: 'Resin', brand: 'Elegoo', density: 1.10, notes: 'لطابعات الراتنج MSLA ثلاثية الأبعاد' },
+    { id: 'elegoo-resin-abs-like', name: 'Elegoo ABS-Like Resin (1 كجم)', price: 1550, weight: 1000, type: 'Resin ABS-Like', brand: 'Elegoo', density: 1.12, notes: 'راتنج عالي المتانة ومقاوم للكسر' }
   ],
   
   printers: [
@@ -31,8 +35,19 @@ const PRESETS = {
       lifespanHours: 5000,
       powerKw: 0.22,
       powerRange: '0.18 - 0.25 kW',
-      notes: 'حجم طباعة أكبر 320×320×385 مم',
+      notes: 'حجم طباعة كبير 320×320×385 مم',
       maxBedTemp: '100°C',
+      printSpeed: 'حتى 500 مم/ث'
+    },
+    {
+      id: 'neptune-4-max',
+      name: 'Elegoo Neptune 4 Max',
+      price: 38500,
+      lifespanHours: 5000,
+      powerKw: 0.28,
+      powerRange: '0.22 - 0.35 kW',
+      notes: 'حجم طباعة ضخم 420×420×480 مم',
+      maxBedTemp: '85°C',
       printSpeed: 'حتى 500 مم/ث'
     },
     {
@@ -42,18 +57,18 @@ const PRESETS = {
       lifespanHours: 6000,
       powerKw: 0.18,
       powerRange: '0.14 - 0.22 kW',
-      notes: 'طباعة متعددة الألوان ومعايرة ذاتية',
+      notes: 'طباعة متعددة الألوان 4 ألوان ومعايرة ذاتية',
       maxBedTemp: '100°C',
       printSpeed: 'حتى 500 مم/ث'
     },
     {
       id: 'bambu-p1s',
-      name: 'Bambu Lab P1S',
+      name: 'Bambu Lab P1S Combo',
       price: 52000,
       lifespanHours: 8000,
       powerKw: 0.25,
       powerRange: '0.20 - 0.35 kW (صندوق مغلق)',
-      notes: 'طابعة صناعية مغلقة عالية الاعتمادية',
+      notes: 'طابعة صناعية مغلقة للـ ABS / ASA / PETG-CF',
       maxBedTemp: '100°C',
       printSpeed: 'حتى 500 مم/ث'
     },
@@ -86,7 +101,7 @@ const PRESETS = {
       lifespanHours: 7000,
       powerKw: 0.35,
       powerRange: '0.25 - 0.45 kW',
-      notes: 'حجم 300×300×300 مم مزودة بكاميرا ذكية',
+      notes: 'حجم 300×300×300 مم مزودة بكاميرا ذكية AI',
       maxBedTemp: '120°C',
       printSpeed: 'حتى 600 مم/ث'
     }
@@ -105,5 +120,20 @@ const PRESETS = {
     { id: 'tier-comm-2', name: 'النشاط التجاري (حتى 250 ك.و.س)', rate: 1.68, desc: 'شريحة تجارية متوسطة (1.68 ج.م)' },
     { id: 'tier-comm-3', name: 'النشاط التجاري (حتى 600 ك.و.س)', rate: 2.20, desc: 'شريحة تجارية عالية (2.20 ج.م)' },
     { id: 'tier-comm-4', name: 'النشاط التجاري (أكثر من 1000 ك.و.س)', rate: 2.33, desc: 'شريحة تجارية عليا (2.33 ج.م)' }
+  ],
+
+  hardwareAccessories: [
+    { name: 'صمولة نحاسية حرارية (M3 Heat-Set Brass Insert)', unitCost: 3.50, unit: 'قطعة' },
+    { name: 'صمولة نحاسية حرارية (M4 Heat-Set Brass Insert)', unitCost: 4.50, unit: 'قطعة' },
+    { name: 'مسمار ألين صلب (M3×10mm Screw)', unitCost: 1.50, unit: 'قطعة' },
+    { name: 'مسمار ألين صلب (M4×16mm Screw)', unitCost: 2.00, unit: 'قطعة' },
+    { name: 'مغناطيس نيوديميوم قوي (Neodymium Magnet 6×3mm)', unitCost: 6.00, unit: 'قطعة' },
+    { name: 'رمان بلي معدني (608ZZ Bearing)', unitCost: 15.00, unit: 'قطعة' },
+    { name: 'كرتونة شحن وتغليف فقاعي (Packaging Box & Bubble Wrap)', unitCost: 25.00, unit: 'طرد' },
+    { name: 'علبة هدايا مخصصة (Custom Gift Box)', unitCost: 35.00, unit: 'علبة' }
   ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = PRESETS;
+}

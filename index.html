@@ -443,6 +443,29 @@
 
     <!-- TAB 2: DASHBOARD & VISUALS -->
     <section id="tabPane_dashboard" class="hidden space-y-6">
+
+      <!-- Project Metadata Card -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+          <i class="fas fa-edit text-blue-600"></i>
+          <span>بيانات القطعة والطلب</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم القطعة / الموديل</label>
+            <input type="text" id="dash_projectName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مجسم تروس، حامل هاتف...">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل (اختياري)</label>
+            <input type="text" id="dash_clientName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: م. أحمد عبد الله">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">الكمية المطلوبة (Batch Qty)</label>
+            <input type="number" id="dash_batchQuantity" min="1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="1">
+          </div>
+        </div>
+      </div>
+
       
       <!-- GCode Drop Zone -->
       <div id="gcodeDropZone" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-blue-950/40 p-5 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-700 text-center transition cursor-pointer hover:border-blue-500">
@@ -658,6 +681,31 @@
               <div>صافي الربح</div>
               <div id="batchSingleProfit" class="font-bold font-mono-nums">151.30 ج.م</div>
             </div>
+          </div>
+        </div>
+      </div>
+
+    
+
+      <!-- Batch Quantity Summary Card -->
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-1 text-center md:text-right">
+          <div class="text-xs text-blue-200 font-bold">حساب الدفعات والكميات الكبيرة (Batch Production)</div>
+          <div class="text-2xl font-black">إجمالي الطلبية لعدد (<span id="batchTotalQty">1</span>) قطعة</div>
+          <div class="text-xs text-blue-200/80">يتم ضرب سعر القطعة وإجمالي التكاليف والأرباح في الكمية المطلوبة</div>
+        </div>
+        <div class="flex items-center gap-4 flex-wrap justify-center">
+          <div class="bg-white/10 p-3 rounded-xl text-center min-w-[120px]">
+            <div class="text-xs text-slate-300">إجمالي التكلفة</div>
+            <div id="batchTotalCost" class="text-lg font-bold font-mono-nums">226.94 ج.م</div>
+          </div>
+          <div class="bg-emerald-500/30 border border-emerald-400/40 p-3 rounded-xl text-center min-w-[140px]">
+            <div class="text-xs text-emerald-200 font-bold">إجمالي سعر البيع</div>
+            <div id="batchTotalPrice" class="text-xl font-black text-emerald-300 font-mono-nums">378.24 ج.م</div>
+          </div>
+          <div class="bg-white/10 p-3 rounded-xl text-center min-w-[120px]">
+            <div class="text-xs text-amber-300">صافي الربح الكلي</div>
+            <div id="batchTotalProfit" class="text-lg font-bold text-amber-300 font-mono-nums">151.30 ج.م</div>
           </div>
         </div>
       </div>

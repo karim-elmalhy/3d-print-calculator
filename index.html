@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>حاسبة تكلفة الطباعة ثلاثية الأبعاد Pro — Elegoo Neptune 4 Pro</title>
-  
+  <title>حاسبة تكلفة الطباعة ثلاثية الأبعاد — Elegoo Neptune 4 Pro</title>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <!-- Tailwind CSS & FontAwesome & Libraries -->
+  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=12.0">
+  <link rel="stylesheet" href="style.css?v=13.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -48,11 +48,11 @@
     }
   </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
 
   <!-- ================= TOP HEADER ================= -->
   <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
       
       <!-- Brand Logo & Title -->
       <div class="flex items-center justify-between w-full sm:w-auto gap-3">
@@ -62,19 +62,18 @@
           </div>
           <div>
             <h1 class="text-base sm:text-lg font-black leading-tight flex items-center gap-2">
-              <span>حاسبة تكلفة الطباعة 3D Pro</span>
+              <span>حاسبة تكلفة الطباعة 3D</span>
               <span class="bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded font-bold border border-blue-200 dark:border-blue-800">مصر 🇪🇬</span>
             </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Elegoo Neptune 4 Pro — التكلفة الحقيقية وهامش الربح</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">طريقة الحساب الأصلية — Elegoo Neptune 4 Pro</p>
           </div>
         </div>
 
-        <!-- Mobile Quick Icons -->
         <div class="flex sm:hidden items-center gap-1.5">
-          <button onclick="app.resetToDefaults()" title="تصفير القيم" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button onclick="app.resetToDefaults()" title="تصفير" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
             <i class="fas fa-rotate-right text-sm"></i>
           </button>
-          <button onclick="app.toggleTheme()" title="تبديل الوضع" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button onclick="app.toggleTheme()" title="الوضع" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
             <i id="themeIconMobile" class="fas fa-sun text-amber-400 text-sm"></i>
           </button>
         </div>
@@ -90,7 +89,7 @@
         </div>
 
         <!-- Currency Switcher -->
-        <div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs">
+        <div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-xs">
           <i class="fas fa-coins text-amber-500 shrink-0"></i>
           <select id="currencySelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs">
             <option value="EGP">🇪🇬 ج.م (EGP)</option>
@@ -165,54 +164,36 @@
     </div>
   </section>
 
-  <!-- ================= NAVIGATION TABS & QUICK ACTIONS ================= -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6">
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6 flex-1 w-full">
     
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800 no-print">
-      
-      <!-- Segmented Tab Navigation -->
-      <nav class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar w-full md:w-auto">
-        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="nav-tab-btn active">
-          <i class="fas fa-sliders"></i>
-          <span>لوحة التحكم والتسعير</span>
-        </button>
-        <button id="tabBtn_table" onclick="app.switchTab('table')" class="nav-tab-btn">
+    <!-- Navigation Tabs -->
+    <div class="flex items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800 no-print flex-wrap">
+      <nav class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <button id="tabBtn_table" onclick="app.switchTab('table')" class="nav-tab-btn active font-bold text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 bg-blue-600 text-white shadow-sm transition">
           <i class="fas fa-table-cells"></i>
-          <span>جدول الحسابات</span>
+          <span>جدول التكلفة التفصيلي (الحاسبة الأصلية)</span>
         </button>
-        <button id="tabBtn_assembly" onclick="app.switchTab('assembly')" class="nav-tab-btn">
-          <i class="fas fa-puzzle-piece"></i>
-          <span>حساب التجميعات</span>
+        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fas fa-cube"></i>
+          <span>المعاينة 3D والرسوم البيانية</span>
         </button>
-        <button id="tabBtn_roi" onclick="app.switchTab('roi')" class="nav-tab-btn">
-          <i class="fas fa-chart-line"></i>
-          <span>تحليل الاسترداد والـ ROI</span>
-        </button>
-        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="nav-tab-btn">
+        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-file-invoice-dollar"></i>
           <span>عرض السعر والـ PDF</span>
         </button>
-        <button id="tabBtn_analytics" onclick="app.switchTab('analytics')" class="nav-tab-btn">
-          <i class="fas fa-chart-pie"></i>
-          <span>التقارير والأرباح</span>
-        </button>
-        <button id="tabBtn_troubleshoot" onclick="app.switchTab('troubleshoot')" class="nav-tab-btn">
-          <i class="fas fa-stethoscope"></i>
-          <span>دليل المعايرة والأعطال</span>
-        </button>
-        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="nav-tab-btn">
+        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-folder-open"></i>
           <span>المشاريع المحفوظة</span>
         </button>
       </nav>
 
-      <!-- Quick Action Buttons -->
-      <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
+      <div class="flex items-center gap-2">
         <button onclick="app.exportCSV()" title="تصدير جدول التكاليف كملف Excel / CSV" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
           <i class="fas fa-file-csv text-emerald-600"></i>
           <span>تصدير CSV</span>
         </button>
-        <button onclick="app.openWhatsApp()" title="إرسال عرض السعر للعميل على واتساب" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="app.openWhatsApp()" title="إرسال عرض السعر للعميل على واتساب" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
           <i class="fab fa-whatsapp text-sm"></i>
           <span>واتساب</span>
         </button>
@@ -221,17 +202,200 @@
           <span>طباعة</span>
         </button>
       </div>
-
     </div>
 
-    <!-- ================= TAB 1: DASHBOARD & 3D STUDIO ================= -->
-    <section id="tabPane_dashboard" class="space-y-6">
+    <!-- ================= TAB 1: ORIGINAL DETAILED SPREADSHEET TABLE ================= -->
+    <section id="tabPane_table" class="space-y-4">
+      <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md overflow-x-auto">
+        <table class="calc-table text-xs sm:text-sm">
+          <thead>
+            <tr class="section-header-row font-bold text-center">
+              <td colspan="4" class="p-3 text-base">
+                <div class="flex items-center justify-between px-2 flex-wrap gap-2">
+                  <span>حاسبة تكلفة قطعة الطباعة ثلاثية الأبعاد — Elegoo Neptune 4 Pro (مصر 🇪🇬)</span>
+                  <div class="flex items-center gap-1.5 text-xs font-normal">
+                    <span class="text-blue-200">الخامة المحددة:</span>
+                    <select id="tbl_filamentPresetSelect" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold"></select>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="bg-slate-100 dark:bg-slate-800 font-bold text-center">
+              <th class="p-2.5 w-1/4">البند</th>
+              <th class="p-2.5 w-1/4">القيمة (قابلة للتعديل)</th>
+              <th class="p-2.5 w-1/6">الوحدة</th>
+              <th class="p-2.5 w-1/3">ملاحظات / المصدر والمعادلة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 1) Material -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">1) تكلفة المادة الخام (Material Cost)</td></tr>
+            <tr>
+              <td class="font-bold">وزن القطعة (شامل الدعامات والتعبئة)</td>
+              <td class="text-center"><input type="number" id="tbl_partWeight" step="0.5" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
+              <td class="text-center font-mono">جرام</td>
+              <td class="text-slate-500 text-xs">من برنامج التقطيع Slicer (أو عارض الـ STL)</td>
+            </tr>
+            <tr>
+              <td class="font-bold">سعر بكرة الفيلامنت (1 كجم)</td>
+              <td class="text-center"><input type="number" id="tbl_spoolPrice" step="10" min="0" class="tbl-number-input cell-input-blue" value="600.00"></td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs">سعر السوق الحالي (Patron 3D / eSUN في مصر)</td>
+            </tr>
+            <tr>
+              <td class="font-bold">الوزن الإجمالي للبكرة</td>
+              <td class="text-center font-mono-nums font-bold">1000</td>
+              <td class="text-center font-mono">جرام</td>
+              <td class="text-slate-500 text-xs">الوزن القياسي للبكرة (1000 جم صافي)</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة الخامة (محسوبة)</td>
+              <td id="tbl_materialCost" class="text-center font-mono-nums text-blue-600 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">وزن القطعة × سعر البكرة ÷ وزن البكرة</td>
+            </tr>
+
+            <!-- 2) Power -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">2) تكلفة استهلاك الكهرباء (Power Cost)</td></tr>
+            <tr>
+              <td class="font-bold">ساعات الطباعة</td>
+              <td class="text-center"><input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
+              <td class="text-center font-mono">ساعة</td>
+              <td class="text-slate-500 text-xs">الوقت التقديري من الـ Slicer أو ملف الـ G-Code</td>
+            </tr>
+            <tr>
+              <td class="font-bold">متوسط استهلاك الطابعة للطاقة</td>
+              <td class="text-center"><input type="number" id="tbl_printerPowerKw" step="0.01" min="0.01" class="tbl-number-input cell-input-blue" value="0.16"></td>
+              <td class="text-center font-mono">كيلووات (kW)</td>
+              <td class="text-slate-500 text-xs">متوسط استهلاك Neptune 4 Pro الفعلي (160W)</td>
+            </tr>
+            <tr>
+              <td class="font-bold">سعر كيلووات الكهرباء في مصر</td>
+              <td class="text-center"><input type="number" id="tbl_electricityRate" step="0.01" min="0.1" class="tbl-number-input cell-input-blue" value="1.51"></td>
+              <td class="text-center font-mono">جنيه / ك.و.س</td>
+              <td class="text-slate-500 text-xs">تعريفة شريحة الكهرباء المصرية الحالية</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة الكهرباء (محسوبة)</td>
+              <td id="tbl_powerCost" class="text-center font-mono-nums text-blue-600 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">ساعات الطباعة × القدرة × سعر الكيلووات</td>
+            </tr>
+
+            <!-- 3) Depreciation -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">3) إهلاك وصيانة الطابعة (Depreciation)</td></tr>
+            <tr>
+              <td class="font-bold">سعر شراء الطابعة</td>
+              <td class="text-center"><input type="number" id="tbl_printerPrice" step="500" min="1000" class="tbl-number-input cell-input-blue" value="26000.00"></td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs">سعر الشراء الحالي لطابعة Elegoo Neptune 4 Pro</td>
+            </tr>
+            <tr>
+              <td class="font-bold">العمر الافتراضي التقديري للطابعة</td>
+              <td class="text-center"><input type="number" id="tbl_printerLifespanHours" step="500" min="500" class="tbl-number-input cell-input-blue" value="5000"></td>
+              <td class="text-center font-mono">ساعة عمل</td>
+              <td class="text-slate-500 text-xs">العمر التشغيلي القياسي (5000 ساعة)</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة إهلاك الطابعة لكل ساعة</td>
+              <td id="tbl_depreciationPerHour" class="text-center font-mono-nums">5.20 ج.م / ساعة</td>
+              <td class="text-center font-mono">جنيه / ساعة</td>
+              <td class="text-slate-500 text-xs font-mono">سعر الطابعة ÷ العمر الافتراضي</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة إهلاك الطابعة للقطعة (محسوبة)</td>
+              <td id="tbl_depreciationCost" class="text-center font-mono-nums text-blue-600 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">إهلاك الساعة × ساعات الطباعة</td>
+            </tr>
+
+            <!-- 4) Labor -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">4) تكلفة العمالة والمعالجة (Labor Cost)</td></tr>
+            <tr>
+              <td class="font-bold">وقت العمل البشري المطلوب للقطعة</td>
+              <td class="text-center"><input type="number" id="tbl_laborHours" step="0.1" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
+              <td class="text-center font-mono">ساعة</td>
+              <td class="text-slate-500 text-xs">تجهيز الملف، معايرة السرير، وإزالة الدعامات والتشطيب</td>
+            </tr>
+            <tr>
+              <td class="font-bold">أجر ساعة العمل البشري</td>
+              <td class="text-center"><input type="number" id="tbl_laborRatePerHour" step="10" min="0" class="tbl-number-input cell-input-blue" value="100.00"></td>
+              <td class="text-center font-mono">جنيه / ساعة</td>
+              <td class="text-slate-500 text-xs">أجر تقديري لجهدك ووقتك</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة العمالة (محسوبة)</td>
+              <td id="tbl_laborCost" class="text-center font-mono-nums text-blue-600 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">وقت العمل × أجر الساعة</td>
+            </tr>
+
+            <!-- 5) Subtotal & Failure -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">5) المجموع الفرعي ونسبة الفشل</td></tr>
+            <tr class="bg-slate-100 dark:bg-slate-800 font-bold">
+              <td>المجموع الفرعي للتكلفة المباشرة</td>
+              <td id="tbl_subtotal" class="text-center font-mono-nums text-lg text-slate-900 dark:text-white">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">الخامة + الكهرباء + الإهلاك + العمالة</td>
+            </tr>
+            <tr>
+              <td class="font-bold">نسبة فشل الطباعة والمخاطرة</td>
+              <td class="text-center"><input type="number" id="tbl_failureRatePercent" step="1" min="0" max="100" class="tbl-number-input cell-input-blue" value="10.0"></td>
+              <td class="text-center font-mono">%</td>
+              <td class="text-slate-500 text-xs">نسبة لتغطية فشل الطباعة وهدر الفيلامنت (10% قياسية)</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>تكلفة الفشل المحسوبة</td>
+              <td id="tbl_failureCost" class="text-center font-mono-nums text-rose-600 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">المجموع الفرعي × نسبة الفشل</td>
+            </tr>
+            <tr class="bg-slate-200 dark:bg-slate-700 font-black text-base">
+              <td>إجمالي التكلفة الحقيقية للقطعة (Total Cost)</td>
+              <td id="tbl_totalCost" class="text-center font-mono-nums text-rose-600 text-lg">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-600 dark:text-slate-300 text-xs font-mono">المجموع الفرعي + تكلفة الفشل (تكلفة الإنتاج)</td>
+            </tr>
+
+            <!-- 6) Profit Margin & Selling Price -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">6) هامش الربح وسعر البيع النهائي</td></tr>
+            <tr>
+              <td class="font-bold">هامش الربح المستهدف</td>
+              <td class="text-center"><input type="number" id="tbl_profitMarginPercent" step="1" min="1" max="99" class="tbl-number-input cell-input-blue" value="40.0"></td>
+              <td class="text-center font-mono">%</td>
+              <td class="text-slate-500 text-xs">نسبة من سعر البيع (40% هامش ربح مستهدف)</td>
+            </tr>
+            <tr class="row-highlight-green font-black text-base">
+              <td>سعر البيع المقترح للقطعة (Selling Price)</td>
+              <td id="tbl_finalSellingPrice" class="text-center font-mono-nums text-xl sm:text-2xl font-black">0.00 ج.م</td>
+              <td class="text-center font-mono font-bold">جنيه</td>
+              <td class="text-xs font-mono">إجمالي التكلفة ÷ (1 - هامش الربح)</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>صافي مبلغ الربح للقطعة</td>
+              <td id="tbl_profitAmount" class="text-center font-mono-nums text-emerald-600 text-lg font-black">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">سعر البيع - إجمالي التكلفة</td>
+            </tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
+              <td>نسبة الربح الفعلية على التكلفة (Markup)</td>
+              <td id="tbl_markupPercent" class="text-center font-mono-nums text-purple-600 font-bold">0.0%</td>
+              <td class="text-center font-mono">%</td>
+              <td class="text-slate-500 text-xs font-mono">مبلغ الربح ÷ إجمالي التكلفة × 100</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: DASHBOARD & 3D VIEWER ================= -->
+    <section id="tabPane_dashboard" class="hidden space-y-6">
       
       <!-- Unified 3D STL & Slicer Hub -->
-      <div class="ui-card p-5 space-y-4">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shadow-md shadow-blue-500/20 shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shadow-md shrink-0">
               <i class="fas fa-cube"></i>
             </div>
             <div>
@@ -256,30 +420,27 @@
               <span>رفع ملف (STL / G-Code)</span>
             </button>
             <input type="file" id="unifiedFileInput" accept=".stl,.gcode,.g,.obj" onchange="app.handleFileInputChange(event)" class="hidden">
-            <input type="file" id="stlFileInput" accept=".stl,.gcode,.g" onchange="app.handleFileInputChange(event)" class="hidden">
-            <input type="file" id="gcodeFileInput" accept=".gcode,.g,.stl" onchange="app.handleFileInputChange(event)" class="hidden">
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <!-- Dropzone and Instructions (4 cols) -->
+          <!-- Dropzone -->
           <div id="stlDropZone" ondragover="event.preventDefault(); this.classList.add('border-blue-500');" ondragleave="this.classList.remove('border-blue-500');" ondrop="event.preventDefault(); this.classList.remove('border-blue-500'); if(event.dataTransfer.files.length>0) app.handleUnifiedFile(event.dataTransfer.files[0]);" class="lg:col-span-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition">
             <div onclick="document.getElementById('unifiedFileInput').click()" class="space-y-2">
               <div class="w-12 h-12 mx-auto rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-2xl">
                 <i class="fas fa-cloud-arrow-up"></i>
               </div>
               <span class="text-xs font-bold block">اسحب وأفلت ملف الـ STL أو الـ G-Code هنا</span>
-              <span class="text-[11px] text-slate-500 dark:text-slate-400 block leading-relaxed">يدعم ملفات Cura, PrusaSlicer, OrcaSlicer, Bambu Studio وملفات المجسمات STL</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 block leading-relaxed">يدعم ملفات Cura, PrusaSlicer, OrcaSlicer, Bambu Studio وملفات STL</span>
               <span class="inline-block mt-2 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] px-2.5 py-1 rounded-lg font-mono font-bold border border-blue-200 dark:border-blue-800">أو اضغط للاختيار من جهازك</span>
             </div>
           </div>
 
-          <!-- 3D Interactive Canvas Viewport (8 cols) -->
-          <div class="lg:col-span-8 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-900 relative min-h-[300px] flex flex-col justify-between shadow-inner">
+          <!-- 3D Canvas Viewport -->
+          <div class="lg:col-span-8 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-900 relative min-h-[260px] flex flex-col justify-between shadow-inner">
             <div id="stlCanvasContainer" class="w-full h-[260px] block"></div>
             <div class="bg-black/70 backdrop-blur-md px-3 py-1.5 text-[10px] text-slate-300 font-mono flex items-center justify-between border-t border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fas fa-hand-pointer text-blue-400"></i> اسحب للتدوير 360° • حرك العجلة للزووم</span>
-              <span id="gcodeMetadataBadge" class="text-emerald-400 font-bold hidden">G-Code تم تحليله بنجاح</span>
             </div>
           </div>
         </div>
@@ -291,7 +452,7 @@
             <span id="stlDimsText" class="font-bold font-mono-nums text-sm">25.0 × 25.0 × 25.0 مم</span>
           </div>
           <div class="text-center p-2 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50">
-            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">الحجم الهندسي الصافي:</span>
+            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">الحجم الصافي:</span>
             <span id="stlVolumeText" class="font-bold text-indigo-600 dark:text-indigo-400 font-mono-nums text-sm">15.6 سم³</span>
           </div>
           <div class="text-center p-2 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 flex flex-col justify-between">
@@ -307,227 +468,8 @@
         </div>
       </div>
 
-      <!-- Pricing Templates Quick Apply -->
-      <div class="ui-card p-4">
-        <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
-          <i class="fas fa-wand-magic-sparkles text-purple-600"></i>
-          <span>قوالب تسعير سريعة (Pricing Templates) — تطبيق بضغطة واحدة</span>
-        </h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button onclick="app.applyPricingTemplate('economy')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
-            <div class="text-2xl mb-1">💰</div>
-            <div class="text-xs font-bold group-hover:text-blue-600">اقتصادي</div>
-            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 25% • Draft سريع</div>
-          </button>
-          <button onclick="app.applyPricingTemplate('standard')" class="p-3 rounded-xl border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-950/30 hover:border-blue-500 transition text-center group">
-            <div class="text-2xl mb-1">⭐</div>
-            <div class="text-xs font-bold text-blue-700 dark:text-blue-300">قياسي (الافتراضي)</div>
-            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 40% • دقة 0.20 مم</div>
-          </button>
-          <button onclick="app.applyPricingTemplate('professional')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
-            <div class="text-2xl mb-1">💎</div>
-            <div class="text-xs font-bold group-hover:text-purple-600">احترافي</div>
-            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 55% • دقة 0.12 مم فائقة</div>
-          </button>
-          <button onclick="app.applyPricingTemplate('industrial')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
-            <div class="text-2xl mb-1">🏭</div>
-            <div class="text-xs font-bold group-hover:text-amber-600">صناعي</div>
-            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 50% • تعبئة 60%</div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Original Detailed Calculator Table (الصفحة الأصلية للحساب) -->
-      <div class="ui-card p-4 overflow-x-auto shadow-sm border border-slate-200 dark:border-slate-800">
-        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
-          <h3 class="font-bold text-base flex items-center gap-2">
-            <i class="fas fa-calculator text-blue-600"></i>
-            <span>جدول حاسبة التكلفة الحقيقية وسعر البيع (الحاسبة الأصلية)</span>
-          </h3>
-          <span class="text-xs bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded font-bold border border-blue-200 dark:border-blue-800">جدول الحساب المباشر ⚡</span>
-        </div>
-        <table class="calc-table text-xs sm:text-sm">
-          <thead>
-            <tr class="section-header-row font-bold text-center">
-              <td colspan="4" class="p-3 text-base">
-                <div class="flex items-center justify-between px-2">
-                  <span>حاسبة تكلفة قطعة الطباعة ثلاثية الأبعاد — Elegoo Neptune 4 Pro (مصر)</span>
-                  <div class="flex items-center gap-1.5 text-xs font-normal">
-                    <span class="text-blue-200">الخامة:</span>
-                    <select id="tbl_filamentPresetSelect" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold"></select>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr class="bg-slate-100 dark:bg-slate-800 font-bold text-center">
-              <th class="p-2 w-1/4">البند</th>
-              <th class="p-2 w-1/4">القيمة</th>
-              <th class="p-2 w-1/6">الوحدة</th>
-              <th class="p-2 w-1/3">ملاحظات / المصدر والمعادلة</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 1) Material -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">1) تكلفة المادة الخام (Material Cost)</td></tr>
-            <tr>
-              <td class="font-bold">وزن القطعة (شامل الدعامات والتعبئة)</td>
-              <td class="text-center"><input type="number" id="tbl_partWeight" step="0.5" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">جرام</td>
-              <td class="text-slate-500 text-xs">من برنامج التقطيع Slicer — قيمة توضيحية، عدّلها</td>
-            </tr>
-            <tr>
-              <td class="font-bold">سعر بكرة الفيلامنت (1 كجم)</td>
-              <td class="text-center"><input type="number" id="tbl_spoolPrice" step="10" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs">متوسط سعر بكرة eSUN / Patron في مصر</td>
-            </tr>
-            <tr>
-              <td class="font-bold">الوزن الإجمالي للبكرة</td>
-              <td class="text-center font-mono-nums font-bold">1000</td>
-              <td class="text-center">جرام</td>
-              <td class="text-slate-500 text-xs">عادة 1000 جم للبكرة القياسية</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الخامة (محسوبة)</td>
-              <td id="tbl_materialCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">وزن القطعة × سعر البكرة ÷ وزن البكرة</td>
-            </tr>
-
-            <!-- 2) Power -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">2) تكلفة استهلاك الكهرباء (Power Cost)</td></tr>
-            <tr>
-              <td class="font-bold">ساعات الطباعة</td>
-              <td class="text-center"><input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">ساعة</td>
-              <td class="text-slate-500 text-xs">من الوقت المقدّر في الـ Slicer</td>
-            </tr>
-            <tr>
-              <td class="font-bold">متوسط استهلاك الطابعة للطاقة</td>
-              <td class="text-center"><input type="number" id="tbl_printerPowerKw" step="0.01" min="0.01" class="tbl-number-input cell-input-blue" value="0.16"></td>
-              <td class="text-center">كيلووات (kW)</td>
-              <td class="text-slate-500 text-xs">متوسط استهلاك Neptune 4 Pro الفعلي</td>
-            </tr>
-            <tr>
-              <td class="font-bold">سعر كيلووات الكهرباء في مصر</td>
-              <td class="text-center"><input type="number" id="tbl_electricityRate" step="0.01" min="0.1" class="tbl-number-input cell-input-blue" value="1.51"></td>
-              <td class="text-center">جنيه / ك.و.س</td>
-              <td class="text-slate-500 text-xs">تعريفة الكهرباء المصرية</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الكهرباء (محسوبة)</td>
-              <td id="tbl_powerCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">ساعات الطباعة × القدرة × سعر الكيلووات</td>
-            </tr>
-
-            <!-- 3) Depreciation -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">3) إهلاك وصيانة الطابعة (Depreciation)</td></tr>
-            <tr>
-              <td class="font-bold">سعر شراء الطابعة</td>
-              <td class="text-center"><input type="number" id="tbl_printerPrice" step="500" min="1000" class="tbl-number-input cell-input-blue" value="26000.00"></td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs">سعر السوق في مصر لطابعة Elegoo Neptune 4 Pro</td>
-            </tr>
-            <tr>
-              <td class="font-bold">العمر الافتراضي التقديري للطابعة</td>
-              <td class="text-center"><input type="number" id="tbl_printerLifespanHours" step="500" min="500" class="tbl-number-input cell-input-blue" value="5000"></td>
-              <td class="text-center">ساعة عمل</td>
-              <td class="text-slate-500 text-xs">المعيار الصناعي: 5000 ساعة</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة إهلاك الطابعة لكل ساعة</td>
-              <td id="tbl_depreciationPerHour" class="text-center font-mono-nums">5.20 ج.م</td>
-              <td class="text-center">جنيه / ساعة</td>
-              <td class="text-slate-500 text-xs font-mono">سعر الطابعة ÷ العمر الافتراضي</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة إهلاك الطابعة للقطعة (محسوبة)</td>
-              <td id="tbl_depreciationCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">إهلاك الساعة × ساعات الطباعة</td>
-            </tr>
-
-            <!-- 4) Labor -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">4) تكلفة العمالة والمعالجة (Labor Cost)</td></tr>
-            <tr>
-              <td class="font-bold">وقت العمل البشري المطلوب للقطعة</td>
-              <td class="text-center"><input type="number" id="tbl_laborHours" step="0.1" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">ساعة</td>
-              <td class="text-slate-500 text-xs">تجهيز الملف، معايرة السرير، إزالة الدعامات والتشطيب</td>
-            </tr>
-            <tr>
-              <td class="font-bold">أجر ساعة العمل البشري</td>
-              <td class="text-center"><input type="number" id="tbl_laborRatePerHour" step="10" min="0" class="tbl-number-input cell-input-blue" value="100.00"></td>
-              <td class="text-center">جنيه / ساعة</td>
-              <td class="text-slate-500 text-xs">أجر تقديري لجهدك ووقتك</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة العمالة (محسوبة)</td>
-              <td id="tbl_laborCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">وقت العمل × أجر الساعة</td>
-            </tr>
-
-            <!-- 5) Subtotal & Failure -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">5) المجموع الفرعي ونسبة الفشل</td></tr>
-            <tr class="bg-slate-100 dark:bg-slate-800 font-bold">
-              <td>المجموع الفرعي للتكلفة المباشرة</td>
-              <td id="tbl_subtotal" class="text-center font-mono-nums text-lg text-slate-900 dark:text-white">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">الخامة + الكهرباء + الإهلاك + العمالة</td>
-            </tr>
-            <tr>
-              <td class="font-bold">نسبة فشل الطباعة والمخاطرة</td>
-              <td class="text-center"><input type="number" id="tbl_failureRatePercent" step="1" min="0" max="100" class="tbl-number-input cell-input-blue" value="10.0"></td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs">نسبة لتغطية فشل الطباعة وهدر الفيلامنت (10% شائعة)</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الفشل المحسوبة</td>
-              <td id="tbl_failureCost" class="text-center font-mono-nums text-rose-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">المجموع الفرعي × نسبة الفشل</td>
-            </tr>
-            <tr class="bg-slate-200 dark:bg-slate-700 font-black text-base">
-              <td>إجمالي التكلفة الحقيقية للقطعة (Total Cost)</td>
-              <td id="tbl_totalCost" class="text-center font-mono-nums text-rose-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-600 dark:text-slate-300 text-xs font-mono">المجموع الفرعي + تكلفة الفشل (تكلفة الإنتاج)</td>
-            </tr>
-
-            <!-- 6) Profit Margin & Selling Price -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">6) هامش الربح وسعر البيع النهائي</td></tr>
-            <tr>
-              <td class="font-bold">هامش الربح المستهدف</td>
-              <td class="text-center"><input type="number" id="tbl_profitMarginPercent" step="1" min="1" max="99" class="tbl-number-input cell-input-blue" value="40.0"></td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs">نسبة من سعر البيع (40% هامش ربح مستهدف)</td>
-            </tr>
-            <tr class="row-highlight-green font-black text-base">
-              <td>سعر البيع المقترح للقطعة (Selling Price)</td>
-              <td id="tbl_finalSellingPrice" class="text-center font-mono-nums text-xl">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-xs font-mono">إجمالي التكلفة ÷ (1 - هامش الربح)</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>صافي مبلغ الربح للقطعة</td>
-              <td id="tbl_profitAmount" class="text-center font-mono-nums text-emerald-600 text-lg">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">سعر البيع - إجمالي التكلفة</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>نسبة الربح الفعلية على التكلفة (Markup)</td>
-              <td id="tbl_markupPercent" class="text-center font-mono-nums text-purple-600">0.0%</td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs font-mono">مبلغ الربح ÷ إجمالي التكلفة × 100</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
       <!-- Spool Roll Balance Tracker Card -->
-      <div class="ui-card p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-slate-900 dark:to-slate-800">
+      <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
           <div class="flex items-center gap-2">
             <i class="fas fa-compact-disc text-blue-600 text-lg"></i>
@@ -538,7 +480,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-xs text-slate-500">البداية:</span>
-            <input type="number" id="dash_spoolRemaining" min="0" max="5000" step="10" class="ui-input !w-24 text-center text-xs py-1" value="1000">
+            <input type="number" id="dash_spoolRemaining" min="0" max="5000" step="10" class="px-2 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-center text-xs font-mono font-bold w-24" value="1000">
             <span class="text-xs font-mono">جم</span>
           </div>
         </div>
@@ -551,278 +493,18 @@
         </div>
       </div>
 
-      <!-- Main Input Cards Grid (6 Modules) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        
-        <!-- Card 1: Material -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-xs"><i class="fas fa-ring"></i></span>
-              <span>1) المادة الخام</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نوع الخامة / البراند (سريع)</label>
-            <select id="dash_filamentSelect" class="ui-select text-xs font-bold text-blue-700 dark:text-blue-400"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وزن القطعة (شامل الدعامات) [جرام]</label>
-            <input type="number" id="dash_partWeight" step="0.5" min="0" class="ui-input font-mono-nums text-center" value="0.00">
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">سعر البكرة (ج.م)</label>
-              <input type="number" id="dash_spoolPrice" step="10" min="0" class="ui-input font-mono-nums text-center" value="0.00">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وزن البكرة (جرام)</label>
-              <input type="number" id="dash_spoolWeight" step="100" min="100" class="ui-input font-mono-nums text-center" value="1000">
-            </div>
+      <!-- Batch Production Summary Card -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-slate-900 dark:to-slate-800 p-5 rounded-2xl border border-emerald-200 dark:border-slate-800 shadow-md">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-bold text-sm text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+            <i class="fas fa-boxes-stacked"></i>
+            <span>ملخص تسعير الدفعة بالكامل (Batch Total Summary)</span>
+          </h4>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-300">الكمية المطلوبة:</span>
+            <input type="number" id="dash_batchQuantity" min="1" step="1" class="w-16 px-2 py-1 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-slate-700 rounded-lg text-center text-xs font-mono font-bold" value="1">
           </div>
         </div>
-
-        <!-- Card 2: Electricity -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xs"><i class="fas fa-bolt"></i></span>
-              <span>2) استهلاك الكهرباء</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">شريحة الكهرباء في مصر</label>
-            <select id="electricityTierSelect" class="ui-select text-xs"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ساعات الطباعة المقدرة (ساعة)</label>
-            <input type="number" id="dash_printHours" step="0.25" min="0" class="ui-input font-mono-nums text-center" value="0.00">
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">متوسط القدرة (kW)</label>
-              <input type="number" id="dash_printerPowerKw" step="0.01" min="0.01" class="ui-input font-mono-nums text-center" value="0.16">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">سعر الكيلووات (ج.م)</label>
-              <input type="number" id="dash_electricityRate" step="0.01" min="0.1" class="ui-input font-mono-nums text-center" value="1.51">
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3: Depreciation -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-xs"><i class="fas fa-screwdriver-wrench"></i></span>
-              <span>3) إهلاك وصيانة الطابعة</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">موديل الطابعة ثلاثية الأبعاد</label>
-            <select id="printerPresetSelect" class="ui-select text-xs"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">سعر شراء الطابعة (ج.م)</label>
-            <input type="number" id="dash_printerPrice" step="500" min="1000" class="ui-input font-mono-nums text-center" value="26000.00">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">العمر الافتراضي للطابعة (ساعات تشغيل)</label>
-            <input type="number" id="dash_printerLifespanHours" step="500" min="500" class="ui-input font-mono-nums text-center" value="5000">
-          </div>
-        </div>
-
-        <!-- Card 4: Labor -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-xs"><i class="fas fa-user-gear"></i></span>
-              <span>4) العمالة والمعالجة</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وقت العمل البشري (ساعة)</label>
-            <input type="number" id="dash_laborHours" step="0.1" min="0" class="ui-input font-mono-nums text-center" value="0.00">
-            <span class="text-[10px] text-slate-400">تجهيز، معايرة، إزالة الدعامات والتشطيب</span>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">أجر ساعة العمل البشري (ج.م/ساعة)</label>
-            <input type="number" id="dash_laborRatePerHour" step="10" min="0" class="ui-input font-mono-nums text-center" value="100.00">
-          </div>
-        </div>
-
-        <!-- Card 5: Failure & Accessories -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-xs"><i class="fas fa-shield-halved"></i></span>
-              <span>5) الهدر ومستلزمات التجميع</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة الفشل والمخاطرة (%)</label>
-            <input type="number" id="dash_failureRatePercent" step="1" min="0" max="100" class="ui-input font-mono-nums text-center" value="10.0">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">إضافة مستلزمات سريعة</label>
-            <select id="hardwareQuickAddSelect" class="ui-select text-xs"></select>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تكلفة إضافية (ج.م)</label>
-              <input type="number" id="dash_additionalCost" step="5" min="0" class="ui-input font-mono-nums text-center" value="0.00">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">بيان الإضافات</label>
-              <input type="text" id="dash_additionalCostNotes" class="ui-input text-xs" placeholder="مسامير، شحن...">
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 6: Margin & Pricing -->
-        <div class="ui-card p-5 space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h3 class="font-bold flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-xs"><i class="fas fa-chart-pie"></i></span>
-              <span>6) هامش الربح والتسعير</span>
-            </h3>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">هامش الربح المستهدف (%)</label>
-            <input type="number" id="dash_profitMarginPercent" step="1" min="1" max="99" class="ui-input font-mono-nums text-center text-emerald-600 font-bold" value="40.0">
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">كمية الدفعة (Batch)</label>
-              <input type="number" id="dash_batchQuantity" step="1" min="1" class="ui-input font-mono-nums text-center" value="1">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">خصم الكميات (%)</label>
-              <input type="number" id="dash_volumeDiscountPercent" step="1" min="0" max="50" class="ui-input font-mono-nums text-center" value="0">
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Client & Order Info Card -->
-      <div class="ui-card p-5">
-        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
-          <i class="fas fa-user-tie text-blue-600"></i>
-          <span>بيانات العميل والطلب</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم القطعة / الموديل</label>
-            <input type="text" id="dash_projectName" class="ui-input" placeholder="مثال: مجسم تروس، حامل هاتف...">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل</label>
-            <input type="text" id="dash_clientName" list="savedClientsList" class="ui-input" placeholder="مثال: م. أحمد عبد الله">
-            <datalist id="savedClientsList"></datalist>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">رقم هاتف العميل</label>
-            <input type="tel" id="dash_clientPhone" class="ui-input" placeholder="مثال: 01012345678">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">عنوان التسليم</label>
-            <input type="text" id="dash_clientAddress" class="ui-input" placeholder="مثال: مدينة نصر، القاهرة">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">المحافظة / منطقة الشحن</label>
-            <select id="dash_shippingGovSelect" class="ui-select text-xs"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تكلفة الشحن (ج.م)</label>
-            <input type="number" id="dash_shippingCost" min="0" step="5" class="ui-input font-mono-nums" value="0">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">مبلغ العربون المدفوع (ج.م)</label>
-            <input type="number" id="dash_depositPaid" min="0" step="10" class="ui-input font-mono-nums" value="0">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تاريخ التسليم المتوقع</label>
-            <input type="date" id="dash_deliveryDueDate" class="ui-input">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">طريقة الدفع</label>
-            <select id="dash_paymentMethodSelect" class="ui-select text-xs font-medium">
-              <option value="cash">💵 كاش عند الاستلام</option>
-              <option value="instapay">⚡ إنستاباي InstaPay</option>
-              <option value="vodafone_cash">📱 فودافون كاش (Vodafone Cash)</option>
-              <option value="bank_transfer">🏦 تحويل بنكي</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">حالة الطلب</label>
-            <select id="dash_orderStatusSelect" class="ui-select text-xs font-bold text-blue-600 dark:text-blue-400">
-              <option value="pending_design">✏️ قيد التصميم الهندسي</option>
-              <option value="ready_print">⏳ جاهز للطباعة</option>
-              <option value="printing">🖨️ جاري الطباعة الآن</option>
-              <option value="post_processing">🔧 مرحلة التشطيب والمعالجة</option>
-              <option value="ready_ship">📦 جاهز للشحن والتسليم</option>
-              <option value="delivered">✅ تم التسليم للعميل</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">صورة مرجعية للقطعة (اختياري)</label>
-            <input type="file" id="dash_partImageInput" accept="image/*" class="ui-input !text-xs cursor-pointer">
-          </div>
-        </div>
-      </div>
-
-      <!-- Part Specifications Card -->
-      <div class="ui-card p-5">
-        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
-          <i class="fas fa-sliders text-indigo-600"></i>
-          <span>مواصفات الطباعة والقطعة المطلوبة</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">لون القطعة المطلوب</label>
-            <select id="dash_partColorSelect" class="ui-select text-xs"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ارتفاع الطبقة (Layer Height)</label>
-            <select id="dash_layerHeightSelect" class="ui-select text-xs">
-              <option value="0.12 مم (تفاصيل دقيقة جداً)">0.12 مم (تفاصيل دقيقة جداً)</option>
-              <option value="0.16 مم (تفاصيل عالية)">0.16 مم (تفاصيل عالية)</option>
-              <option value="0.20 مم (قياسي)" selected>0.20 مم (قياسي)</option>
-              <option value="0.28 مم (سريع)">0.28 مم (سريع)</option>
-              <option value="0.32 مم (Draft سريع جداً)">0.32 مم (Draft سريع جداً)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة التعبئة Infill (%)</label>
-            <input type="number" id="dash_infillPercent" min="5" max="100" step="5" class="ui-input font-mono-nums text-center" value="20">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نوع الدعامات (Supports)</label>
-            <select id="dash_supportsTypeSelect" class="ui-select text-xs">
-              <option value="بدون دعامات (None)">بدون دعامات (None)</option>
-              <option value="شجرية (Tree Supports)" selected>شجرية (Tree Supports)</option>
-              <option value="عادية (Normal Supports)">عادية (Normal Supports)</option>
-              <option value="عضوية (Organic Supports)">عضوية (Organic Supports)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ساعات التصميم الهندسي CAD (اختياري)</label>
-            <input type="number" id="dash_cadDesignHours" min="0" step="0.5" class="ui-input font-mono-nums text-center" value="0">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">أجر ساعة التصميم (ج.م)</label>
-            <input type="number" id="dash_cadDesignRatePerHour" min="0" step="25" class="ui-input font-mono-nums text-center" value="150">
-          </div>
-        </div>
-      </div>
-
-      <!-- Batch Summary Card -->
-      <div class="ui-card p-5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-slate-900 dark:to-slate-800">
-        <h4 class="font-bold text-sm text-emerald-800 dark:text-emerald-300 mb-3 flex items-center gap-2">
-          <i class="fas fa-boxes-stacked"></i>
-          <span>ملخص تسعير الدفعة بالكامل (Batch Total Summary)</span>
-        </h4>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
           <div class="bg-white dark:bg-slate-800/80 p-3 rounded-xl border border-emerald-200 dark:border-slate-700">
             <span class="text-slate-500 text-[11px] block">إجمالي الكمية:</span>
@@ -843,288 +525,20 @@
         </div>
       </div>
 
-      <!-- Material Cost Comparison Tool -->
-      <div class="ui-card p-5">
+      <!-- Chart -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
         <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
-          <i class="fas fa-scale-balanced text-indigo-600"></i>
-          <span>مقارنة تكلفة الخامات لنفس القطعة (Material Cost Comparison)</span>
+          <i class="fas fa-chart-pie text-blue-600"></i>
+          <span>توزيع عناصر التكلفة الحقيقية للقطعة</span>
         </h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">لو طبعت نفس القطعة بخامات مختلفة، إيه الفرق في التكلفة وسعر البيع؟</p>
-        <div id="materialComparisonContainer" class="overflow-x-auto"></div>
-      </div>
-
-      <!-- Charts Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="ui-card p-5">
-          <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
-            <i class="fas fa-chart-pie text-blue-600"></i>
-            <span>توزيع عناصر التكلفة الحقيقية للقطعة</span>
-          </h3>
-          <div class="relative h-64">
-            <canvas id="costChart"></canvas>
-          </div>
-        </div>
-
-        <div class="ui-card p-5">
-          <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
-            <i class="fas fa-chart-bar text-emerald-600"></i>
-            <span>مقارنة التكلفة وصافي الأرباح</span>
-          </h3>
-          <div class="relative h-64">
-            <canvas id="profitChart"></canvas>
-          </div>
+        <div class="relative h-64">
+          <canvas id="costChart"></canvas>
         </div>
       </div>
 
     </section>
 
-    <!-- ================= TAB 2: DETAILED SPREADSHEET TABLE ================= -->
-    <section id="tabPane_table" class="hidden space-y-4">
-      <div class="ui-card p-4 overflow-x-auto">
-        <table class="calc-table text-xs sm:text-sm">
-          <thead>
-            <tr class="section-header-row font-bold text-center">
-              <td colspan="4" class="p-3 text-base">
-                <div class="flex items-center justify-between px-2">
-                  <span>حاسبة تكلفة قطعة الطباعة ثلاثية الأبعاد — Elegoo Neptune 4 Pro (مصر)</span>
-                  <div class="flex items-center gap-1.5 text-xs font-normal">
-                    <span class="text-blue-200">الخامة:</span>
-                    <select id="tbl_filamentPresetSelect" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold"></select>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr class="bg-slate-100 dark:bg-slate-800 font-bold text-center">
-              <th class="p-2 w-1/4">البند</th>
-              <th class="p-2 w-1/4">القيمة</th>
-              <th class="p-2 w-1/6">الوحدة</th>
-              <th class="p-2 w-1/3">ملاحظات / المصدر والمعادلة</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 1) Material -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">1) تكلفة المادة الخام (Material Cost)</td></tr>
-            <tr>
-              <td class="font-bold">وزن القطعة (شامل الدعامات والتعبئة)</td>
-              <td class="text-center"><input type="number" id="tbl_partWeight" step="0.5" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">جرام</td>
-              <td class="text-slate-500 text-xs">من برنامج التقطيع Slicer — قيمة توضيحية، عدّلها</td>
-            </tr>
-            <tr>
-              <td class="font-bold">سعر بكرة الفيلامنت (1 كجم)</td>
-              <td class="text-center"><input type="number" id="tbl_spoolPrice" step="10" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs">متوسط سعر بكرة eSUN / Patron في مصر</td>
-            </tr>
-            <tr>
-              <td class="font-bold">الوزن الإجمالي للبكرة</td>
-              <td class="text-center font-mono-nums font-bold">1000</td>
-              <td class="text-center">جرام</td>
-              <td class="text-slate-500 text-xs">عادة 1000 جم للبكرة القياسية</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الخامة (محسوبة)</td>
-              <td id="tbl_materialCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">وزن القطعة × سعر البكرة ÷ وزن البكرة</td>
-            </tr>
-
-            <!-- 2) Power -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">2) تكلفة استهلاك الكهرباء (Power Cost)</td></tr>
-            <tr>
-              <td class="font-bold">ساعات الطباعة</td>
-              <td class="text-center"><input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">ساعة</td>
-              <td class="text-slate-500 text-xs">من الوقت المقدّر في الـ Slicer</td>
-            </tr>
-            <tr>
-              <td class="font-bold">متوسط استهلاك الطابعة للطاقة</td>
-              <td class="text-center"><input type="number" id="tbl_printerPowerKw" step="0.01" min="0.01" class="tbl-number-input cell-input-blue" value="0.16"></td>
-              <td class="text-center">كيلووات (kW)</td>
-              <td class="text-slate-500 text-xs">متوسط استهلاك Neptune 4 Pro الفعلي</td>
-            </tr>
-            <tr>
-              <td class="font-bold">سعر كيلووات الكهرباء في مصر</td>
-              <td class="text-center"><input type="number" id="tbl_electricityRate" step="0.01" min="0.1" class="tbl-number-input cell-input-blue" value="1.51"></td>
-              <td class="text-center">جنيه / ك.و.س</td>
-              <td class="text-slate-500 text-xs">تعريفة الكهرباء المصرية</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الكهرباء (محسوبة)</td>
-              <td id="tbl_powerCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">ساعات الطباعة × القدرة × سعر الكيلووات</td>
-            </tr>
-
-            <!-- 3) Depreciation -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">3) إهلاك وصيانة الطابعة (Depreciation)</td></tr>
-            <tr>
-              <td class="font-bold">سعر شراء الطابعة</td>
-              <td class="text-center"><input type="number" id="tbl_printerPrice" step="500" min="1000" class="tbl-number-input cell-input-blue" value="26000.00"></td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs">سعر السوق في مصر لطابعة Elegoo Neptune 4 Pro</td>
-            </tr>
-            <tr>
-              <td class="font-bold">العمر الافتراضي التقديري للطابعة</td>
-              <td class="text-center"><input type="number" id="tbl_printerLifespanHours" step="500" min="500" class="tbl-number-input cell-input-blue" value="5000"></td>
-              <td class="text-center">ساعة عمل</td>
-              <td class="text-slate-500 text-xs">المعيار الصناعي: 5000 ساعة</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة إهلاك الطابعة لكل ساعة</td>
-              <td id="tbl_depreciationPerHour" class="text-center font-mono-nums">5.20 ج.م</td>
-              <td class="text-center">جنيه / ساعة</td>
-              <td class="text-slate-500 text-xs font-mono">سعر الطابعة ÷ العمر الافتراضي</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة إهلاك الطابعة للقطعة (محسوبة)</td>
-              <td id="tbl_depreciationCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">إهلاك الساعة × ساعات الطباعة</td>
-            </tr>
-
-            <!-- 4) Labor -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">4) تكلفة العمالة والمعالجة (Labor Cost)</td></tr>
-            <tr>
-              <td class="font-bold">وقت العمل البشري المطلوب للقطعة</td>
-              <td class="text-center"><input type="number" id="tbl_laborHours" step="0.1" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
-              <td class="text-center">ساعة</td>
-              <td class="text-slate-500 text-xs">تجهيز الملف، معايرة السرير، إزالة الدعامات والتشطيب</td>
-            </tr>
-            <tr>
-              <td class="font-bold">أجر ساعة العمل البشري</td>
-              <td class="text-center"><input type="number" id="tbl_laborRatePerHour" step="10" min="0" class="tbl-number-input cell-input-blue" value="100.00"></td>
-              <td class="text-center">جنيه / ساعة</td>
-              <td class="text-slate-500 text-xs">أجر تقديري لجهدك ووقتك</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة العمالة (محسوبة)</td>
-              <td id="tbl_laborCost" class="text-center font-mono-nums text-blue-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">وقت العمل × أجر الساعة</td>
-            </tr>
-
-            <!-- 5) Subtotal & Failure -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">5) المجموع الفرعي ونسبة الفشل</td></tr>
-            <tr class="bg-slate-100 dark:bg-slate-800 font-bold">
-              <td>المجموع الفرعي للتكلفة المباشرة</td>
-              <td id="tbl_subtotal" class="text-center font-mono-nums text-lg text-slate-900 dark:text-white">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">الخامة + الكهرباء + الإهلاك + العمالة</td>
-            </tr>
-            <tr>
-              <td class="font-bold">نسبة فشل الطباعة والمخاطرة</td>
-              <td class="text-center"><input type="number" id="tbl_failureRatePercent" step="1" min="0" max="100" class="tbl-number-input cell-input-blue" value="10.0"></td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs">نسبة لتغطية فشل الطباعة وهدر الفيلامنت (10% شائعة)</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>تكلفة الفشل المحسوبة</td>
-              <td id="tbl_failureCost" class="text-center font-mono-nums text-rose-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">المجموع الفرعي × نسبة الفشل</td>
-            </tr>
-            <tr class="bg-slate-200 dark:bg-slate-700 font-black text-base">
-              <td>إجمالي التكلفة الحقيقية للقطعة (Total Cost)</td>
-              <td id="tbl_totalCost" class="text-center font-mono-nums text-rose-600">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-600 dark:text-slate-300 text-xs font-mono">المجموع الفرعي + تكلفة الفشل (تكلفة الإنتاج)</td>
-            </tr>
-
-            <!-- 6) Profit Margin & Selling Price -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">6) هامش الربح وسعر البيع النهائي</td></tr>
-            <tr>
-              <td class="font-bold">هامش الربح المستهدف</td>
-              <td class="text-center"><input type="number" id="tbl_profitMarginPercent" step="1" min="1" max="99" class="tbl-number-input cell-input-blue" value="40.0"></td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs">نسبة من سعر البيع (40% هامش ربح مستهدف)</td>
-            </tr>
-            <tr class="row-highlight-green font-black text-base">
-              <td>سعر البيع المقترح للقطعة (Selling Price)</td>
-              <td id="tbl_finalSellingPrice" class="text-center font-mono-nums text-xl">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-xs font-mono">إجمالي التكلفة ÷ (1 - هامش الربح)</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>صافي مبلغ الربح للقطعة</td>
-              <td id="tbl_profitAmount" class="text-center font-mono-nums text-emerald-600 text-lg">0.00 ج.م</td>
-              <td class="text-center">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">سعر البيع - إجمالي التكلفة</td>
-            </tr>
-            <tr class="bg-slate-50 dark:bg-slate-800/50 font-bold">
-              <td>نسبة الربح الفعلية على التكلفة (Markup)</td>
-              <td id="tbl_markupPercent" class="text-center font-mono-nums text-purple-600">0.0%</td>
-              <td class="text-center">%</td>
-              <td class="text-slate-500 text-xs font-mono">مبلغ الربح ÷ إجمالي التكلفة × 100</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ================= TAB 3: MULTI-PART ASSEMBLY ================= -->
-    <section id="tabPane_assembly" class="hidden space-y-5">
-      <div class="ui-card p-5">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
-          <div>
-            <h3 class="font-bold text-base flex items-center gap-2">
-              <i class="fas fa-puzzle-piece text-blue-600"></i>
-              <span>تجميعة القطع المتعددة (Multi-Part Assembly)</span>
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">لحساب تكلفة مجسم مكون من أجزاء متعددة تطبع بخامات وأوقات مختلفة</p>
-          </div>
-          <button onclick="app.toggleMultiPartMode()" id="multiPartToggleBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition">
-            تفعيل وضع التجميعة
-          </button>
-        </div>
-
-        <div class="my-4">
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
-            <input type="text" id="partNameInput" placeholder="اسم الجزء (مثال: الغطاء)" class="ui-input text-xs">
-            <input type="number" id="partWeightInput" placeholder="الوزن (جم)" class="ui-input text-xs">
-            <input type="number" id="partTimeInput" placeholder="الوقت (ساعة)" class="ui-input text-xs">
-            <button onclick="app.addPart()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg transition">
-              + إضافة قطعة
-            </button>
-          </div>
-        </div>
-
-        <div id="partsListContainer" class="space-y-2"></div>
-
-        <div class="mt-5 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
-          <span>إجمالي وزن التجميعة: <span id="assemblyTotalWeight" class="text-blue-600 font-mono-nums">0 جم</span></span>
-          <span>إجمالي وقت الطباعة: <span id="assemblyTotalTime" class="text-amber-600 font-mono-nums">0 ساعة</span></span>
-          <span>إجمالي تكلفة الإنتاج: <span id="assemblyTotalCost" class="text-rose-600 font-mono-nums">0.00 ج.م</span></span>
-          <span>سعر بيع التجميعة: <span id="assemblyTotalPrice" class="text-emerald-600 font-mono-nums text-base">0.00 ج.م</span></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 4: ROI & PAYBACK SIMULATOR ================= -->
-    <section id="tabPane_roi" class="hidden space-y-5">
-      <div class="ui-card p-5">
-        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
-          <i class="fas fa-chart-line text-emerald-600"></i>
-          <span>دراسة الجدوى ومحاكي استرداد رأس مال الطابعة (ROI & Payback)</span>
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">عدد القطع لاسترداد ثمن الطابعة:</span>
-            <span id="roiPaybackPrints" class="text-2xl font-black text-blue-600 font-mono-nums">0 قطعة</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">ساعات تشغيل للاسترداد الكامل:</span>
-            <span id="roiPaybackHours" class="text-2xl font-black text-amber-600 font-mono-nums">0 ساعة</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">صافي الربح الشهري المتوقع:</span>
-            <span id="roiMonthlyNetProfit" class="text-2xl font-black text-emerald-600 font-mono-nums">0.00 ج.م</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 5: QUOTATION & PDF INVOICE ================= -->
+    <!-- ================= TAB 3: OFFICIAL QUOTATION & PDF ================= -->
     <section id="tabPane_quote" class="hidden space-y-6">
       
       <!-- Action Bar -->
@@ -1158,12 +572,17 @@
         
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b-2 border-slate-200">
-          <div>
-            <h1 class="text-xl font-black text-slate-900">عرض سعر وتصنيع ثلاثي الأبعاد</h1>
-            <p class="text-xs text-slate-500 font-mono mt-1">رقم الفاتورة: <span id="quoteDocNumber">3D-2026-001</span> • التاريخ: <span id="quoteDocDate">2026-08-23</span></p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+              <i class="fas fa-cube"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-black text-slate-900">عرض سعر خدمة طباعة ثلاثية الأبعاد</h1>
+              <p class="text-xs text-slate-500 font-mono mt-0.5">3D Printing Quotation • Elegoo Neptune 4 Pro</p>
+            </div>
           </div>
           <div class="text-left">
-            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-bold">معتمد • Elegoo Neptune 4 Pro</span>
+            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-bold">معتمد • مصر 🇪🇬</span>
           </div>
         </div>
 
@@ -1175,14 +594,14 @@
           </div>
           <div>
             <span class="text-slate-500 block mb-0.5">المشروع / الموديل:</span>
-            <span id="quoteProjectName" class="font-bold text-sm text-slate-900">قطعة مخصصة</span>
+            <span id="quoteProjectName" class="font-bold text-sm text-blue-700">قطعة مخصصة</span>
           </div>
           <div>
             <span class="text-slate-500 block mb-0.5">رقم الهاتف:</span>
             <span id="quoteClientPhone" class="font-bold font-mono">01012345678</span>
           </div>
           <div>
-            <span class="text-slate-500 block mb-0.5">عنوان ومحافظة الشحن:</span>
+            <span class="text-slate-500 block mb-0.5">عنوان التسليم:</span>
             <span id="quoteClientAddress" class="font-bold">القاهرة والجيزة</span>
           </div>
         </div>
@@ -1192,7 +611,7 @@
           <thead class="bg-slate-100 font-bold">
             <tr>
               <th class="p-2.5 border border-slate-200">البيان</th>
-              <th class="p-2.5 border border-slate-200">المواصفات الفنية</th>
+              <th class="p-2.5 border border-slate-200">الخامة والتفاصيل</th>
               <th class="p-2.5 border border-slate-200 text-center">الكمية</th>
               <th class="p-2.5 border border-slate-200 text-left">سعر القطعة</th>
             </tr>
@@ -1201,35 +620,21 @@
             <tr>
               <td class="p-2.5 border border-slate-200 font-bold">طباعة ثلاثية الأبعاد FDM</td>
               <td class="p-2.5 border border-slate-200 text-slate-600">
-                الخامة: <span id="quoteFilamentType" class="font-bold text-slate-900">Patron PLA</span> •
-                اللون: <span id="quoteColor" class="font-bold text-slate-900">أسود</span> •
-                الدقة: <span id="quoteLayerHeight">0.20 مم</span> •
-                التعبئة: <span id="quoteInfill">20%</span>
+                الخامة: <span id="quoteFilamentType" class="font-bold text-slate-900">Patron PLA</span> • دقة وجودة عالية
               </td>
               <td id="quoteQty" class="p-2.5 border border-slate-200 text-center font-bold font-mono">1</td>
-              <td id="quoteUnitPrice" class="p-2.5 border border-slate-200 text-left font-bold font-mono">0.00 ج.م</td>
+              <td id="quoteUnitPrice" class="p-2.5 border border-slate-200 text-left font-bold font-mono text-emerald-600">0.00 ج.م</td>
             </tr>
           </tbody>
         </table>
 
-        <!-- Image Container -->
-        <div id="quotePartImageContainer" class="hidden my-2 p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-4">
-          <img id="quotePartImage" src="" alt="صورة الموديل" class="w-24 h-24 object-contain rounded-lg border border-slate-300 bg-white">
-          <div class="text-xs">
-            <span class="font-bold block mb-1">صورة القطعة المرجعية:</span>
-            <span class="text-slate-500">نموذج مطابق للأبعاد والمواصفات المتفق عليها.</span>
-          </div>
-        </div>
-
-        <!-- Totals & Payment -->
+        <!-- Totals -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t-2 border-slate-200 text-xs">
           <div>
-            <div class="mb-1">طريقة الدفع: <span id="quotePaymentMethod" class="font-bold text-blue-600">كاش عند الاستلام</span></div>
             <div>موعد التسليم: <span id="quoteDueDate" class="font-bold font-mono">خلال 2-3 أيام عمل</span></div>
           </div>
           <div class="space-y-1 text-left w-full sm:w-auto">
             <div>إجمالي الطباعة: <span id="quotePrintSubtotal" class="font-bold font-mono">0.00 ج.م</span></div>
-            <div>أجر التصميم CAD: <span id="quoteCadFee" class="font-bold font-mono">0.00 ج.م</span></div>
             <div>مصاريف الشحن: <span id="quoteShippingCost" class="font-bold font-mono">0.00 ج.م</span></div>
             <div class="text-base font-black text-blue-700 pt-1 border-t border-slate-200">الإجمالي الكلي: <span id="quoteGrandTotal" class="font-mono">0.00 ج.م</span></div>
             <div class="text-slate-500">العربون المدفوع: <span id="quoteDepositPaid" class="font-bold font-mono">0.00 ج.م</span></div>
@@ -1240,7 +645,7 @@
         <!-- QR Code & Footer -->
         <div class="flex items-center justify-between pt-4 border-t border-dashed border-slate-200">
           <div class="text-[11px] text-slate-500">
-            <p id="quoteNotes">شكراً لتعاملكم معنا! للحجز والتأكيد يرجى مسح الكود أو التواصل عبر واتساب.</p>
+            <p>شكراً لتعاملكم معنا! للحجز والتأكيد يرجى مسح الكود أو التواصل عبر واتساب.</p>
           </div>
           <div class="flex flex-col items-center gap-1">
             <canvas id="quoteQRCode" width="90" height="90" class="border border-slate-200 rounded-lg p-1 bg-white"></canvas>
@@ -1251,119 +656,14 @@
       </div>
     </section>
 
-    <!-- ================= TAB 6: TROUBLESHOOTING & CALIBRATION ================= -->
-    <section id="tabPane_troubleshoot" class="hidden space-y-5">
-      <div class="ui-card p-5">
-        <h2 class="text-base font-bold mb-4 flex items-center gap-2">
-          <i class="fas fa-stethoscope text-rose-600"></i>
-          <span>دليل المعايرة السريعة وحل مشاكل الطباعة (Neptune 4 Pro)</span>
-        </h2>
-        
-        <!-- Filament Table -->
-        <div class="overflow-x-auto mb-6">
-          <table class="w-full text-xs text-right border-collapse border border-slate-200 dark:border-slate-700">
-            <thead class="bg-slate-100 dark:bg-slate-800 font-bold">
-              <tr>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700">الخامة</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة النوزل</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة السرير</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">المروحة</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">السرعة</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PLA / PLA+</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">205° - 215°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">55° - 60°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100%</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">150 - 250 مم/ث</td>
-              </tr>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PETG</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">230° - 245°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">70° - 80°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">50%</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">80 - 150 مم/ث</td>
-              </tr>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron ABS / ASA</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">240° - 255°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">95° - 105°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">15%</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100 - 180 مم/ث</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <h4 class="font-bold text-rose-600">1. عدم التصاق أول طبقة بالسرير (Bed Adhesion)</h4>
-            <p class="text-slate-500">نظف السرير الذهبي PEI بكحول أيزوبروبيلي واضبط Z-Offset لتقريب النوزل قليلاً.</p>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <h4 class="font-bold text-amber-600">2. ظهور خيوط زائدة (Stringing)</h4>
-            <p class="text-slate-500">جفف بكرة الفيلامنت واخفض حرارة النوزل 5 درجات واضبط مسافة السحب Retraction لـ 1.0 مم.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 7: ANALYTICS & REPORTS ================= -->
-    <section id="tabPane_analytics" class="hidden space-y-5">
-      <div class="ui-card p-5">
-        <h2 class="text-base font-bold mb-4 flex items-center gap-2">
-          <i class="fas fa-chart-pie text-indigo-600"></i>
-          <span>لوحة تحليلات أداء ورشة الطباعة (Business Analytics)</span>
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">إجمالي المبيعات:</span>
-            <span id="kpiTotalRevenue" class="text-xl font-black text-emerald-600 font-mono-nums">0.00 ج.م</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">إجمالي صافي الأرباح:</span>
-            <span id="kpiTotalProfit" class="text-xl font-black text-blue-600 font-mono-nums">0.00 ج.م</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">استهلاك الخامة الكلي:</span>
-            <span id="kpiTotalFilamentKg" class="text-xl font-black text-purple-600 font-mono-nums">0.00 كجم</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="text-xs text-slate-500 block mb-1">ساعات تشغيل الماكينة:</span>
-            <span id="kpiTotalHours" class="text-xl font-black text-amber-600 font-mono-nums">0.0 ساعة</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-xs mb-2">توزيع المشاريع حسب حالة الطلب</h4>
-            <div class="h-60 relative"><canvas id="orderStatusChart"></canvas></div>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-xs mb-2">العملاء الأكثر طلباً</h4>
-            <div id="topClientsContainer" class="space-y-2 text-xs"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 8: SAVED PROJECTS ================= -->
-    <section id="tabPane_saved" class="hidden space-y-5">
-      <div class="ui-card p-5 space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 flex-wrap gap-2">
+    <!-- ================= TAB 4: SAVED PROJECTS ================= -->
+    <section id="tabPane_saved" class="hidden space-y-4">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
           <h2 class="text-base font-bold flex items-center gap-2">
             <i class="fas fa-folder-open text-blue-600"></i>
-            <span>سجل الطلبات والمشاريع المحفوظة</span>
+            <span>سجل الحسابات والمشاريع المحفوظة</span>
           </h2>
-          <div class="flex items-center gap-1.5 text-xs">
-            <span class="text-slate-500">تصفية:</span>
-            <button onclick="app.filterSavedProjects('all')" class="px-2.5 py-1 rounded bg-blue-600 text-white font-bold">الكل</button>
-            <button onclick="app.filterSavedProjects('printing')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">🖨️ جاري الطباعة</button>
-            <button onclick="app.filterSavedProjects('ready_ship')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">📦 جاهز للشحن</button>
-            <button onclick="app.filterSavedProjects('delivered')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">✅ تم التسليم</button>
-          </div>
         </div>
         <div id="savedProjectsList" class="space-y-3"></div>
       </div>
@@ -1371,10 +671,22 @@
 
   </main>
 
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>
+        حاسبة تكلفة الطباعة ثلاثية الأبعاد — مصممة خصيصاً لطابعات <strong>Elegoo Neptune 4 Pro</strong> والسوق المصري 🇪🇬
+      </div>
+      <div class="font-mono text-[11px]">
+        نسخة أغسطس 2026 • محدثة بأسعار خامات وشرائح كهرباء مصر
+      </div>
+    </div>
+  </footer>
+
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=12.0"></script>
-  <script src="app.js?v=12.0"></script>
+  <script src="presets.js?v=13.0"></script>
+  <script src="app.js?v=13.0"></script>
 </body>
 </html>

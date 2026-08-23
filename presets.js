@@ -1,4 +1,4 @@
-// Presets and Master Data for 3D Printing in Egypt (Elegoo Neptune 4 Pro)
+// Master Presets for 3D Printing in Egypt (Elegoo Neptune 4 Pro)
 const PRESETS = {
   filaments: [
     // 🇪🇬 Patron 3D (Egyptian Local Brand)
@@ -8,7 +8,7 @@ const PRESETS = {
     { id: 'patron-abs', name: '🇪🇬 Patron 3D ABS (محلي)', brand: 'Patron 3D', type: 'ABS', price: 750, weight: 1000, density: 1.04, isLocal: true },
     { id: 'patron-tpu', name: '🇪🇬 Patron 3D TPU 95A (محلي)', brand: 'Patron 3D', type: 'TPU', price: 950, weight: 1000, density: 1.21, isLocal: true },
 
-    // Imported Brands
+    // Imported Brands (eSUN)
     { id: 'esun-pla', name: 'eSUN PLA+ (مستورد)', brand: 'eSUN', type: 'PLA+', price: 950, weight: 1000, density: 1.24 },
     { id: 'esun-petg', name: 'eSUN PETG (مستورد)', brand: 'eSUN', type: 'PETG', price: 900, weight: 1000, density: 1.27 },
     { id: 'esun-abs', name: 'eSUN ABS+ (مستورد)', brand: 'eSUN', type: 'ABS+', price: 850, weight: 1000, density: 1.04 },
@@ -29,5 +29,39 @@ const PRESETS = {
     { id: 'residential-tier-5', name: 'منزلي: شريحة 5 (حتى 650 ك.و.س) — 2.10 ج.م/ك.و.س', rate: 2.10 },
     { id: 'commercial-tier-1', name: 'تجاري / ورش: شريحة 1 (حتى 100 ك.و.س) — 1.95 ج.م/ك.و.س', rate: 1.95 },
     { id: 'commercial-tier-2', name: 'تجاري / ورش: شريحة 2 (حتى 250 ك.و.س) — 2.45 ج.م/ك.و.س', rate: 2.45 }
+  ],
+
+  shippingGovernorates: [
+    { id: 'local-pickup', name: 'استلام من مقر الورشة (مجاناً)', cost: 0 },
+    { id: 'cairo-giza', name: 'القاهرة والجيزة (شحن سريع)', cost: 50 },
+    { id: 'alexandria', name: 'الإسكندرية والبحيرة', cost: 65 },
+    { id: 'delta', name: 'محافظات الدلتا والقناة', cost: 70 },
+    { id: 'upper-egypt', name: 'محافظات الصعيد', cost: 85 },
+    { id: 'red-sea-sinai', name: 'البحر الأحمر وشمال/جنوب سيناء', cost: 110 }
+  ],
+
+  colors: [
+    'أسود (Black)',
+    'أبيض (White)',
+    'رمادي (Grey)',
+    'أحمر (Red)',
+    'أزرق (Blue)',
+    'أخضر (Green)',
+    'أصفر (Yellow)',
+    'برتقالي (Orange)',
+    'فضي ميتاليك (Silver)',
+    'ذهبي (Gold)',
+    'شفاف طبيعي (Clear)',
+    'خشب (Wood Infused)'
+  ],
+
+  hardwareAccessories: [
+    { id: 'none', name: 'بدون إضافات', cost: 0 },
+    { id: 'screws-m3', name: 'طقم مسامير وصواميل M3 (4 قطع)', cost: 10 },
+    { id: 'screws-m4', name: 'طقم مسامير وصواميل M4 (4 قطع)', cost: 15 },
+    { id: 'threaded-inserts', name: 'حلقات نحاسية حرارية Threaded Inserts (4 قطع)', cost: 20 },
+    { id: 'magnets-neodymium', name: 'مغناطيس نيوديميوم قوي (قطعتين)', cost: 25 },
+    { id: 'bearing-608', name: 'رولمان بلي Skate Bearing 608zz', cost: 30 },
+    { id: 'packaging-bubble', name: 'تغليف خاص بابلز وكرتونة شحن فاخرة', cost: 20 }
   ]
 };

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>حاسبة تكلفة الطباعة ثلاثية الأبعاد — Elegoo Neptune 4 Pro</title>
+  <title>حاسبة تكلفة الطباعة ثلاثية الأبعاد Pro — Elegoo Neptune 4 Pro</title>
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=13.1">
+  <link rel="stylesheet" href="style.css?v=14.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -50,9 +50,12 @@
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
 
+  <!-- ================= TOP DEADLINE ALERT BANNER ================= -->
+  <div id="deadlineAlertBanner" class="hidden no-print"></div>
+
   <!-- ================= TOP HEADER ================= -->
   <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
       
       <!-- Brand Logo & Title -->
       <div class="flex items-center justify-between w-full sm:w-auto gap-3">
@@ -62,10 +65,10 @@
           </div>
           <div>
             <h1 class="text-base sm:text-lg font-black leading-tight flex items-center gap-2">
-              <span>حاسبة تكلفة الطباعة 3D</span>
+              <span>حاسبة تكلفة وتسعير 3D Pro</span>
               <span class="bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded font-bold border border-blue-200 dark:border-blue-800">مصر 🇪🇬</span>
             </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">طريقة الحساب الأصلية — Elegoo Neptune 4 Pro</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Elegoo Neptune 4 Pro — التكلفة الحقيقية وإدارة الطلبات</p>
           </div>
         </div>
 
@@ -112,7 +115,7 @@
 
         <button onclick="app.saveCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold shadow-sm transition flex items-center justify-center gap-1.5 shrink-0">
           <i class="fas fa-bookmark"></i>
-          <span>حفظ المشروع</span>
+          <span>حفظ الطلب</span>
         </button>
       </div>
 
@@ -164,27 +167,46 @@
     </div>
   </section>
 
-  <!-- ================= MAIN CONTENT ================= -->
+  <!-- ================= NAVIGATION TABS & QUICK ACTIONS ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6 flex-1 w-full">
     
-    <!-- Navigation Tabs -->
     <div class="flex items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800 no-print flex-wrap">
-      <nav class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-        <button id="tabBtn_table" onclick="app.switchTab('table')" class="nav-tab-btn active font-bold text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 bg-blue-600 text-white shadow-sm transition">
+      <nav class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+        <button id="tabBtn_table" onclick="app.switchTab('table')" class="nav-tab-btn active font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 bg-blue-600 text-white shadow-sm transition whitespace-nowrap">
           <i class="fas fa-table-cells"></i>
-          <span>جدول التكلفة التفصيلي (الحاسبة الأصلية)</span>
+          <span>جدول التكلفة (الحاسبة الأصلية)</span>
         </button>
-        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
           <i class="fas fa-cube"></i>
-          <span>المعاينة 3D والرسوم البيانية</span>
+          <span>المعاينة 3D والتقطيع</span>
         </button>
-        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_client" onclick="app.switchTab('client')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+          <i class="fas fa-user-tie"></i>
+          <span>بيانات العميل والطلب</span>
+        </button>
+        <button id="tabBtn_assembly" onclick="app.switchTab('assembly')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+          <i class="fas fa-puzzle-piece"></i>
+          <span>حساب التجميعات</span>
+        </button>
+        <button id="tabBtn_roi" onclick="app.switchTab('roi')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+          <i class="fas fa-chart-line"></i>
+          <span>دراسة الجدوى والـ ROI</span>
+        </button>
+        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
           <i class="fas fa-file-invoice-dollar"></i>
           <span>عرض السعر والـ PDF</span>
         </button>
-        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="nav-tab-btn font-medium text-xs sm:text-sm px-4 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_analytics" onclick="app.switchTab('analytics')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+          <i class="fas fa-chart-pie"></i>
+          <span>لوحة التحليلات والورشة</span>
+        </button>
+        <button id="tabBtn_troubleshoot" onclick="app.switchTab('troubleshoot')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+          <i class="fas fa-stethoscope"></i>
+          <span>دليل المعايرة والأعطال</span>
+        </button>
+        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
           <i class="fas fa-folder-open"></i>
-          <span>المشاريع المحفوظة</span>
+          <span>سجل الطلبات</span>
         </button>
       </nav>
 
@@ -205,7 +227,39 @@
     </div>
 
     <!-- ================= TAB 1: ORIGINAL DETAILED SPREADSHEET TABLE ================= -->
-    <section id="tabPane_table" class="space-y-4">
+    <section id="tabPane_table" class="space-y-5">
+      
+      <!-- Pricing Templates Quick Apply -->
+      <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="font-bold text-xs sm:text-sm mb-3 flex items-center gap-2">
+          <i class="fas fa-wand-magic-sparkles text-purple-600"></i>
+          <span>قوالب تسعير سريعة (Pricing Templates) — تطبيق بضغطة واحدة</span>
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <button onclick="app.applyPricingTemplate('economy')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
+            <div class="text-xl mb-1">💰</div>
+            <div class="text-xs font-bold group-hover:text-blue-600">اقتصادي</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 25% • Draft سريع</div>
+          </button>
+          <button onclick="app.applyPricingTemplate('standard')" class="p-3 rounded-xl border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-950/30 hover:border-blue-500 transition text-center group">
+            <div class="text-xl mb-1">⭐</div>
+            <div class="text-xs font-bold text-blue-700 dark:text-blue-300">قياسي (الافتراضي)</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 40% • دقة 0.20 مم</div>
+          </button>
+          <button onclick="app.applyPricingTemplate('professional')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
+            <div class="text-xl mb-1">💎</div>
+            <div class="text-xs font-bold group-hover:text-purple-600">احترافي</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 55% • دقة 0.12 مم فائقة</div>
+          </button>
+          <button onclick="app.applyPricingTemplate('industrial')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
+            <div class="text-xl mb-1">🏭</div>
+            <div class="text-xs font-bold group-hover:text-amber-600">صناعي</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">هامش 50% • تعبئة 60%</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Spreadsheet Table -->
       <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md overflow-x-auto">
         <table class="calc-table text-xs sm:text-sm">
           <thead>
@@ -406,6 +460,17 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Material Cost Comparison Tool -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="font-bold text-xs sm:text-sm mb-3 flex items-center gap-2">
+          <i class="fas fa-scale-balanced text-indigo-600"></i>
+          <span>مقارنة تكلفة الخامات لنفس القطعة (Material Cost Comparison)</span>
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">لو طبعت نفس القطعة بخامات مختلفة، إيه الفرق في التكلفة وسعر البيع؟</p>
+        <div id="materialComparisonContainer" class="overflow-x-auto"></div>
+      </div>
+
     </section>
 
     <!-- ================= TAB 2: DASHBOARD & 3D VIEWER ================= -->
@@ -558,7 +623,190 @@
 
     </section>
 
-    <!-- ================= TAB 3: OFFICIAL QUOTATION & PDF ================= -->
+    <!-- ================= TAB 3: CLIENT & ORDER SPECS ================= -->
+    <section id="tabPane_client" class="hidden space-y-6">
+      
+      <!-- Client & Order Info Card -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
+          <i class="fas fa-user-tie text-blue-600"></i>
+          <span>بيانات العميل والطلب</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم القطعة / الموديل</label>
+            <input type="text" id="dash_projectName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" placeholder="مثال: مجسم تروس، حامل هاتف...">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل (استرجاع تلقائي)</label>
+            <input type="text" id="dash_clientName" list="savedClientsList" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" placeholder="مثال: م. أحمد عبد الله">
+            <datalist id="savedClientsList"></datalist>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">رقم هاتف العميل (لواتساب)</label>
+            <input type="tel" id="dash_clientPhone" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono" placeholder="مثال: 01012345678">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">عنوان التسليم التفصيلي</label>
+            <input type="text" id="dash_clientAddress" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" placeholder="مثال: مدينة نصر، القاهرة">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">المحافظة / منطقة الشحن</label>
+            <select id="dash_shippingGovSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تكلفة الشحن (ج.م)</label>
+            <input type="number" id="dash_shippingCost" min="0" step="5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold" value="50">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">مبلغ العربون المدفوع (ج.م)</label>
+            <input type="number" id="dash_depositPaid" min="0" step="10" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold" value="0">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تاريخ التسليم المتوقع</label>
+            <input type="date" id="dash_deliveryDueDate" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">طريقة الدفع المتفق عليها</label>
+            <select id="dash_paymentMethodSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium">
+              <option value="cash">💵 كاش عند الاستلام</option>
+              <option value="instapay">⚡ إنستاباي InstaPay</option>
+              <option value="vodafone_cash">📱 فودافون كاش (Vodafone Cash)</option>
+              <option value="bank_transfer">🏦 تحويل بنكي</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">حالة الطلب ومرحلة التنفيذ</label>
+            <select id="dash_orderStatusSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400">
+              <option value="pending_design">✏️ قيد التصميم الهندسي</option>
+              <option value="ready_print">⏳ جاهز للطباعة</option>
+              <option value="printing">🖨️ جاري الطباعة الآن</option>
+              <option value="post_processing">🔧 مرحلة التشطيب والمعالجة</option>
+              <option value="ready_ship">📦 جاهز للشحن والتسليم</option>
+              <option value="delivered">✅ تم التسليم للعميل</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">إرفاق صورة مرجعية للقطعة (تظهر بالفاتورة)</label>
+            <input type="file" id="dash_partImageInput" accept="image/*" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+      <!-- Part Specifications Card -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
+          <i class="fas fa-sliders text-indigo-600"></i>
+          <span>مواصفات الطباعة والقطعة المطلوبة</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">لون القطعة المطلوب</label>
+            <select id="dash_partColorSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ارتفاع الطبقة (Layer Height)</label>
+            <select id="dash_layerHeightSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+              <option value="0.12 مم (تفاصيل دقيقة جداً)">0.12 مم (تفاصيل دقيقة جداً)</option>
+              <option value="0.16 مم (تفاصيل عالية)">0.16 مم (تفاصيل عالية)</option>
+              <option value="0.20 مم (قياسي)" selected>0.20 مم (قياسي)</option>
+              <option value="0.28 مم (سريع)">0.28 مم (سريع)</option>
+              <option value="0.32 مم (Draft سريع جداً)">0.32 مم (Draft سريع جداً)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة التعبئة Infill (%)</label>
+            <input type="number" id="dash_infillPercent" min="5" max="100" step="5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-center" value="20">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نوع الدعامات (Supports)</label>
+            <select id="dash_supportsTypeSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+              <option value="بدون دعامات (None)">بدون دعامات (None)</option>
+              <option value="شجرية (Tree Supports)" selected>شجرية (Tree Supports)</option>
+              <option value="عادية (Normal Supports)">عادية (Normal Supports)</option>
+              <option value="عضوية (Organic Supports)">عضوية (Organic Supports)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ساعات التصميم الهندسي CAD (اختياري)</label>
+            <input type="number" id="dash_cadDesignHours" min="0" step="0.5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-center" value="0">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">أجر ساعة التصميم (ج.م)</label>
+            <input type="number" id="dash_cadDesignRatePerHour" min="0" step="25" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-center" value="150">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">إضافة مستلزمات سريعة</label>
+            <select id="hardwareQuickAddSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"></select>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 4: MULTI-PART ASSEMBLY ================= -->
+    <section id="tabPane_assembly" class="hidden space-y-5">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div>
+            <h3 class="font-bold text-base flex items-center gap-2">
+              <i class="fas fa-puzzle-piece text-blue-600"></i>
+              <span>تجميعة القطع المتعددة (Multi-Part Assembly)</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">لحساب تكلفة مجسم مكون من أجزاء متعددة تطبع بخامات وأوقات مختلفة</p>
+          </div>
+          <button onclick="app.toggleMultiPartMode()" id="multiPartToggleBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition">
+            تفعيل وضع التجميعة
+          </button>
+        </div>
+
+        <div class="my-4">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+            <input type="text" id="partNameInput" placeholder="اسم الجزء (مثال: الغطاء)" class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+            <input type="number" id="partWeightInput" placeholder="الوزن (جم)" class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+            <input type="number" id="partTimeInput" placeholder="الوقت (ساعة)" class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs">
+            <button onclick="app.addPart()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg transition">
+              + إضافة قطعة
+            </button>
+          </div>
+        </div>
+
+        <div id="partsListContainer" class="space-y-2"></div>
+
+        <div class="mt-5 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+          <span>إجمالي وزن التجميعة: <span id="assemblyTotalWeight" class="text-blue-600 font-mono-nums">0 جم</span></span>
+          <span>إجمالي وقت الطباعة: <span id="assemblyTotalTime" class="text-amber-600 font-mono-nums">0 ساعة</span></span>
+          <span>إجمالي تكلفة الإنتاج: <span id="assemblyTotalCost" class="text-rose-600 font-mono-nums">0.00 ج.م</span></span>
+          <span>سعر بيع التجميعة: <span id="assemblyTotalPrice" class="text-emerald-600 font-mono-nums text-base">0.00 ج.م</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: ROI & PAYBACK ================= -->
+    <section id="tabPane_roi" class="hidden space-y-5">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <h3 class="font-bold text-base mb-4 flex items-center gap-2">
+          <i class="fas fa-chart-line text-emerald-600"></i>
+          <span>دراسة الجدوى ومحاكي استرداد رأس مال الطابعة (ROI & Payback)</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">عدد القطع لاسترداد ثمن الطابعة:</span>
+            <span id="roiPaybackPrints" class="text-2xl font-black text-blue-600 font-mono-nums">0 قطعة</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">ساعات تشغيل للاسترداد الكامل:</span>
+            <span id="roiPaybackHours" class="text-2xl font-black text-amber-600 font-mono-nums">0 ساعة</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">صافي الربح الشهري المتوقع:</span>
+            <span id="roiMonthlyNetProfit" class="text-2xl font-black text-emerald-600 font-mono-nums">0.00 ج.م</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: OFFICIAL QUOTATION & PDF ================= -->
     <section id="tabPane_quote" class="hidden space-y-6">
       
       <!-- Action Bar -->
@@ -597,7 +845,7 @@
               <i class="fas fa-cube"></i>
             </div>
             <div>
-              <h1 class="text-xl font-black text-slate-900">عرض سعر خدمة طباعة ثلاثية الأبعاد</h1>
+              <h1 class="text-xl font-black text-slate-900">عرض سعر وتصنيع ثلاثي الأبعاد</h1>
               <p class="text-xs text-slate-500 font-mono mt-0.5">3D Printing Quotation • Elegoo Neptune 4 Pro</p>
             </div>
           </div>
@@ -631,7 +879,7 @@
           <thead class="bg-slate-100 font-bold">
             <tr>
               <th class="p-2.5 border border-slate-200">البيان</th>
-              <th class="p-2.5 border border-slate-200">الخامة والتفاصيل</th>
+              <th class="p-2.5 border border-slate-200">المواصفات الفنية</th>
               <th class="p-2.5 border border-slate-200 text-center">الكمية</th>
               <th class="p-2.5 border border-slate-200 text-left">سعر القطعة</th>
             </tr>
@@ -640,7 +888,10 @@
             <tr>
               <td class="p-2.5 border border-slate-200 font-bold">طباعة ثلاثية الأبعاد FDM</td>
               <td class="p-2.5 border border-slate-200 text-slate-600">
-                الخامة: <span id="quoteFilamentType" class="font-bold text-slate-900">Patron PLA</span> • دقة وجودة عالية
+                الخامة: <span id="quoteFilamentType" class="font-bold text-slate-900">Patron PLA</span> •
+                اللون: <span id="quoteColor" class="font-bold text-slate-900">أسود</span> •
+                الدقة: <span id="quoteLayerHeight">0.20 مم</span> •
+                التعبئة: <span id="quoteInfill">20%</span>
               </td>
               <td id="quoteQty" class="p-2.5 border border-slate-200 text-center font-bold font-mono">1</td>
               <td id="quoteUnitPrice" class="p-2.5 border border-slate-200 text-left font-bold font-mono text-emerald-600">0.00 ج.م</td>
@@ -648,13 +899,24 @@
           </tbody>
         </table>
 
+        <!-- Image Container -->
+        <div id="quotePartImageContainer" class="hidden my-2 p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-4">
+          <img id="quotePartImage" src="" alt="صورة الموديل" class="w-24 h-24 object-contain rounded-lg border border-slate-300 bg-white">
+          <div class="text-xs">
+            <span class="font-bold block mb-1">صورة القطعة المرجعية:</span>
+            <span class="text-slate-500">نموذج مطابق للأبعاد والمواصفات المتفق عليها.</span>
+          </div>
+        </div>
+
         <!-- Totals -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t-2 border-slate-200 text-xs">
           <div>
+            <div class="mb-1">طريقة الدفع: <span id="quotePaymentMethod" class="font-bold text-blue-600">كاش عند الاستلام</span></div>
             <div>موعد التسليم: <span id="quoteDueDate" class="font-bold font-mono">خلال 2-3 أيام عمل</span></div>
           </div>
           <div class="space-y-1 text-left w-full sm:w-auto">
             <div>إجمالي الطباعة: <span id="quotePrintSubtotal" class="font-bold font-mono">0.00 ج.م</span></div>
+            <div>أجر التصميم CAD: <span id="quoteCadFee" class="font-bold font-mono">0.00 ج.م</span></div>
             <div>مصاريف الشحن: <span id="quoteShippingCost" class="font-bold font-mono">0.00 ج.م</span></div>
             <div class="text-base font-black text-blue-700 pt-1 border-t border-slate-200">الإجمالي الكلي: <span id="quoteGrandTotal" class="font-mono">0.00 ج.م</span></div>
             <div class="text-slate-500">العربون المدفوع: <span id="quoteDepositPaid" class="font-bold font-mono">0.00 ج.م</span></div>
@@ -676,14 +938,119 @@
       </div>
     </section>
 
-    <!-- ================= TAB 4: SAVED PROJECTS ================= -->
+    <!-- ================= TAB 7: BUSINESS ANALYTICS ================= -->
+    <section id="tabPane_analytics" class="hidden space-y-5">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <h2 class="text-base font-bold mb-4 flex items-center gap-2">
+          <i class="fas fa-chart-pie text-indigo-600"></i>
+          <span>لوحة تحليلات أداء ورشة الطباعة (Business Analytics)</span>
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">إجمالي المبيعات المحققة:</span>
+            <span id="kpiTotalRevenue" class="text-xl font-black text-emerald-600 font-mono-nums">0.00 ج.م</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">إجمالي صافي الأرباح:</span>
+            <span id="kpiTotalProfit" class="text-xl font-black text-blue-600 font-mono-nums">0.00 ج.م</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">استهلاك الفيلامنت الكلي:</span>
+            <span id="kpiTotalFilamentKg" class="text-xl font-black text-purple-600 font-mono-nums">0.00 كجم</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-xs text-slate-500 block mb-1">ساعات تشغيل الماكينة:</span>
+            <span id="kpiTotalHours" class="text-xl font-black text-amber-600 font-mono-nums">0.0 ساعة</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold text-xs mb-2">توزيع المشاريع حسب حالة الطلب</h4>
+            <div class="h-60 relative"><canvas id="orderStatusChart"></canvas></div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold text-xs mb-2">قاعدة بيانات العملاء الأكثر طلباً (CRM)</h4>
+            <div id="topClientsContainer" class="space-y-2 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 8: TROUBLESHOOTING & CALIBRATION ================= -->
+    <section id="tabPane_troubleshoot" class="hidden space-y-5">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <h2 class="text-base font-bold mb-4 flex items-center gap-2">
+          <i class="fas fa-stethoscope text-rose-600"></i>
+          <span>دليل المعايرة السريعة وحل مشاكل الطباعة (Neptune 4 Pro)</span>
+        </h2>
+        
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-xs text-right border-collapse border border-slate-200 dark:border-slate-700">
+            <thead class="bg-slate-100 dark:bg-slate-800 font-bold">
+              <tr>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700">الخامة</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة النوزل</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة السرير</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">المروحة</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">السرعة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PLA / PLA+</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">205° - 215°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">55° - 60°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100%</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">150 - 250 مم/ث</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PETG</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">230° - 245°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">70° - 80°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">50%</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">80 - 150 مم/ث</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron ABS / ASA</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">240° - 255°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">95° - 105°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">15%</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100 - 180 مم/ث</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h4 class="font-bold text-rose-600">1. عدم التصاق أول طبقة بالسرير (Bed Adhesion)</h4>
+            <p class="text-slate-500">نظف السرير الذهبي PEI بكحول أيزوبروبيلي واضبط Z-Offset لتقريب النوزل قليلاً.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h4 class="font-bold text-amber-600">2. ظهور خيوط زائدة (Stringing)</h4>
+            <p class="text-slate-500">جفف بكرة الفيلامنت واخفض حرارة النوزل 5 درجات واضبط مسافة السحب Retraction لـ 1.0 مم.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 9: SAVED PROJECTS & PIPELINE ================= -->
     <section id="tabPane_saved" class="hidden space-y-4">
       <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 flex-wrap gap-2">
           <h2 class="text-base font-bold flex items-center gap-2">
             <i class="fas fa-folder-open text-blue-600"></i>
-            <span>سجل الحسابات والمشاريع المحفوظة</span>
+            <span>سجل الطلبات والمشاريع المحفوظة</span>
           </h2>
+          <div class="flex items-center gap-1.5 text-xs flex-wrap">
+            <span class="text-slate-500">تصفية:</span>
+            <button onclick="app.filterSavedProjects('all')" class="px-2.5 py-1 rounded bg-blue-600 text-white font-bold">الكل</button>
+            <button onclick="app.filterSavedProjects('ready_print')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">⏳ جاهز</button>
+            <button onclick="app.filterSavedProjects('printing')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">🖨️ طباعة</button>
+            <button onclick="app.filterSavedProjects('ready_ship')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">📦 شحن</button>
+            <button onclick="app.filterSavedProjects('delivered')" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200">✅ تم</button>
+          </div>
         </div>
         <div id="savedProjectsList" class="space-y-3"></div>
       </div>
@@ -706,7 +1073,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=13.1"></script>
-  <script src="app.js?v=13.1"></script>
+  <script src="presets.js?v=14.0"></script>
+  <script src="app.js?v=14.0"></script>
 </body>
 </html>

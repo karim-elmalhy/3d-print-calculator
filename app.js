@@ -282,7 +282,7 @@ class CostCalculatorApp {
       </optgroup>
     `;
 
-    ['filamentPresetSelect', 'tbl_filamentPresetSelect'].forEach(id => {
+    ['filamentPresetSelect', 'filamentPresetSelectMobile', 'tbl_filamentPresetSelect'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = filamentOptions;
     });
@@ -484,7 +484,7 @@ class CostCalculatorApp {
       }
     };
 
-    ['filamentPresetSelect', 'tbl_filamentPresetSelect'].forEach(id => {
+    ['filamentPresetSelect', 'filamentPresetSelectMobile', 'tbl_filamentPresetSelect'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('change', handleFilamentChange);
     });
@@ -1704,6 +1704,17 @@ class CostCalculatorApp {
         this.renderCharts(res);
         this.renderAnalyticsDashboard();
       }, 100);
+    }
+  }
+
+  handleFilamentPresetChange(val) {
+    const item = PRESETS.filaments.find(f => f.id === val);
+    if (item) {
+      this.state.selectedFilamentPreset = item.id;
+      this.state.spoolPrice = item.price;
+      this.state.spoolWeight = item.weight;
+      this.render();
+      this.showToast(`✨ تم اختيار: ${item.name} (${item.price} ج.م)`);
     }
   }
 

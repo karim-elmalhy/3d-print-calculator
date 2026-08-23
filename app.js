@@ -1502,6 +1502,26 @@ class CostCalculatorApp {
     animate();
   }
 
+    // Unified File Handlers (STL & GCode)
+  handleUnifiedFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.stl')) {
+      this.loadSTLFile(file);
+    } else if (name.endsWith('.gcode') || name.endsWith('.g')) {
+      this.parseGCodeFile(file);
+    } else {
+      alert('يرجى اختيار ملف مجسم STL (.stl) أو ملف تقطيع G-Code (.gcode)');
+    }
+  }
+
+  handleFileInputChange(e) {
+    if (e && e.target && e.target.files && e.target.files.length > 0) {
+      this.handleUnifiedFile(e.target.files[0]);
+    }
+  }
+
   loadSTLFile(file) {
     if (!file || !file.name.toLowerCase().endsWith('.stl')) {
       alert('يرجى اختيار ملف مجسم بصيغة STL (.stl)');
@@ -1653,6 +1673,21 @@ class CostCalculatorApp {
     this.updateElementText('stlWeightText', `${estimatedGrams} جرام تقريباً`);
 
     this.showToast(`🧊 تم تحميل وعرض المجسم 3D بنجاح: ${estimatedGrams} جم مقدر`);
+  }
+
+    applySTLDataToCalculator() {
+    if (!this.currentSTLData) {
+      alert('يرجى رفع ملف STL أولاً لحساب الوزن والأبعاد.');
+      return;
+    }
+    if (this.currentSTLData.filename) {
+      this.state.projectName = this.currentSTLData.filename;
+    }
+    if (this.currentSTLData.estimatedGrams) {
+      this.state.partWeight = this.currentSTLData.estimatedGrams;
+    }
+    this.render();
+    this.showToast(`✨ تم تطبيق وزن المجسم (${this.currentSTLData.estimatedGrams} جم) في الحاسبة بنجاح!`);
   }
 
   toggleSTLWireframe() {

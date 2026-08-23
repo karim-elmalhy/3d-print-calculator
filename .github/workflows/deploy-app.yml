@@ -1,4 +1,4 @@
-name: Build Android APK & Deploy Mobile PWA App
+name: Build Native Android APK & Deploy App
 
 on:
   push:
@@ -15,11 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build-apk-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -29,24 +30,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Setup Java JDK
+      - name: Setup Java JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Package App Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: 3D-Print-Calculator-Mobile-App
-          path: |
-            index.html
-            app.js
-            presets.js
-            style.css
-            sw.js
-            manifest.json
-            icons/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
@@ -56,6 +44,20 @@ jobs:
         with:
           path: '.'
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy PWA Web App to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Generate Native Android APK File
+        uses: pwabuilder/pwa-to-apk-action@v1
+        continue-on-error: true
+        with:
+          pwa-url: 'https://karim-elmalhy.github.io/3d-print-calculator/'
+          package-name: 'com.karimelmalhy.print3dcalculator'
+          app-name: '3D Print Calculator Pro'
+
+      - name: Upload Ready Android APK File (.apk)
+        uses: actions/upload-artifact@v4
+        with:
+          name: 3D-Print-Calculator-Android-APK
+          path: '**/*.apk'

@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=15.0">
+  <link rel="stylesheet" href="style.css?v=16.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -408,13 +408,59 @@
               <td class="text-slate-500 text-xs font-mono">وقت العمل × أجر الساعة</td>
             </tr>
 
-            <!-- 5) Subtotal & Failure -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">5) المجموع الفرعي ونسبة الفشل</td></tr>
+            <!-- 5) Marketing & Customer Acquisition Cost (CAC) — Optional -->
+            <tr class="section-header-row font-bold">
+              <td colspan="4" class="p-2">
+                <div class="flex items-center justify-between px-1 flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" id="tbl_includeMarketing" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer">
+                    <label for="tbl_includeMarketing" class="cursor-pointer font-bold">5) تكلفة التسويق والإعلانات الممولة (Marketing & CAC — اختياري)</label>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs font-normal">
+                    <span class="text-blue-200">طريقة الحساب:</span>
+                    <select id="tbl_marketingType" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold">
+                      <option value="percent">نسبة مئوية % من تكلفة الإنتاج</option>
+                      <option value="fixed">مبلغ ثابت (ج.م) لكل قطعة</option>
+                    </select>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="font-bold">ميزانية التسويق واستقطاب العملاء</td>
+              <td class="text-center">
+                <div id="tbl_marketingPercentBox" class="flex items-center justify-center gap-1">
+                  <input type="number" id="tbl_marketingPercent" step="1" min="0" max="100" class="tbl-number-input cell-input-blue" value="10.0">
+                  <span class="text-xs font-bold">%</span>
+                </div>
+                <div id="tbl_marketingFixedBox" style="display:none;" class="flex items-center justify-center gap-1">
+                  <input type="number" id="tbl_marketingFixedAmount" step="5" min="0" class="tbl-number-input cell-input-blue" value="25.00">
+                  <span class="text-xs font-bold">ج.م</span>
+                </div>
+              </td>
+              <td class="text-center font-mono">% أو ج.م</td>
+              <td class="text-slate-500 text-xs">تكلفة إعلانات السوشيال ميديا (Meta, TikTok, Google) وتجهيز الصور والمحتوى</td>
+            </tr>
+            <tr class="bg-pink-50/60 dark:bg-pink-950/30 font-bold">
+              <td>تكلفة التسويق المضافة للقطعة</td>
+              <td id="tbl_marketingCost" class="text-center font-mono-nums text-pink-600 dark:text-pink-400 font-black text-base">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">حسب النسبة أو المبلغ الثابت المحدد (0 عند التعطيل)</td>
+            </tr>
+
+            <!-- 6) Subtotal & Failure -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">6) المجموع الفرعي الإجمالي ونسبة الفشل</td></tr>
+            <tr class="bg-slate-50 dark:bg-slate-800/40 font-semibold text-xs">
+              <td>المجموع الفرعي للتكاليف المباشرة (إنتاج فقط)</td>
+              <td id="tbl_directSubtotal" class="text-center font-mono-nums font-bold">0.00 ج.م</td>
+              <td class="text-center font-mono">جنيه</td>
+              <td class="text-slate-500 text-xs font-mono">خامة + كهرباء + إهلاك + عمالة</td>
+            </tr>
             <tr class="bg-slate-100 dark:bg-slate-800 font-bold">
-              <td>المجموع الفرعي للتكلفة المباشرة</td>
+              <td>المجموع الفرعي الكلي (إنتاج + تسويق)</td>
               <td id="tbl_subtotal" class="text-center font-mono-nums text-lg text-slate-900 dark:text-white">0.00 ج.م</td>
               <td class="text-center font-mono">جنيه</td>
-              <td class="text-slate-500 text-xs font-mono">الخامة + الكهرباء + الإهلاك + العمالة</td>
+              <td class="text-slate-500 text-xs font-mono">التكلفة المباشرة + ميزانية التسويق</td>
             </tr>
             <tr>
               <td class="font-bold">نسبة فشل الطباعة والمخاطرة</td>
@@ -435,8 +481,8 @@
               <td class="text-slate-600 dark:text-slate-300 text-xs font-mono">المجموع الفرعي + تكلفة الفشل (تكلفة الإنتاج)</td>
             </tr>
 
-            <!-- 6) Profit Margin & Selling Price -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">6) هامش الربح وسعر البيع النهائي</td></tr>
+            <!-- 7) Profit Margin & Selling Price -->
+            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">7) هامش الربح وسعر البيع النهائي</td></tr>
             <tr>
               <td class="font-bold">هامش الربح المستهدف</td>
               <td class="text-center"><input type="number" id="tbl_profitMarginPercent" step="1" min="1" max="99" class="tbl-number-input cell-input-blue" value="40.0"></td>
@@ -742,6 +788,40 @@
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">إضافة مستلزمات سريعة</label>
             <select id="hardwareQuickAddSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marketing & Customer Acquisition Cost (CAC) Settings Card -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-bullhorn text-pink-600 text-lg"></i>
+            <div>
+              <h3 class="font-bold text-base">ميزانية التسويق والإعلانات الممولة (Marketing & CAC)</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">تغطية تكلفة الحملات الإعلانية على السوشيال ميديا وتكلفة استقطاب العميل (اختياري)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="dash_includeMarketing" class="w-5 h-5 rounded text-pink-600 focus:ring-pink-500 cursor-pointer">
+            <label for="dash_includeMarketing" class="text-xs font-bold cursor-pointer">تفعيل التسويق</label>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">طريقة الحساب</label>
+            <select id="dash_marketingType" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium">
+              <option value="percent">نسبة مئوية % من تكلفة الإنتاج</option>
+              <option value="fixed">مبلغ تسويق ثابت (ج.م) لكل قطعة</option>
+            </select>
+          </div>
+          <div id="dash_marketingPercentBox">
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة ميزانية التسويق (%)</label>
+            <input type="number" id="dash_marketingPercent" min="0" max="100" step="1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-center" value="10">
+          </div>
+          <div id="dash_marketingFixedBox" style="display:none;">
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">مبلغ التسويق الثابت للقطعة (ج.م)</label>
+            <input type="number" id="dash_marketingFixedAmount" min="0" step="5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono font-bold text-center" value="25">
           </div>
         </div>
       </div>
@@ -1077,7 +1157,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=15.0"></script>
-  <script src="app.js?v=15.0"></script>
+  <script src="presets.js?v=16.0"></script>
+  <script src="app.js?v=16.0"></script>
 </body>
 </html>

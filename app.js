@@ -55,6 +55,12 @@ const DEFAULT_STATE = {
   additionalCost: 0.00,
   additionalCostNotes: '',
 
+  // Marketing & Customer Acquisition Cost (CAC) — Optional
+  includeMarketingCost: false,
+  marketingType: 'percent', // 'percent' or 'fixed'
+  marketingPercent: 10.0,
+  marketingFixedAmount: 25.00,
+
   // Multi-Part Assembly
   partsList: [],
   multiPartMode: false,
@@ -200,9 +206,22 @@ class CostCalculatorApp {
     const laborRatePerHour = Math.max(0, Number(s.laborRatePerHour) || 0);
     const laborCost = laborHours * laborRatePerHour;
 
-    // 5) Subtotal & Failure
+    // 5) Marketing & Customer Acquisition Cost (CAC) — Optional
     const additionalCost = Math.max(0, Number(s.additionalCost) || 0);
-    const subtotal = materialCost + powerCost + depreciationCost + laborCost + additionalCost;
+    const directSubtotal = materialCost + powerCost + depreciationCost + laborCost + additionalCost;
+    
+    let marketingCost = 0;
+    if (s.includeMarketingCost) {
+      if (s.marketingType === 'fixed') {
+        marketingCost = Math.max(0, Number(s.marketingFixedAmount) || 0);
+      } else {
+        const mPct = Math.max(0, Number(s.marketingPercent) || 0);
+        marketingCost = directSubtotal * (mPct / 100);
+      }
+    }
+
+    // 6) Subtotal & Failure
+    const subtotal = directSubtotal + marketingCost;
     const failureRatePercent = Math.max(0, Math.min(100, Number(s.failureRatePercent) || 0));
     const failureCost = subtotal * (failureRatePercent / 100);
     const totalCost = subtotal + failureCost;
@@ -236,7 +255,7 @@ class CostCalculatorApp {
       printHours, printerPowerKw, electricityRate, powerCost,
       printerPrice, printerLifespanHours, depreciationPerHour, depreciationCost,
       laborHours, laborRatePerHour, laborCost,
-      additionalCost, subtotal, failureRatePercent, failureCost, totalCost,
+      additionalCost, directSubtotal, marketingCost, subtotal, failureRatePercent, failureCost, totalCost,
       profitMarginPercent, finalSellingPrice, profitAmount, markupPercent,
       costPerGram, costPerHour,
       qty, batchTotalCost, batchTotalPrice, batchTotalProfit,
@@ -308,6 +327,28 @@ class CostCalculatorApp {
       this.render();
     };
 
+    // Marketing Event Listeners
+    const handleMarketingToggle = (e) => {
+      this.state.includeMarketingCost = e.target.checked;
+      this.render();
+      this.showToast(this.state.includeMarketingCost ? '📢 تم تفعيل احتساب تكلفة التسويق والإعلانات' : '⏹️ تم إلغاء تكلفة التسويق');
+    };
+
+    ['tbl_includeMarketing', 'dash_includeMarketing'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', handleMarketingToggle);
+    });
+
+    const handleMarketingType = (e) => {
+      this.state.marketingType = e.target.value;
+      this.render();
+    };
+
+    ['tbl_marketingType', 'dash_marketingType'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', handleMarketingType);
+    });
+
     // Table Inputs
     const tableBindings = [
       { id: 'tbl_partWeight', key: 'partWeight' },
@@ -320,7 +361,9 @@ class CostCalculatorApp {
       { id: 'tbl_laborHours', key: 'laborHours' },
       { id: 'tbl_laborRatePerHour', key: 'laborRatePerHour' },
       { id: 'tbl_failureRatePercent', key: 'failureRatePercent' },
-      { id: 'tbl_profitMarginPercent', key: 'profitMarginPercent' }
+      { id: 'tbl_profitMarginPercent', key: 'profitMarginPercent' },
+      { id: 'tbl_marketingPercent', key: 'marketingPercent' },
+      { id: 'tbl_marketingFixedAmount', key: 'marketingFixedAmount' }
     ];
 
     tableBindings.forEach(b => {
@@ -342,7 +385,9 @@ class CostCalculatorApp {
       { id: 'dash_infillPercent', key: 'infillPercent', type: 'int' },
       { id: 'dash_cadDesignHours', key: 'cadDesignHours' },
       { id: 'dash_cadDesignRatePerHour', key: 'cadDesignRatePerHour' },
-      { id: 'dash_batchQuantity', key: 'batchQuantity', type: 'int' }
+      { id: 'dash_batchQuantity', key: 'batchQuantity', type: 'int' },
+      { id: 'dash_marketingPercent', key: 'marketingPercent' },
+      { id: 'dash_marketingFixedAmount', key: 'marketingFixedAmount' }
     ];
 
     clientBindings.forEach(b => {
@@ -491,6 +536,31 @@ class CostCalculatorApp {
     this.updateElementValue('tbl_laborRatePerHour', s.laborRatePerHour);
     this.updateElementValue('tbl_failureRatePercent', s.failureRatePercent);
     this.updateElementValue('tbl_profitMarginPercent', s.profitMarginPercent);
+    this.updateElementValue('tbl_marketingPercent', s.marketingPercent);
+    this.updateElementValue('tbl_marketingFixedAmount', s.marketingFixedAmount);
+    this.updateElementValue('dash_marketingPercent', s.marketingPercent);
+    this.updateElementValue('dash_marketingFixedAmount', s.marketingFixedAmount);
+
+    ['tbl_includeMarketing', 'dash_includeMarketing'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.checked = Boolean(s.includeMarketingCost);
+    });
+
+    ['tbl_marketingType', 'dash_marketingType'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = s.marketingType || 'percent';
+    });
+
+    // Toggle dynamic input visibility based on type
+    const isFixed = (s.marketingType === 'fixed');
+    ['tbl_marketingPercentBox', 'dash_marketingPercentBox'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isFixed ? 'none' : 'block';
+    });
+    ['tbl_marketingFixedBox', 'dash_marketingFixedBox'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isFixed ? 'block' : 'none';
+    });
 
     // 2. Synchronize Client & Order Inputs
     this.updateElementValue('dash_projectName', s.projectName || '');
@@ -524,6 +594,8 @@ class CostCalculatorApp {
     this.updateElementText('tbl_depreciationPerHour', this.formatCurrency(res.depreciationPerHour) + ' / ساعة');
     this.updateElementText('tbl_depreciationCost', this.formatCurrency(res.depreciationCost));
     this.updateElementText('tbl_laborCost', this.formatCurrency(res.laborCost));
+    this.updateElementText('tbl_directSubtotal', this.formatCurrency(res.directSubtotal));
+    this.updateElementText('tbl_marketingCost', this.formatCurrency(res.marketingCost));
     this.updateElementText('tbl_subtotal', this.formatCurrency(res.subtotal));
     this.updateElementText('tbl_failureCost', this.formatCurrency(res.failureCost));
     this.updateElementText('tbl_totalCost', this.formatCurrency(res.totalCost));
@@ -1272,8 +1344,8 @@ class CostCalculatorApp {
 
     const ctx = document.getElementById('costChart');
     if (ctx && typeof Chart !== 'undefined') {
-      const dataValues = [res.materialCost, res.powerCost, res.depreciationCost, res.laborCost, res.failureCost, res.additionalCost].map(v => Number(v.toFixed(2)));
-      const labels = ['خامة', 'كهرباء', 'إهلاك', 'عمالة', 'هدر', 'إضافات'];
+      const dataValues = [res.materialCost, res.powerCost, res.depreciationCost, res.laborCost, res.marketingCost, res.failureCost, res.additionalCost].map(v => Number(v.toFixed(2)));
+      const labels = ['خامة', 'كهرباء', 'إهلاك', 'عمالة', 'تسويق 📢', 'هدر', 'إضافات'];
 
       if (this.charts.cost) {
         this.charts.cost.data.datasets[0].data = dataValues;
@@ -1285,7 +1357,7 @@ class CostCalculatorApp {
             labels: labels,
             datasets: [{
               data: dataValues,
-              backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#f43f5e', '#ef4444', '#10b981']
+              backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#f43f5e', '#ec4899', '#ef4444', '#10b981']
             }]
           },
           options: {

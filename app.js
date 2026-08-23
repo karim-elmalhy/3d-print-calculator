@@ -1141,20 +1141,28 @@ class CostCalculatorApp {
       geometry.computeVertexNormals();
     }
 
+    // Convert 3D Printing STL Coordinates (Z-Up) to Three.js World (Y-Up)
+    geometry.center();
+    geometry.rotateX(-Math.PI / 2);
+    
+    // Snap model to sit flat on build plate grid (Y = 0)
+    geometry.computeBoundingBox();
+    const initMinY = geometry.boundingBox.min.y;
+    geometry.translate(0, -initMinY, 0);
+
     if (this.threeMesh && this.threeScene) this.threeScene.remove(this.threeMesh);
 
     const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.2 });
     this.threeMesh = new THREE.Mesh(geometry, material);
+    this.threeMesh.position.set(0, 0, 0);
+
+    if (this.threeScene) this.threeScene.add(this.threeMesh);
+    this.customSTLLoaded = true;
+
     geometry.computeBoundingBox();
     const box = geometry.boundingBox;
     const size = new THREE.Vector3();
     box.getSize(size);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-
-    this.threeMesh.position.set(-center.x, -box.min.y, -center.z);
-    if (this.threeScene) this.threeScene.add(this.threeMesh);
-    this.customSTLLoaded = true;
 
     const maxDim = Math.max(size.x, size.y, size.z);
     if (this.threeCamera) {
@@ -1195,7 +1203,7 @@ class CostCalculatorApp {
     this.updateElementText('stlVolumeText', this.currentSTLData.volume);
     this.updateElementText('stlWeightText', `${estimatedGrams} جرام تقريباً`);
 
-    this.showToast(`🧊 تم تحميل وعرض المجسم 3D بنجاح (${estimatedGrams} جم مقدر)`);
+    this.showToast(`🧊 تم تحميل وعرض المجسم 3D بالزاوية الصحيحة (${estimatedGrams} جم مقدر)`);
   }
 
   applySTLDataToCalculator() {
@@ -1207,6 +1215,42 @@ class CostCalculatorApp {
     if (this.currentSTLData.estimatedGrams) this.state.partWeight = this.currentSTLData.estimatedGrams;
     this.render();
     this.showToast(`✨ تم تطبيق وزن المجسم (${this.currentSTLData.estimatedGrams} جم) واسمه في الحاسبة!`);
+  }
+
+  rotateSTL(axis, degrees = 90) {
+    if (!this.threeMesh || !this.threeMesh.geometry) {
+      this.showToast('يرجى رفع ملف STL أولاً لتدويره.');
+      return;
+    }
+    const rad = (degrees * Math.PI) / 180;
+    const geom = this.threeMesh.geometry;
+
+    if (axis === 'x') geom.rotateX(rad);
+    else if (axis === 'y') geom.rotateY(rad);
+    else if (axis === 'z') geom.rotateZ(rad);
+
+    geom.computeBoundingBox();
+    const box = geom.boundingBox;
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    geom.translate(-center.x, -box.min.y, -center.z);
+
+    const size = new THREE.Vector3();
+    geom.boundingBox.getSize(size);
+    this.updateElementText('stlDimsText', `${size.x.toFixed(1)} × ${size.y.toFixed(1)} × ${size.z.toFixed(1)} مم`);
+
+    this.showToast(`🔄 تم تدوير المجسم 90° ومحاذاته على السرير`);
+  }
+
+  layFlatSTL() {
+    if (!this.threeMesh || !this.threeMesh.geometry) return;
+    const geom = this.threeMesh.geometry;
+    geom.center();
+    geom.computeBoundingBox();
+    const minY = geom.boundingBox.min.y;
+    geom.translate(0, -minY, 0);
+    this.resetSTLCamera();
+    this.showToast('📐 تم ضبط المجسم مستوياً على سرير الطباعة');
   }
 
   toggleSTLWireframe() {

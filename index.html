@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=16.0">
+  <link rel="stylesheet" href="style.css?v=17.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -542,12 +542,28 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <button onclick="app.toggleSTLWireframe()" title="تبديل وضع الشبكة" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-slate-300 dark:border-slate-700">
-              <i class="fas fa-border-all"></i>
-              <span class="hidden sm:inline">شبكة Wireframe</span>
+          <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end flex-wrap">
+            <button onclick="app.rotateSTL('x', 90)" title="تدوير 90 درجة حول محور X" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
+              <i class="fas fa-rotate"></i>
+              <span>X 90°</span>
             </button>
-            <button onclick="app.resetSTLCamera()" title="إعادة ضبط الكاميرا" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-slate-300 dark:border-slate-700">
+            <button onclick="app.rotateSTL('y', 90)" title="تدوير 90 درجة حول محور Y" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
+              <i class="fas fa-rotate"></i>
+              <span>Y 90°</span>
+            </button>
+            <button onclick="app.rotateSTL('z', 90)" title="تدوير 90 درجة حول محور Z" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
+              <i class="fas fa-rotate"></i>
+              <span>Z 90°</span>
+            </button>
+            <button onclick="app.layFlatSTL()" title="ضبط المجسم مستوياً على سرير الطباعة" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
+              <i class="fas fa-down-left-and-up-right-to-center"></i>
+              <span class="hidden sm:inline">مستوي</span>
+            </button>
+            <button onclick="app.toggleSTLWireframe()" title="تبديل وضع الشبكة" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
+              <i class="fas fa-border-all"></i>
+              <span class="hidden sm:inline">شبكة</span>
+            </button>
+            <button onclick="app.resetSTLCamera()" title="إعادة ضبط الكاميرا" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center gap-1 border border-slate-300 dark:border-slate-700">
               <i class="fas fa-camera-rotate"></i>
             </button>
             <button onclick="document.getElementById('unifiedFileInput').click()" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm">

@@ -1,199 +1,208 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=JetBrains+Mono:ital,wght@0,500;0,600;0,700;0,800;1,700&display=swap');
 
 :root {
-  --font-body: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-head: 'Cairo', var(--font-body);
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-main: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-title: 'Cairo', var(--font-main);
+  --font-code: 'JetBrains Mono', monospace;
 
-  /* Linear Daylight Palette (Day) */
-  --bg-page: #f8fafc;
-  --bg-bento: rgba(255, 255, 255, 0.95);
-  --bg-bento-elevated: #ffffff;
-  --border-line: rgba(203, 213, 225, 0.8);
-  --border-highlight: #3b82f6;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #94a3b8;
-  --shadow-bento: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+  /* Theme - Day */
+  --bg-body: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-focus: #2563eb;
+  --text-title: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
 }
 
 .dark {
-  /* Linear Midnight Palette (Night) */
-  --bg-page: #080a10;
-  --bg-bento: rgba(15, 20, 31, 0.85);
-  --bg-bento-elevated: #111726;
-  --border-line: rgba(255, 255, 255, 0.08);
-  --border-highlight: #60a5fa;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --shadow-bento: 0 4px 20px -2px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* Theme - Night */
+  --bg-body: #0a0f1d;
+  --bg-card: #111827;
+  --bg-card-subtle: #1e293b;
+  --border-color: #1f2937;
+  --border-focus: #3b82f6;
+  --text-title: #f9fafb;
+  --text-body: #d1d5db;
+  --text-muted: #9ca3af;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.6), 0 0 15px rgba(59, 130, 246, 0.1);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-main);
   direction: rtl;
   text-align: right;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
+  background-color: var(--bg-body);
+  color: var(--text-body);
   min-height: 100vh;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); }
-.font-mono-nums { font-family: var(--font-mono); letter-spacing: -0.03em; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  color: var(--text-title);
+}
 
-/* Custom Linear Scrollbar */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+.font-mono-nums {
+  font-family: var(--font-code);
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+.dark ::-webkit-scrollbar-thumb { background: #374151; }
 ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Linear Bento Card */
-.bento-card {
-  background: var(--bg-bento);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-line);
-  border-radius: 1.25rem;
-  box-shadow: var(--shadow-bento);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+/* Clean UI Cards */
+.ui-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.ui-card:hover {
+  border-color: var(--border-focus);
 }
 
-.bento-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.2), 0 0 15px rgba(59, 130, 246, 0.1);
-}
-
-/* Linear KPI Tile */
-.kpi-tile {
-  background: var(--bg-bento);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-line);
-  border-radius: 1.125rem;
-  padding: 1.25rem 1rem;
+/* Top Hero KPI Card */
+.hero-kpi-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.875rem;
+  padding: 1rem 0.875rem;
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
 }
-
-.kpi-tile:hover {
-  border-color: rgba(59, 130, 246, 0.5);
+.hero-kpi-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px -4px rgba(59, 130, 246, 0.15);
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-md);
 }
 
-/* Linear Pill Tabs */
-.bento-nav-btn {
+/* Tab Navigation Buttons */
+.nav-tab-btn {
   padding: 0.5rem 1rem;
   border-radius: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
-  font-size: 0.8125rem;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--text-secondary);
-  background: transparent;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  background-color: transparent;
   border: 1px solid transparent;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
-
-.bento-nav-btn:hover {
-  color: var(--text-primary);
-  background: rgba(148, 163, 184, 0.12);
+.nav-tab-btn:hover {
+  color: var(--text-title);
+  background-color: var(--bg-card-subtle);
 }
-
-.bento-nav-btn.active {
+.nav-tab-btn.active {
   color: #ffffff !important;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.4);
+  background-color: #2563eb !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
 }
 
-/* Linear Precision Inputs */
-.bento-input, .bento-select {
-  background: var(--bg-bento-elevated);
-  border: 1px solid var(--border-line);
-  color: var(--text-primary);
-  border-radius: 0.75rem;
-  padding: 0.55rem 0.8rem;
-  font-size: 0.85rem;
+/* Form Inputs */
+.ui-input, .ui-select {
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-title);
+  border-radius: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  transition: all 0.2s ease;
   width: 100%;
+  transition: all 0.15s ease;
 }
-
-.bento-input:focus, .bento-select:focus {
+.ui-input:focus, .ui-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  border-color: var(--border-focus);
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-/* Linear Spreadsheet Table */
+/* Spreadsheet Table Styling */
 .calc-table {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
 }
-
 .calc-table th, .calc-table td {
-  border: 1px solid var(--border-line);
+  border: 1px solid var(--border-color);
   padding: 10px 14px;
 }
-
-.cell-input-blue { color: #3b82f6 !important; font-weight: 800 !important; }
-.cell-calc-dark { color: var(--text-primary) !important; font-weight: 800 !important; }
+.cell-input-blue { color: #2563eb !important; font-weight: 800 !important; }
+.dark .cell-input-blue { color: #60a5fa !important; }
+.cell-calc-dark { color: var(--text-title) !important; font-weight: 800 !important; }
 
 .row-highlight-green {
-  background: linear-gradient(135deg, rgba(6, 78, 59, 0.9), rgba(6, 95, 70, 0.9)) !important;
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+}
+.dark .row-highlight-green {
+  background-color: #064e3b !important;
   color: #6ee7b7 !important;
 }
+.row-highlight-green td { border-color: #86efac !important; }
+.dark .row-highlight-green td { border-color: #047857 !important; }
 
 .tbl-number-input {
   width: 110px;
   text-align: center;
-  background-color: var(--bg-bento-elevated);
-  border: 1.5px solid #3b82f6;
-  color: #3b82f6 !important;
+  background-color: var(--bg-card-subtle);
+  border: 2px solid #3b82f6;
+  color: #2563eb !important;
   border-radius: 8px;
-  padding: 5px 6px;
-  font-family: var(--font-mono);
-  font-size: 0.925rem;
+  padding: 4px 6px;
+  font-family: var(--font-code);
+  font-size: 0.95rem;
   font-weight: 700;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
-
+.dark .tbl-number-input {
+  color: #60a5fa !important;
+}
 .tbl-number-input:focus {
   outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.35);
-  transform: scale(1.02);
+  background-color: var(--bg-card);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
 }
-
 .section-header-row td {
-  background: linear-gradient(90deg, #1e3a8a, #2563eb, #1e3a8a) !important;
+  background-color: #1e3a8a !important;
   color: #ffffff !important;
 }
+.dark .section-header-row td {
+  background-color: #1e293b !important;
+}
 
-/* 3D Canvas Viewport */
+/* 3D Viewport */
 #stlCanvasContainer canvas {
   width: 100% !important;
   height: 100% !important;
   display: block;
   cursor: grab;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
 }
 #stlCanvasContainer canvas:active { cursor: grabbing; }
 
-/* Mobile Touch Targets */
+/* Mobile Optimizations */
 @media (max-width: 640px) {
   input[type="text"], input[type="number"], input[type="tel"], input[type="date"], select {
     font-size: 16px !important;
@@ -202,7 +211,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); }
   .calc-table th, .calc-table td { padding: 8px 6px; font-size: 0.775rem; }
 }
 
-/* Print Stylesheet */
+/* Print Invoice Stylesheet */
 @media print {
   body { background: #ffffff !important; color: #000000 !important; }
   .no-print, header, nav, footer, #appToast, #deadlineAlertBanner { display: none !important; }

@@ -27,6 +27,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <!-- 3D STL Viewer & PDF Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
 
@@ -64,6 +69,17 @@
         <div class="flex-grow sm:flex-grow-0 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs shadow-inner">
           <i class="fas fa-layer-group text-blue-600 shrink-0"></i>
           <select id="filamentPresetSelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 w-full sm:w-auto text-xs"></select>
+        </div>
+
+        <!-- Currency Switcher -->
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs shadow-inner">
+          <i class="fas fa-coins text-amber-500 shrink-0"></i>
+          <select id="currencySelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs">
+            <option value="EGP">🇪🇬 ج.م (EGP)</option>
+            <option value="SAR">🇸🇦 ر.س (SAR)</option>
+            <option value="AED">🇦🇪 د.إ (AED)</option>
+            <option value="USD">🇺🇸 $ (USD)</option>
+          </select>
         </div>
 
         <div class="hidden sm:flex items-center gap-1.5">
@@ -171,6 +187,10 @@
         <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-file-invoice-dollar"></i>
           <span>عرض السعر والواتساب</span>
+        </button>
+                <button id="tabBtn_troubleshoot" onclick="app.switchTab('troubleshoot')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fas fa-stethoscope text-rose-500"></i>
+          <span>دليل المعايرة والأعطال</span>
         </button>
         <button id="tabBtn_analytics" onclick="app.switchTab('analytics')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-chart-pie text-indigo-500"></i>
@@ -607,6 +627,61 @@
           <p class="text-xs text-slate-500 dark:text-slate-400">يدعم ملفات Cura, PrusaSlicer, OrcaSlicer, Bambu Studio ويستخرج الوزن وساعات الطباعة تلقائياً ⚡</p>
         </div>
       </div>
+      <!-- 3D STL Model Viewer & Volume Analyzer -->
+      <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 p-5 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800/60 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-indigo-100 dark:border-indigo-900/60">
+          <div>
+            <h3 class="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm shadow-md">
+                <i class="fas fa-cube"></i>
+              </span>
+              <span>عارض ومحلل المجسمات ثلاثية الأبعاد (3D STL Interactive Viewer)</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">اسحب وأفلت ملف الـ STL لعرض المجسم 3D وحساب الحجم والوزن التقريبي</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="document.getElementById('stlFileInput').click()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <i class="fas fa-folder-open"></i>
+              <span>اختيار ملف STL</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="stlDropZone" class="border-2 border-dashed border-indigo-300 dark:border-indigo-700/70 rounded-xl p-4 text-center cursor-pointer transition hover:border-indigo-500 hover:bg-white/50 dark:hover:bg-slate-800/50">
+          <input type="file" id="stlFileInput" accept=".stl" class="hidden">
+          <div onclick="document.getElementById('stlFileInput').click()" class="space-y-1">
+            <i class="fas fa-cloud-arrow-up text-2xl text-indigo-500 mb-1 block"></i>
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">اسحب ملف الـ STL وأفلته هنا</span>
+            <span class="text-[11px] text-slate-400">معاينة تفاعلية 360° + حساب الحجم والأبعاد بالمليمتر</span>
+          </div>
+        </div>
+
+        <!-- 3D Canvas Container -->
+        <div id="stlCanvasContainer" class="hidden w-full h-[300px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-900 relative shadow-inner"></div>
+
+        <!-- STL Metrics Box -->
+        <div id="stlInfoBox" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white dark:bg-slate-800/80 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40 text-xs">
+          <div class="text-center p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
+            <span class="text-slate-400 block mb-0.5">أبعاد المجسم (L × W × H):</span>
+            <span id="stlDimsText" class="font-bold text-slate-800 dark:text-slate-100 font-mono-nums">-</span>
+          </div>
+          <div class="text-center p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
+            <span class="text-slate-400 block mb-0.5">الحجم الهندسي الصافي:</span>
+            <span id="stlVolumeText" class="font-bold text-indigo-600 dark:text-indigo-400 font-mono-nums">-</span>
+          </div>
+          <div class="text-center p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 flex flex-col justify-between">
+            <div>
+              <span class="text-slate-400 block mb-0.5">الوزن التقريبي المقدر:</span>
+              <span id="stlWeightText" class="font-black text-emerald-600 dark:text-emerald-400 font-mono-nums">-</span>
+            </div>
+            <button onclick="app.applySTLDataToCalculator()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[11px] font-bold py-1.5 px-2 rounded-lg transition flex items-center justify-center gap-1 shadow-sm">
+              <i class="fas fa-bolt"></i>
+              <span>تطبيق الوزن في الحاسبة</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
 
       <!-- Pricing Templates Quick Apply -->
       <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -995,18 +1070,26 @@
           </h2>
           <p class="text-xs text-slate-500 dark:text-slate-400">اطبع عرض السعر كـ PDF أو انسخ الرسالة للواتساب بضغطة زر</p>
         </div>
-        <div class="flex items-center gap-3">
-          <button onclick="app.copyWhatsAppText()" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="app.copyShareableLink()" title="نسخ رابط تفاعلي مباشر لفتحه على موبايل العميل" class="bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-800">
+            <i class="fas fa-link"></i>
+            <span>رابط تفاعلي للعميل</span>
+          </button>
+          <button onclick="app.copyWhatsAppText()" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
             <i class="fas fa-copy"></i>
-            <span>نسخ نص الواتساب</span>
+            <span>نسخ واتساب</span>
           </button>
-          <button onclick="app.openWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
-            <i class="fab fa-whatsapp text-base"></i>
-            <span>إرسال واتساب مباشرة</span>
+          <button onclick="app.openWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i class="fab fa-whatsapp text-sm"></i>
+            <span>إرسال واتساب</span>
           </button>
-          <button onclick="app.printQuote()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
-            <i class="fas fa-print"></i>
-            <span>طباعة / حفظ PDF</span>
+          <button onclick="app.downloadPDF()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm" title="تحميل ملف PDF مباشر">
+            <i class="fas fa-file-pdf text-sm"></i>
+            <span>تحميل PDF مباشر</span>
+          </button>
+          <button onclick="app.printQuote()" class="bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i class="fas fa-print text-sm"></i>
+            <span>طباعة</span>
           </button>
         </div>
       </div>
@@ -1220,6 +1303,130 @@
         </div>
       </div>
 
+    </section>
+
+    
+    <!-- ================= TAB 8: TROUBLESHOOTING & CALIBRATION GUIDE ================= -->
+    <section id="tabPane_troubleshoot" class="hidden space-y-6">
+      
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+            <i class="fas fa-stethoscope text-rose-600"></i>
+            <span>دليل المعايرة السريعة وحل مشاكل الطباعة (Troubleshooting & Calibration)</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">إعدادات درجات الحرارة الموصى بها لطابعة Elegoo Neptune 4 Pro والخامات المصرية وحلول الأعطال الشائعة</p>
+        </div>
+      </div>
+
+      <!-- Filament Temperature & Speed Guide Table -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="bg-slate-100 dark:bg-slate-800 px-5 py-3 border-b border-slate-200 dark:border-slate-700 font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+          <i class="fas fa-temperature-high text-amber-500"></i>
+          <span>درجات الحرارة والسرعات الموصى بها لكل خامة (Neptune 4 Pro)</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm text-right border-collapse">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold">
+                <th class="p-3">الخامة (Filament)</th>
+                <th class="p-3 text-center">حرارة النوزل (°C)</th>
+                <th class="p-3 text-center">حرارة السرير (°C)</th>
+                <th class="p-3 text-center">نسبة المروحة Fan</th>
+                <th class="p-3 text-center">السرعة الموصى بها</th>
+                <th class="p-3">ملاحظات والتصاق السرير</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 font-bold text-slate-800 dark:text-slate-100">🇪🇬 Patron PLA / PLA+</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-blue-600">205° - 215°C</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-amber-600">55° - 60°C</td>
+                <td class="p-3 text-center font-mono-nums">100%</td>
+                <td class="p-3 text-center font-mono-nums">150 - 250 مم/ث</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300 text-xs">التصاق ممتاز على سطح PEI، لا يتطلب غراء</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 font-bold text-slate-800 dark:text-slate-100">🇪🇬 Patron PETG</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-blue-600">230° - 245°C</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-amber-600">70° - 80°C</td>
+                <td class="p-3 text-center font-mono-nums">40% - 60%</td>
+                <td class="p-3 text-center font-mono-nums">80 - 150 مم/ث</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300 text-xs">قوي جداً، ينصح برفع الـ Z-offset بنسبة +0.02 مم</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 font-bold text-slate-800 dark:text-slate-100">🇪🇬 Patron ABS / ASA</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-blue-600">240° - 255°C</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-amber-600">95° - 105°C</td>
+                <td class="p-3 text-center font-mono-nums">0% - 20%</td>
+                <td class="p-3 text-center font-mono-nums">100 - 180 مم/ث</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300 text-xs">يتطلب صندوق مغلق (Enclosure) لمنع الالتواء والتقوس (Warping)</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 font-bold text-slate-800 dark:text-slate-100">🇪🇬 Patron TPU (مرن)</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-blue-600">215° - 230°C</td>
+                <td class="p-3 text-center font-mono-nums font-bold text-amber-600">50° - 60°C</td>
+                <td class="p-3 text-center font-mono-nums">80% - 100%</td>
+                <td class="p-3 text-center font-mono-nums">30 - 50 مم/ث</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300 text-xs">سرعة بطيئة، تقليل التراجع Retraction إلى 0.8 مم</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Troubleshooting Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+          <div class="flex items-center gap-2 text-sm font-bold text-rose-600">
+            <i class="fas fa-triangle-exclamation"></i>
+            <span>1. عدم التصاق الطبقة الأولى أو فك القطعة (Bed Adhesion)</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside leading-relaxed">
+            <li>نظف سطح السرير الذهبي (PEI Sheet) بماء دافئ وصابون أو كحول أيزوبروبيلي (IPA).</li>
+            <li>عدّل الـ <strong>Z-Offset</strong> من شاشة الطابعة لتكون الفوهة أقرب قليلاً للسرير (سحق بسيط للطبقة الأولى).</li>
+            <li>ارفع درجة حرارة السرير بـ 5 درجات مئوية وخفف سرعة أول طبقة إلى 20 مم/ث.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+          <div class="flex items-center gap-2 text-sm font-bold text-amber-600">
+            <i class="fas fa-spider"></i>
+            <span>2. ظهور خيوط وشعر عنكبوتي زائد (Stringing & Oozing)</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside leading-relaxed">
+            <li>قم بتجفيف بكرة الفيلامنت في مجفف أو فرن حراري خفيف (الرطوبة هي السبب الأول للخيوط).</li>
+            <li>اخفض حرارة النوزل بمقدار 5°C.</li>
+            <li>في برنامج التقطيع (Slicer)، اضبط مسافة السحب (Retraction Distance) إلى 0.8 - 1.2 مم وسرعة 45 مم/ث للطابعات المباشرة Direct Drive.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+          <div class="flex items-center gap-2 text-sm font-bold text-indigo-600">
+            <i class="fas fa-layer-group"></i>
+            <span>3. إزاحة وتداخل الطبقات المفاجئ (Layer Shift)</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside leading-relaxed">
+            <li>تأكد من شد سيور المحورين X و Y (يجب أن تكون مشدودة ومحكمة كأوتار الجيتار بدون ارتخاء).</li>
+            <li>تأكد من عدم اصطدام النوزل بالدعامات (قم بتفعيل Z-Hop عند التنقل بمقدار 0.2 مم).</li>
+            <li>تأكد من تبريد لوحة التحكم وعدم ارتفاع حرارة محركات الخطوة (Stepper Motors).</li>
+          </ul>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+          <div class="flex items-center gap-2 text-sm font-bold text-purple-600">
+            <i class="fas fa-faucet-drip"></i>
+            <span>4. انسداد الفوهة أو نقص تدفق الخامة (Under-Extrusion & Clog)</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside leading-relaxed">
+            <li>قم بعمل سحب على البارد (Cold Pull) عند 90°C لإزالة أي رواسب كربونية داخل النوزل.</li>
+            <li>استخدم إبرة تنظيف النوزل المرفقة مع طابعة Neptune 4 Pro أثناء تسخين الفوهة لـ 230°C.</li>
+            <li>تأكد من دوران مروحة تبريد السخان (Hotend Fan) بكفاءة لمنع ظاهرة Heat Creep.</li>
+          </ul>
+        </div>
+
+      </div>
     </section>
 
     <section id="tabPane_saved" class="hidden space-y-6">

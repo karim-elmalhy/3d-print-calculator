@@ -69,9 +69,10 @@ const DEFAULT_STATE = {
 };
 
 const CURRENCY_RATES = {
-  EGP: { symbol: 'ج.م', rate: 1 },
-  USD: { symbol: '$', rate: 0.0205 },
-  SAR: { symbol: 'ر.س', rate: 0.077 }
+  EGP: { symbol: 'ج.م', rate: 1, name: 'جنيه مصري 🇪🇬' },
+  SAR: { symbol: 'ر.س', rate: 0.077, name: 'ريال سعودي 🇸🇦' },
+  AED: { symbol: 'د.إ', rate: 0.075, name: 'درهم إماراتي 🇦🇪' },
+  USD: { symbol: '$', rate: 0.0205, name: 'دولار أمريكي 🇺🇸' }
 };
 
 const PRICING_TEMPLATES = {
@@ -187,6 +188,12 @@ class CostCalculatorApp {
         PRESETS.electricityTiers.map(t => `<option value="${t.id}" ${t.id === this.state.selectedPowerPreset ? 'selected' : ''}>${t.name} (${t.rate} ج.م/ك.و.س)</option>`).join('');
     }
 
+        const currSelect = document.getElementById('currencySelect');
+    if (currSelect) {
+      currSelect.addEventListener('change', (e) => {
+        this.setCurrency(e.target.value);
+      });
+    }
     const hwSelect = document.getElementById('hardwareQuickAddSelect');
     if (hwSelect && PRESETS.hardwareAccessories) {
       hwSelect.innerHTML = '<option value="">+ إضافة مستلزمات تجميع جاهزة</option>' + 
@@ -962,6 +969,12 @@ class CostCalculatorApp {
       });
     }
 
+        const currSelect = document.getElementById('currencySelect');
+    if (currSelect) {
+      currSelect.addEventListener('change', (e) => {
+        this.setCurrency(e.target.value);
+      });
+    }
     const hwSelect = document.getElementById('hardwareQuickAddSelect');
     if (hwSelect && typeof PRESETS !== 'undefined') {
       hwSelect.addEventListener('change', (e) => {
@@ -1020,7 +1033,7 @@ class CostCalculatorApp {
 
   switchTab(tabName) {
     this.state.activeTab = tabName;
-    ['table', 'dashboard', 'assembly', 'roi', 'quote', 'analytics', 'saved'].forEach(tab => {
+    ['table', 'dashboard', 'assembly', 'roi', 'quote', 'troubleshoot', 'analytics', 'saved'].forEach(tab => {
       const pane = document.getElementById(`tabPane_${tab}`);
       const btn = document.getElementById(`tabBtn_${tab}`);
       if (pane) {
@@ -1388,6 +1401,270 @@ class CostCalculatorApp {
           }
         });
       }
+    }
+  }
+
+  
+  // ================= 3D STL VIEWER ENGINE =================
+  setupSTLViewer() {
+    const dropZone = document.getElementById('stlDropZone');
+    const fileInput = document.getElementById('stlFileInput');
+    if (!dropZone || !fileInput) return;
+
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dropZone.classList.add('border-indigo-500', 'bg-indigo-50/50', 'dark:bg-indigo-950/40');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50', 'dark:bg-indigo-950/40');
+      });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files.length > 0) this.loadSTLFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) this.loadSTLFile(e.target.files[0]);
+    });
+  }
+
+  loadSTLFile(file) {
+    if (!file.name.toLowerCase().endsWith('.stl')) {
+      alert('يرجى اختيار ملف مجسم بصيغة STL (.stl)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const buffer = e.target.result;
+      this.renderSTL3D(buffer, file.name);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  renderSTL3D(buffer, filename) {
+    const container = document.getElementById('stlCanvasContainer');
+    const infoBox = document.getElementById('stlInfoBox');
+    if (!container || typeof THREE === 'undefined' || typeof THREE.STLLoader === 'undefined') return;
+
+    container.innerHTML = '';
+    container.classList.remove('hidden');
+    if (infoBox) infoBox.classList.remove('hidden');
+
+    const width = container.clientWidth || 350;
+    const height = 300;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(this.state.darkMode ? 0x0f172a : 0xf8fafc);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight1.position.set(100, 150, 100);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x3b82f6, 0.5);
+    dirLight2.position.set(-100, -50, -100);
+    scene.add(dirLight2);
+
+    // Controls
+    let controls;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+    }
+
+    // Grid Floor
+    const grid = new THREE.GridHelper(200, 20, 0x3b82f6, 0x94a3b8);
+    grid.position.y = 0;
+    scene.add(grid);
+
+    // Load STL
+    const loader = new THREE.STLLoader();
+    const geometry = loader.parse(buffer);
+    geometry.computeVertexNormals();
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x2563eb,
+      roughness: 0.4,
+      metalness: 0.2
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    geometry.computeBoundingBox();
+    const box = geometry.boundingBox;
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+
+    // Center and place on grid
+    mesh.position.x = -center.x;
+    mesh.position.y = -box.min.y;
+    mesh.position.z = -center.z;
+    scene.add(mesh);
+
+    // Fit camera
+    const maxDim = Math.max(size.x, size.y, size.z);
+    camera.position.set(maxDim * 1.5, maxDim * 1.3, maxDim * 1.8);
+    camera.lookAt(0, size.y / 2, 0);
+
+    // Calculate Volume & Estimated Weight
+    let volumeCm3 = 0;
+    const posAttr = geometry.attributes.position;
+    if (posAttr) {
+      const p1 = new THREE.Vector3(), p2 = new THREE.Vector3(), p3 = new THREE.Vector3();
+      for (let i = 0; i < posAttr.count; i += 3) {
+        p1.fromBufferAttribute(posAttr, i);
+        p2.fromBufferAttribute(posAttr, i + 1);
+        p3.fromBufferAttribute(posAttr, i + 2);
+        volumeCm3 += p1.dot(p2.cross(p3)) / 6.0;
+      }
+      volumeCm3 = Math.abs(volumeCm3) / 1000.0; // mm3 to cm3
+    }
+
+    // Estimate weight: Volume * Density (approx 1.24 for PLA) * Infill Factor
+    const filamentItem = typeof PRESETS !== 'undefined' ? PRESETS.filaments.find(f => f.id === this.state.selectedFilamentPreset) : null;
+    const density = filamentItem?.density || 1.24;
+    const infillRatio = ((this.state.infillPercent || 20) / 100) * 0.4 + 0.25; // Shells + infill approximation
+    const estimatedGrams = Math.round(volumeCm3 * density * infillRatio);
+
+    this.currentSTLData = {
+      filename: filename.replace(/\.stl$/i, ''),
+      dimensions: `${size.x.toFixed(1)} × ${size.y.toFixed(1)} × ${size.z.toFixed(1)} مم`,
+      volume: `${volumeCm3.toFixed(1)} سم³`,
+      estimatedGrams: estimatedGrams
+    };
+
+    // Update UI elements
+    this.updateElementText('stlDimsText', this.currentSTLData.dimensions);
+    this.updateElementText('stlVolumeText', this.currentSTLData.volume);
+    this.updateElementText('stlWeightText', `${estimatedGrams} جرام تقريباً`);
+
+    // Animation Loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    this.showToast(`🧊 تم تحليل المجسم بنجاح: ${estimatedGrams} جم مقدر`);
+  }
+
+  applySTLDataToCalculator() {
+    if (!this.currentSTLData) return;
+    this.state.projectName = this.currentSTLData.filename;
+    this.state.partWeight = this.currentSTLData.estimatedGrams;
+    this.render();
+    this.showToast(`✨ تم تطبيق الوزن (${this.currentSTLData.estimatedGrams} جم) واسم المجسم في الحاسبة!`);
+  }
+
+  // ================= SHAREABLE QUOTE LINK =================
+  generateShareableLink() {
+    const res = this.calculate();
+    const payload = {
+      p: this.state.projectName,
+      c: this.state.clientName,
+      ph: this.state.clientPhone,
+      w: res.effectiveWeight,
+      h: res.effectiveHours,
+      q: res.qty,
+      pr: res.finalSellingPrice,
+      tot: res.grandOrderTotal,
+      dep: res.deposit,
+      rem: res.remainingBalance,
+      col: this.state.partColor,
+      fil: this.state.selectedFilamentPreset,
+      due: this.state.deliveryDueDate,
+      pay: this.state.paymentMethod
+    };
+    const b64 = btoa(encodeURIComponent(JSON.stringify(payload)));
+    const url = window.location.origin + window.location.pathname + '#quote=' + b64;
+    return url;
+  }
+
+  copyShareableLink() {
+    const url = this.generateShareableLink();
+    navigator.clipboard.writeText(url).then(() => {
+      this.showToast('🔗 تم نسخ رابط عرض السعر التفاعلي للعميل بنجاح!');
+    }).catch(() => prompt('انسخ الرابط:', url));
+  }
+
+  checkUrlForSharedQuote() {
+    if (window.location.hash && window.location.hash.startsWith('#quote=')) {
+      try {
+        const b64 = window.location.hash.replace('#quote=', '');
+        const jsonStr = decodeURIComponent(atob(b64));
+        const data = JSON.parse(jsonStr);
+        if (data && data.p) {
+          this.state.projectName = data.p;
+          if (data.c) this.state.clientName = data.c;
+          if (data.ph) this.state.clientPhone = data.ph;
+          if (data.w) this.state.partWeight = data.w;
+          if (data.h) this.state.printHours = data.h;
+          if (data.q) this.state.batchQuantity = data.q;
+          if (data.col) this.state.partColor = data.col;
+          if (data.fil) this.state.selectedFilamentPreset = data.fil;
+          if (data.due) this.state.deliveryDueDate = data.due;
+          if (data.dep) this.state.depositPaid = data.dep;
+          if (data.pay) this.state.paymentMethod = data.pay;
+          this.switchTab('quote');
+          this.showToast('📄 تم فتح عرض السعر المشترك بنجاح!');
+        }
+      } catch (e) {
+        console.warn('Could not parse shared quote URL:', e);
+      }
+    }
+  }
+
+  // ================= DIRECT PDF EXPORT =================
+  downloadPDF() {
+    const quoteElement = document.querySelector('.quote-page');
+    if (!quoteElement || typeof html2pdf === 'undefined') {
+      window.print();
+      return;
+    }
+
+    const clientTitle = this.state.clientName ? `_${this.state.clientName}` : '';
+    const filename = `عرض_سعر_${this.state.projectName || 'طباعة_3D'}${clientTitle}.pdf`;
+
+    this.showToast('⏳ جاري تجهيز وتحميل ملف الـ PDF...');
+
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(quoteElement).save().then(() => {
+      this.showToast('✅ تم تحميل ملف الـ PDF بنجاح!');
+    });
+  }
+
+  setCurrency(currCode) {
+    if (CURRENCY_RATES[currCode]) {
+      this.state.currency = currCode;
+      this.render();
+      this.showToast(`💱 تم تحويل العملة إلى: ${CURRENCY_RATES[currCode].name}`);
     }
   }
 

@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=22.0">
+  <link rel="stylesheet" href="style.css?v=23.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -1187,64 +1187,312 @@
     </section>
 
     <!-- ================= TAB 8: TROUBLESHOOTING & CALIBRATION ================= -->
-    <section id="tabPane_troubleshoot" class="hidden space-y-5">
-      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
-        <h2 class="text-base font-bold mb-4 flex items-center gap-2">
-          <i class="fas fa-stethoscope text-rose-600"></i>
-          <span>دليل المعايرة السريعة وحل مشاكل الطباعة (Neptune 4 Pro)</span>
-        </h2>
-        
-        <div class="overflow-x-auto mb-6">
+    <!-- ================= TAB 8: TROUBLESHOOTING & CALIBRATION MANUAL ================= -->
+    <section id="tabPane_troubleshoot" class="hidden space-y-6">
+      
+      <!-- Manual Header Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 space-y-3">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-2xl text-blue-400 shrink-0">
+              <i class="fas fa-stethoscope"></i>
+            </div>
+            <div>
+              <h2 class="text-lg sm:text-xl font-black flex items-center gap-2">
+                <span>الدليل الهندسي الشامل لمعايرة الطابعة 3D واستكشاف الأعطال</span>
+                <span class="bg-blue-500/20 text-blue-300 text-xs px-2.5 py-0.5 rounded-full font-mono border border-blue-400/30">Elegoo Neptune 4 Pro 🇪🇬</span>
+              </h2>
+              <p class="text-xs text-slate-300 mt-1 leading-relaxed">دليل صيانة ومعايرة ميكانيكية وحرارية شامل من 5 مراحل معتمدة هندسياً لحل مشكلات التجميع والطباعة والتسويق</p>
+            </div>
+          </div>
+          <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3.5 py-2 rounded-xl border border-white/20 font-bold transition flex items-center gap-1.5 shrink-0 no-print">
+            <i class="fas fa-print"></i>
+            <span>طباعة الدليل</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Filament Temperatures Card -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-3">
+        <h3 class="font-bold text-sm flex items-center gap-2 text-slate-800 dark:text-white">
+          <i class="fas fa-temperature-arrow-up text-amber-500"></i>
+          <span>جدول الإعدادات الحرارية والسرعات القياسية (خامات باترون مصر 🇪🇬)</span>
+        </h3>
+        <div class="overflow-x-auto">
           <table class="w-full text-xs text-right border-collapse border border-slate-200 dark:border-slate-700">
             <thead class="bg-slate-100 dark:bg-slate-800 font-bold">
               <tr>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700">الخامة</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة النوزل</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة السرير</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">المروحة</th>
-                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">السرعة</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700">نوع الخامة</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة النوزل (°C)</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">حرارة السرير (°C)</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">سرعة المروحة (%)</th>
+                <th class="p-2.5 border border-slate-200 dark:border-slate-700 text-center">السرعة الموصى بها</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PLA / PLA+</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">205° - 215°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">55° - 60°C</td>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold text-blue-700 dark:text-blue-400">🇪🇬 Patron PLA / PLA+</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-blue-600">205° - 215°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-amber-600">55° - 60°C</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100%</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">150 - 250 مم/ث</td>
               </tr>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron PETG</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">230° - 245°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">70° - 80°C</td>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold text-purple-700 dark:text-purple-400">🇪🇬 Patron PETG</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-blue-600">230° - 245°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-amber-600">70° - 80°C</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">50%</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">80 - 150 مم/ث</td>
               </tr>
-              <tr>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold">🇪🇬 Patron ABS / ASA</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-blue-600">240° - 255°C</td>
-                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono text-amber-600">95° - 105°C</td>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold text-rose-700 dark:text-rose-400">🇪🇬 Patron ABS / ASA</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-blue-600">240° - 255°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-amber-600">95° - 105°C</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">15%</td>
                 <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">100 - 180 مم/ث</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 font-bold text-emerald-700 dark:text-emerald-400">🇪🇬 Patron TPU Flex (95A)</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-blue-600">215° - 230°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-amber-600">40° - 50°C</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">80%</td>
+                <td class="p-2.5 border border-slate-200 dark:border-slate-700 text-center font-mono">30 - 60 مم/ث</td>
               </tr>
             </tbody>
           </table>
         </div>
+      </div>
 
+      <!-- Phase 1: Physical & Gantry Calibration -->
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <h3 class="text-base font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">1</span>
+          <span>المرحلة الأولى: المعايرة الميكانيكية وهيكل الطابعة (Physical & Gantry Calibration)</span>
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">المعايرة الميكانيكية هي الأساس الذي تُبنى عليه كافة معايرات البرمجيات، وأي محاولة لحل المشاكل برمجياً مع وجود خلل ميكانيكي ستؤدي إلى نتائج غير مستقرة.</p>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <h4 class="font-bold text-rose-600">1. عدم التصاق أول طبقة بالسرير (Bed Adhesion)</h4>
-            <p class="text-slate-500">نظف السرير الذهبي PEI بكحول أيزوبروبيلي واضبط Z-Offset لتقريب النوزل قليلاً.</p>
+          <!-- Item 1.1 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-wrench text-blue-600"></i>
+              <span>1. فحص الهيكل والعجلات اللامركزية (Eccentric Nuts)</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>الإجراء:</strong> التحقق من عدم وجود أي تخلخل (Play) في المحاور. يتم ضبط الصواميل اللامركزية أسفل السرير، وخلف عربة البثق (Toolhead)، وعلى محاور Z.</li>
+              <li><strong>المعيار الهندسي:</strong> تُشد الصواميل حتى تتصل العجلات بالكامل بالإطار بحيث لا تدور بحرية باليد، دون إفراط لتجنب حفر العجلات المطاطية.</li>
+              <li><strong>توازي محور X:</strong> قياس المسافة بين محور X والقاعدة من الطرفين. في **Neptune 4 Pro**، يتصل محورا Z بسير علوي متزامن (Timing Belt) للحفاظ على التوازي التام.</li>
+            </ul>
           </div>
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <h4 class="font-bold text-amber-600">2. ظهور خيوط زائدة (Stringing)</h4>
-            <p class="text-slate-500">جفف بكرة الفيلامنت واخفض حرارة النوزل 5 درجات واضبط مسافة السحب Retraction لـ 1.0 مم.</p>
+
+          <!-- Item 1.2 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-arrows-left-right text-indigo-600"></i>
+              <span>2. أحزمة الحركة (Belts)</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>الإجراء:</strong> التحقق من شد أحزمة المحورين X و Y. الارتخاء يسبب مباشرة مشكلة <strong>انزياح الطبقات (Layer Shift)</strong>.</li>
+              <li><strong>المعيار الهندسي:</strong> يجب أن يكون الحزام مشدوداً بشكل مشدود ومرن (Taut) دون إفراط. الشد الزائد جداً يعيق المحرك ويسرع تلف العجلات والمحامل (Bearings).</li>
+            </ul>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- ================= TAB 9: SAVED PROJECTS & PIPELINE ================= -->
+      <!-- Phase 2: Bed Adhesion & First Layer -->
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <h3 class="text-base font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+          <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-black text-xs">2</span>
+          <span>المرحلة الثانية: استقرار السرير ومعايرة الطبقة الأولى (Bed Adhesion & First Layer)</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- Item 2.1 -->
+          <div class="p-4 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/50 space-y-2">
+            <h4 class="font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-2">
+              <i class="fas fa-border-top-left text-emerald-600"></i>
+              <span>1. حل مشكلة انحناء وتشوّه السرير (Warped Bed) في Neptune 4 Pro</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-700 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>قص أطراف سيور Y:</strong> قد تضغط أطراف أحزمة Y الطويلة على العزل السفلي مما يسبب تقوس السرير لأعلى. ينصح بقص الأطراف الزائدة وصولاً للمشبك النحاسي بفرشاة أسلاك.</li>
+              <li><strong>معايرة السست (Springs):</strong> ضغط نوابض السرير بالكامل (Bottom out) عن طريق لف البكرات لأسفل تماماً، ثم فكها دورة واحدة كاملة فقط لمنح السرير ثباتاً ميكانيكياً رائعاً.</li>
+            </ul>
+          </div>
+
+          <!-- Item 2.2 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-hand-holding-hand text-blue-600"></i>
+              <span>2. التسوية اليدوية المكررة (Auxiliary Leveling)</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>التسخين المسبق:</strong> تسخين الفوهة والسرير لدرجات التشغيل الحقيقية لتضمن التمدد الحراري للمواد.</li>
+              <li><strong>اختبار الورقة:</strong> استخدام ورقة A4 وتعديل البكرات اليدوية حتى تشعر باحتكاك خفيف متساوٍ تحت النقاط. <strong>تكرار العملية 3 إلى 4 مرات متتالية</strong> لان تعديل زاوية يغير باقي النقاط.</li>
+            </ul>
+          </div>
+
+          <!-- Item 2.3 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-bullseye text-purple-600"></i>
+              <span>3. التسوية التلقائية الاحترافية (Auto Bed Leveling - ABL)</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>Professional Mode:</strong> في Neptune 4 Pro يُنصح بتفعيل وضع التسوية الاحترافي (111 نقطة) لإنشاء أدق شبكة تعويض رقمية ممكنة.</li>
+              <li><strong>تنبيه حتمي:</strong> يجب تركيب اللوح المغناطيسي PEI دائماً قبل التسوية؛ فبدونه لن يرصد الحساس المعدن وسوف يصطدم النوزل بالسرير بقوة.</li>
+            </ul>
+          </div>
+
+          <!-- Item 2.4 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-ruler-vertical text-amber-600"></i>
+              <span>4. معايرة الارتفاع الرأسي (Z-Offset Calibration)</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+              <li><strong>طريقة الضبط:</strong> خفض المحور Z تدريجياً أسفل النوزل حتى تنثني ورقة الاختبار عند دفعها للأمام، ثم رفعه بمقدار 0.01 مم فقط لتصل للسحب المثالي، ثم تحفظ بـ <code class="font-mono bg-slate-200 dark:bg-slate-700 px-1 rounded">M500</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3: Thermal & Extrusion Calibration -->
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <h3 class="text-base font-bold text-purple-700 dark:text-purple-400 flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+          <span class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-black text-xs">3</span>
+          <span>المرحلة الثالثة: معايرة البثق ومعدل التدفق (Thermal & Extrusion Calibration)</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <!-- Item 3.1 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-fire-flame-curved text-rose-500"></i>
+              <span>1. معايرة الـ PID Autotune</span>
+            </h4>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed">يضمن ثبات درجة حرارة الهوت إند والسرير دون تقلبات حرارية تسبب عيوباً سطحية. قم بتشغيل معالج <strong>PID Calibrate</strong> من شاشة الطابعة أو واجهة Klipper Web UI.</p>
+          </div>
+
+          <!-- Item 3.2 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-calculator text-blue-600"></i>
+              <span>2. معايرة خطوات محرك البثق (E-steps / Rotation Distance)</span>
+            </h4>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed">ضمان بثق 100 مم بدقة. معادلة Marlin:</p>
+            <div class="p-2 bg-slate-200 dark:bg-slate-950 font-mono text-[11px] rounded dir-ltr text-center font-bold">
+              E_new = (E_current * 100) / (120 - Remaining)
+            </div>
+            <p class="text-slate-500 text-[11px]">في نظام Klipper (Neptune 4 Pro) يتم تعديل قيمة <strong>rotation_distance</strong> في ملف <code class="font-mono">printer.cfg</code>.</p>
+          </div>
+
+          <!-- Item 3.3 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-gauge-high text-emerald-600"></i>
+              <span>3. معايرة معدل التدفق (Flow Rate / Extrusion Multiplier)</span>
+            </h4>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed">اختبار مربعات التدفق في OrcaSlicer لتحديد نسبة البثق السطحي الأملس دون كشط البلاستيك أو فراغات. المتوسط المثالي لـ PLA+ هو <strong>0.96 (96%)</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4: Slicer Tuning -->
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <h3 class="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+          <span class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center font-black text-xs">4</span>
+          <span>المرحلة الرابعة: معايرة إعدادات برنامج التقطيع المتقدمة (Slicer Tuning)</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <!-- Item 4.1 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-building text-amber-600"></i>
+              <span>1. برج اختبار الحرارة (Temp Tower)</span>
+            </h4>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed">طباعة برج الاختبار الذي يغير الحرارة 5 درجات مع كل طبقة رأسية للعثور على أفضل تماسك ميكانيكي وأقل تسييل.</p>
+          </div>
+
+          <!-- Item 4.2 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-retweet text-blue-600"></i>
+              <span>2. معايرة تراجع الفلمنت (Retraction)</span>
+            </h4>
+            <ul class="space-y-1 text-slate-600 dark:text-slate-300 list-disc list-inside">
+              <li><strong>Direct Drive (Neptune 4 Pro):</strong> من 0.5 مم إلى 1.0 مم بحد أقصى.</li>
+              <li><strong>Bowden Setup:</strong> من 4 مم إلى 6 مم.</li>
+              <li class="text-rose-600 font-bold">تنبيه: السحب المفرط يسبب تجمد البلاستيك المنصهر داخل التبريد وحدوث انسداد كامل (Clog).</li>
+              <li><strong>الحل البديل:</strong> تفعيل خيار <em>Avoid Crossing Walls</em>.</li>
+            </ul>
+          </div>
+
+          <!-- Item 4.3 -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <i class="fas fa-chart-line text-indigo-600"></i>
+              <span>3. التحكم في ضغط الفوهة (Pressure Advance)</span>
+            </h4>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed">يحدد اختبار Pressure Advance في OrcaSlicer قيمة K المثالية لتنعيم انتفاخ الزوايا وضمان استقرار أبعاد المجسم بدقة ميكانيكية بالغة.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 5: Troubleshooting Matrix Table -->
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+        <h3 class="text-base font-bold text-rose-700 dark:text-rose-400 flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+          <span class="w-7 h-7 rounded-lg bg-rose-600 text-white flex items-center justify-center font-black text-xs">5</span>
+          <span>المرحلة الخامسة: جدول استكشاف وفحص الأعطال الشائعة (Troubleshooting Matrix)</span>
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right border-collapse border border-slate-200 dark:border-slate-700">
+            <thead class="bg-slate-100 dark:bg-slate-800 font-bold">
+              <tr>
+                <th class="p-3 border border-slate-200 dark:border-slate-700 w-1/4">العرض الملاحظ</th>
+                <th class="p-3 border border-slate-200 dark:border-slate-700 w-1/3">السبب العلمي الأساسي</th>
+                <th class="p-3 border border-slate-200 dark:border-slate-700">خطوة الإصلاح الفورية</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-rose-600 dark:text-rose-400">عدم التصاق الطبقة الأولى بالكامل</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">تراكم الزيوت والدهون الناتجة عن اللمس باليد على سطح الطباعة PEI.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">غسل السطح بماء دافئ وصابون أطباق سائل وتجفيفه بورقة نظيفة دون لمسه باليد.</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-amber-600 dark:text-amber-400">تقوس حواف القطع الكبيرة (Warping)</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">تعرض المجسم لتيارات هوائية وتبريد غير متساوٍ يسبب انكماش المادة.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">استخدام حاوية مغلقة (Enclosure)، تقليل تبريد المروحة، وتبطئة الطبقة الأولى لـ 30 مم/ث.</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-purple-600 dark:text-purple-400">صوت طقطقة في الأكسترودر وخطوط هشة</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">انسداد جزئي بالنوزل بسبب حرق الشوائب أو حرارة منخفضة جداً.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">عمل سحب بارد (Cold Pull) عند 70 درجة مئوية، أو استبدال النوزل التالف.</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-blue-600 dark:text-blue-400">خيوط عنكبوتية (Stringing) كثيفة جداً</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">الفلمنت رطب ومبلل، البخار يضغط على البلاستيك للخارج أثناء التنقل.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">تجفيف الفلمنت في فرن تجفيف (PLA عند 45-50°C، PETG/TPU عند 62°C) لـ 6-8 ساعات.</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-emerald-600 dark:text-emerald-400">صوت كشط واحتكاك النوزل بالطبقات</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">استخدام نمط حشو متقاطع (مثل Grid) يراكم المادة عند نقاط التقاطع.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">تغيير نمط الحشو في السلايسر إلى نمط غير متقاطع وثلاثي الأبعاد مثل <strong>Gyroid</strong>.</td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-bold text-rose-600 dark:text-rose-400">تمزق سطح السرير المغناطيسي PEI</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">طباعة خامات مثل TPU أو PETG مباشرة دون طبقة عازلة.</td>
+                <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">وضع صمغ لاصق (Glue stick) كطبقة عازلة لتسهيل فك القطع، وتجنب أدوات كشط حادة.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+<!-- ================= TAB 9: SAVED PROJECTS & PIPELINE ================= -->
     <section id="tabPane_saved" class="hidden space-y-4">
       <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 flex-wrap gap-2">
@@ -1285,7 +1533,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=22.0"></script>
-  <script src="app.js?v=22.0"></script>
+  <script src="presets.js?v=23.0"></script>
+  <script src="app.js?v=23.0"></script>
 </body>
 </html>

@@ -1,140 +1,143 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=JetBrains+Mono:ital,wght@0,500;0,600;0,700;0,800;1,700&display=swap');
 
 :root {
-  --font-sans: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: 'Cairo', var(--font-sans);
+  --font-body: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-head: 'Cairo', var(--font-body);
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Theme tokens - Light */
-  --bg-app: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f1f5f9 35%, #f8fafc 100%);
-  --bg-surface: rgba(255, 255, 255, 0.9);
-  --bg-surface-elevated: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --border-app: rgba(226, 232, 240, 0.8);
-  --border-focus: #3b82f6;
-  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 0 15px -3px rgba(37, 99, 235, 0.05);
+  /* Linear Daylight Palette (Day) */
+  --bg-page: #f8fafc;
+  --bg-bento: rgba(255, 255, 255, 0.95);
+  --bg-bento-elevated: #ffffff;
+  --border-line: rgba(203, 213, 225, 0.8);
+  --border-highlight: #3b82f6;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --shadow-bento: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.04);
 }
 
 .dark {
-  /* Theme tokens - Dark */
-  --bg-app: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 35%, #050811 100%);
-  --bg-surface: rgba(15, 23, 42, 0.85);
-  --bg-surface-elevated: #0f172a;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-app: rgba(51, 65, 85, 0.6);
-  --border-focus: #60a5fa;
-  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px -2px rgba(59, 130, 246, 0.15);
+  /* Linear Midnight Palette (Night) */
+  --bg-page: #080a10;
+  --bg-bento: rgba(15, 20, 31, 0.85);
+  --bg-bento-elevated: #111726;
+  --border-line: rgba(255, 255, 255, 0.08);
+  --border-highlight: #60a5fa;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --shadow-bento: 0 4px 20px -2px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Base reset */
 * { box-sizing: border-box; }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   direction: rtl;
   text-align: right;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-app);
-  color: var(--text-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   min-height: 100vh;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
-.font-mono-nums { font-family: var(--font-mono); letter-spacing: -0.02em; }
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); }
+.font-mono-nums { font-family: var(--font-mono); letter-spacing: -0.03em; }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+/* Custom Linear Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #475569; border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
 ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Studio Surface Cards */
-.studio-card {
-  background: var(--bg-surface);
+/* Linear Bento Card */
+.bento-card {
+  background: var(--bg-bento);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-app);
+  border: 1px solid var(--border-line);
   border-radius: 1.25rem;
-  box-shadow: var(--shadow-card);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-bento);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.bento-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.2), 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+/* Linear KPI Tile */
+.kpi-tile {
+  background: var(--bg-bento);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-line);
+  border-radius: 1.125rem;
+  padding: 1.25rem 1rem;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
-.studio-card:hover {
-  border-color: var(--border-focus);
+.kpi-tile:hover {
+  border-color: rgba(59, 130, 246, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px -4px rgba(59, 130, 246, 0.15);
 }
 
-/* Floating Cockpit KPI */
-.cockpit-kpi {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-  border: 1px solid rgba(71, 85, 105, 0.5);
-  border-radius: 1.25rem;
-  padding: 1.25rem 1rem;
-  transition: all 0.25s ease;
-}
-.cockpit-kpi:hover {
-  border-color: #3b82f6;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
-}
-
-/* Segmented Pill Tabs */
-.studio-tab-btn {
-  padding: 0.625rem 1.125rem;
-  border-radius: 0.875rem;
+/* Linear Pill Tabs */
+.bento-nav-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
   white-space: nowrap;
 }
 
-.studio-tab-btn:hover {
-  color: var(--text-main);
-  background: rgba(148, 163, 184, 0.15);
+.bento-nav-btn:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.12);
 }
 
-.studio-tab-btn.active {
+.bento-nav-btn.active {
   color: #ffffff !important;
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   border-color: #3b82f6 !important;
-  box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.5);
-  transform: scale(1.02);
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.4);
 }
 
-/* Inputs & Form Controls */
-.studio-input, .studio-select {
-  background: var(--bg-surface-elevated);
-  border: 1.5px solid var(--border-app);
-  color: var(--text-main);
-  border-radius: 0.875rem;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
+/* Linear Precision Inputs */
+.bento-input, .bento-select {
+  background: var(--bg-bento-elevated);
+  border: 1px solid var(--border-line);
+  color: var(--text-primary);
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.2s ease;
   width: 100%;
 }
 
-.studio-input:focus, .studio-select:focus {
+.bento-input:focus, .bento-select:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-/* Spreadsheet Table */
+/* Linear Spreadsheet Table */
 .calc-table {
   border-collapse: separate;
   border-spacing: 0;
@@ -142,12 +145,12 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 }
 
 .calc-table th, .calc-table td {
-  border: 1px solid var(--border-app);
-  padding: 12px 16px;
+  border: 1px solid var(--border-line);
+  padding: 10px 14px;
 }
 
 .cell-input-blue { color: #3b82f6 !important; font-weight: 800 !important; }
-.cell-calc-dark { color: var(--text-main) !important; font-weight: 800 !important; }
+.cell-calc-dark { color: var(--text-primary) !important; font-weight: 800 !important; }
 
 .row-highlight-green {
   background: linear-gradient(135deg, rgba(6, 78, 59, 0.9), rgba(6, 95, 70, 0.9)) !important;
@@ -155,15 +158,15 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 }
 
 .tbl-number-input {
-  width: 120px;
+  width: 110px;
   text-align: center;
-  background-color: var(--bg-surface-elevated);
-  border: 2px solid #3b82f6;
+  background-color: var(--bg-bento-elevated);
+  border: 1.5px solid #3b82f6;
   color: #3b82f6 !important;
-  border-radius: 10px;
-  padding: 6px 8px;
+  border-radius: 8px;
+  padding: 5px 6px;
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.925rem;
   font-weight: 700;
   transition: all 0.2s ease;
 }
@@ -171,8 +174,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 .tbl-number-input:focus {
   outline: none;
   border-color: #60a5fa;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35);
-  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.35);
+  transform: scale(1.02);
 }
 
 .section-header-row td {
@@ -186,16 +189,16 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   height: 100% !important;
   display: block;
   cursor: grab;
-  border-radius: 1rem;
+  border-radius: 0.875rem;
 }
 #stlCanvasContainer canvas:active { cursor: grabbing; }
 
-/* Mobile Touch */
+/* Mobile Touch Targets */
 @media (max-width: 640px) {
   input[type="text"], input[type="number"], input[type="tel"], input[type="date"], select {
     font-size: 16px !important;
   }
-  .tbl-number-input { width: 95px; font-size: 0.875rem; }
+  .tbl-number-input { width: 90px; font-size: 0.85rem; }
   .calc-table th, .calc-table td { padding: 8px 6px; font-size: 0.775rem; }
 }
 

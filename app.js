@@ -555,6 +555,8 @@ class CostCalculatorApp {
   }
 
   renderCharts(res) {
+    if (!res) res = this.calculate();
+    if (!res) return;
     const ctx = document.getElementById('costChart');
     if (ctx) {
       const dataValues = [res.materialCost, res.powerCost, res.depreciationCost, res.laborCost, res.failureCost, res.additionalCost].map(v => Number(v.toFixed(2)));
@@ -1080,7 +1082,7 @@ class CostCalculatorApp {
     }
 
     if (this.charts) {
-      this.renderCharts();
+      this.renderCharts(this.calculate());
     }
   }
 

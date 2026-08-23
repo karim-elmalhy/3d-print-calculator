@@ -1520,6 +1520,27 @@ class CostCalculatorApp {
     animate();
   }
 
+  
+  // ================= UNIFIED FILE UPLOADER (STL & GCODE) =================
+  handleUnifiedFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.stl')) {
+      this.loadSTLFile(file);
+    } else if (name.endsWith('.gcode') || name.endsWith('.g')) {
+      this.parseGCodeFile(file);
+    } else {
+      alert('يرجى اختيار ملف مجسم STL (.stl) أو ملف تقطيع G-Code (.gcode)');
+    }
+  }
+
+  handleFileInputChange(e) {
+    if (e.target.files && e.target.files.length > 0) {
+      this.handleUnifiedFile(e.target.files[0]);
+    }
+  }
+
   loadSTLFile(file) {
     if (!file.name.toLowerCase().endsWith('.stl')) {
       alert('يرجى اختيار ملف مجسم بصيغة STL (.stl)');

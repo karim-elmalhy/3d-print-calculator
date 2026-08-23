@@ -1,6 +1,11 @@
 // Presets Data for Egyptian 3D Printing Market - Expanded & Updated
 const PRESETS = {
   filaments: [
+    { id: 'patron-pla', name: 'Patron PLA باترون مصري (1 كجم) 🇪🇬', price: 600, weight: 1000, type: 'PLA', brand: 'Patron 3D', density: 1.24, notes: 'فيلامنت باترون مصري الصنع — اقتصادي وعالي الجودة' },
+    { id: 'patron-pla-plus', name: 'Patron PLA+ باترون بلس (1 كجم) 🇪🇬', price: 700, weight: 1000, type: 'PLA+', brand: 'Patron 3D', density: 1.25, notes: 'باترون بلس بقوة وصلابة أعلى ومقاومة للصدمات' },
+    { id: 'patron-petg', name: 'Patron PETG باترون (1 كجم) 🇪🇬', price: 650, weight: 1000, type: 'PETG', brand: 'Patron 3D', density: 1.27, notes: 'مقاوم للحرارة والرطوبة — مصري الصنع' },
+    { id: 'patron-abs', name: 'Patron ABS باترون (1 كجم) 🇪🇬', price: 750, weight: 1000, type: 'ABS', brand: 'Patron 3D', density: 1.06, notes: 'باترون ABS للقطع الميكانيكية والهندسية' },
+    { id: 'patron-tpu', name: 'Patron TPU باترون مرن (1 كجم) 🇪🇬', price: 950, weight: 1000, type: 'TPU', brand: 'Patron 3D', density: 1.21, notes: 'خامة مطاطية مرنة مصرية الصنع' },
     { id: 'esun-pla', name: 'eSUN PLA (1 كجم)', price: 700, weight: 1000, type: 'PLA', brand: 'eSUN', density: 1.24, notes: 'متوسط سعر أمازون مصر / المتاجر المحلية' },
     { id: 'esun-pla-plus', name: 'eSUN PLA+ (1 كجم)', price: 800, weight: 1000, type: 'PLA+', brand: 'eSUN', density: 1.25, notes: 'صلابة أعلى ومقاومة للصدمات' },
     { id: 'kingroon-pla', name: 'Kingroon PLA (1 كجم)', price: 650, weight: 1000, type: 'PLA', brand: 'Kingroon', density: 1.24, notes: 'خامة اقتصادية ممتازة' },

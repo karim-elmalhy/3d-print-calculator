@@ -147,84 +147,44 @@ class CostCalculatorApp {
     this.checkDeadlineAlerts();
   }
 
-  populatePresets() {
-    const fSelect = document.getElementById('filamentPresetSelect');
-    if (fSelect && typeof PRESETS !== 'undefined') {
-      fSelect.innerHTML = '<option value="">-- اختر خامة من السوق المصري --</option>' + 
-        PRESETS.filaments.map(f => `<option value="${f.id}" ${f.id === this.state.selectedFilamentPreset ? 'selected' : ''}>${f.name} — ${f.price} ج.م</option>`).join('');
-    }
+    populatePresets() {
+    if (typeof PRESETS === 'undefined') return;
+
+    // Build filament options
+    const filamentOptions = '<option value="">-- اختر خامة (مثال: Patron / eSUN) --</option>' + 
+      PRESETS.filaments.map(f => `<option value="${f.id}" ${f.id === this.state.selectedFilamentPreset ? 'selected' : ''}>${f.name} — ${f.price} ج.م</option>`).join('');
+
+    ['filamentPresetSelect', 'dash_filamentSelect', 'tbl_filamentPresetSelect'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = filamentOptions;
+    });
 
     const pSelect = document.getElementById('printerPresetSelect');
-    if (pSelect && typeof PRESETS !== 'undefined') {
+    if (pSelect && PRESETS.printers) {
       pSelect.innerHTML = '<option value="">-- اختر طابعة ثلاثية الأبعاد --</option>' + 
         PRESETS.printers.map(p => `<option value="${p.id}" ${p.id === this.state.selectedPrinterPreset ? 'selected' : ''}>${p.name} — ${p.price.toLocaleString('ar-EG')} ج.م</option>`).join('');
     }
 
     const powerSelect = document.getElementById('electricityTierSelect');
-    if (powerSelect && typeof PRESETS !== 'undefined') {
+    if (powerSelect && PRESETS.electricityTiers) {
       powerSelect.innerHTML = '<option value="">-- اختر شريحة الكهرباء في مصر --</option>' + 
         PRESETS.electricityTiers.map(t => `<option value="${t.id}" ${t.id === this.state.selectedPowerPreset ? 'selected' : ''}>${t.name} (${t.rate} ج.م/ك.و.س)</option>`).join('');
     }
 
-    
-    const imgInput = document.getElementById('dash_partImageInput');
-    if (imgInput) {
-      imgInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            this.state.partImageUrl = ev.target.result;
-            this.render();
-            this.showToast('تم إرفاق صورة القطعة بنجاح!');
-          };
-          reader.readAsDataURL(e.target.files[0]);
-        }
-      });
-    }
-
-    const paySelect = document.getElementById('dash_paymentMethodSelect');
-    if (paySelect) {
-      paySelect.addEventListener('change', (e) => {
-        this.state.paymentMethod = e.target.value;
-        this.render();
-      });
-    }
-
-    const statusSelect = document.getElementById('dash_orderStatusSelect');
-    if (statusSelect) {
-      statusSelect.addEventListener('change', (e) => {
-        this.state.orderStatus = e.target.value;
-        this.render();
-      });
-    }
-
-    const clientInput = document.getElementById('dash_clientName');
-    if (clientInput) {
-      clientInput.addEventListener('change', (e) => {
-        const found = this.savedProjects.find(p => p.clientName === e.target.value);
-        if (found) {
-          if (found.clientPhone && !this.state.clientPhone) this.state.clientPhone = found.clientPhone;
-          if (found.clientAddress && !this.state.clientAddress) this.state.clientAddress = found.clientAddress;
-          this.render();
-          this.showToast(`✨ تم استرجاع بيانات العميل: ${found.clientName}`);
-        }
-      });
-    }
-
     const hwSelect = document.getElementById('hardwareQuickAddSelect');
-    if (hwSelect && typeof PRESETS !== 'undefined' && PRESETS.hardwareAccessories) {
+    if (hwSelect && PRESETS.hardwareAccessories) {
       hwSelect.innerHTML = '<option value="">+ إضافة مستلزمات تجميع جاهزة</option>' + 
         PRESETS.hardwareAccessories.map((h, i) => `<option value="${i}">${h.name} (${h.unitCost} ج.م/${h.unit})</option>`).join('');
     }
 
     const shipSelect = document.getElementById('dash_shippingGovSelect');
-    if (shipSelect && typeof PRESETS !== 'undefined' && PRESETS.shippingGovernorates) {
+    if (shipSelect && PRESETS.shippingGovernorates) {
       shipSelect.innerHTML = '<option value="local-pickup">استلام من المقر (0 ج.م)</option>' + 
         PRESETS.shippingGovernorates.map(g => `<option value="${g.id}" ${g.id === this.state.selectedGovernorate ? 'selected' : ''}>${g.name} — ${g.cost} ج.م</option>`).join('');
     }
 
     const colorSelect = document.getElementById('dash_partColorSelect');
-    if (colorSelect && typeof PRESETS !== 'undefined' && PRESETS.colors) {
+    if (colorSelect && PRESETS.colors) {
       colorSelect.innerHTML = '<option value="">-- اختر اللون --</option>' + 
         PRESETS.colors.map(c => `<option value="${c}" ${c === this.state.partColor ? 'selected' : ''}>${c}</option>`).join('');
     }
@@ -876,7 +836,30 @@ class CostCalculatorApp {
       if (el) el.addEventListener('input', (e) => handleInput(b.key, e.target.value, b.type));
     });
 
-    const fSelect = document.getElementById('filamentPresetSelect');
+        const handleFilamentChange = (e) => {
+      if (typeof PRESETS === 'undefined' || !PRESETS.filaments) return;
+      const item = PRESETS.filaments.find(f => f.id === e.target.value);
+      if (item) {
+        this.state.selectedFilamentPreset = item.id;
+        this.state.spoolPrice = item.price;
+        this.state.spoolWeight = item.weight;
+        
+        // Sync all 3 selects
+        ['filamentPresetSelect', 'dash_filamentSelect', 'tbl_filamentPresetSelect'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el && el.value !== item.id) el.value = item.id;
+        });
+
+        this.render();
+        this.showToast(`✨ تم اختيار: ${item.name} (${item.price} ج.م)`);
+      }
+    };
+
+    ['filamentPresetSelect', 'dash_filamentSelect', 'tbl_filamentPresetSelect'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', handleFilamentChange);
+    });
+    const fSelect = null; // replaced by handleFilamentChange
     if (fSelect && typeof PRESETS !== 'undefined') {
       fSelect.addEventListener('change', (e) => {
         const item = PRESETS.filaments.find(f => f.id === e.target.value);

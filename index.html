@@ -19,7 +19,7 @@
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="style.css?v=6.1">
+  <link rel="stylesheet" href="style.css?v=7.0">
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2563eb">
@@ -51,7 +51,7 @@
 
   <!-- Header -->
     <!-- Header -->
-  <header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm no-print">
+  <header class="bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-40 shadow-2xl shadow-blue-500/5 no-print">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4">
       <div class="flex items-center justify-between w-full sm:w-auto gap-3">
         <div class="flex items-center gap-2.5">
@@ -116,7 +116,7 @@
   </header>
 
   <!-- Top Hero Metrics Bar -->
-  <section class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white py-5 sm:py-7 shadow-lg no-print">
+  <section class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white py-6 shadow-2xl border-b border-slate-800/60 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         
@@ -181,36 +181,36 @@
   <!-- Navigation Tabs -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 no-print w-full">
     <div class="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-      <nav class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
-        <button id="tabBtn_table" onclick="app.switchTab('table')" class="tab-btn active px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 bg-blue-600 text-white shadow-md transition">
+      <nav class="flex items-center gap-2 overflow-x-auto p-1.5 bg-slate-950/60 backdrop-blur-md rounded-2xl border border-slate-800/80 no-scrollbar">
+        <button id="tabBtn_table" onclick="app.switchTab('table')" class="cyber-tab-btn tab-btn active px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 bg-blue-600 text-white shadow-md transition">
           <i class="fas fa-table-cells"></i>
           <span>جدول الحسابات</span>
         </button>
-        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_dashboard" onclick="app.switchTab('dashboard')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-sliders"></i>
           <span>لوحة التحكم والـ G-Code</span>
         </button>
-        <button id="tabBtn_assembly" onclick="app.switchTab('assembly')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_assembly" onclick="app.switchTab('assembly')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-puzzle-piece"></i>
           <span>حساب التجميعات (Multi-Part)</span>
         </button>
-        <button id="tabBtn_roi" onclick="app.switchTab('roi')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_roi" onclick="app.switchTab('roi')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-chart-line"></i>
           <span>تحليل الاسترداد والـ ROI</span>
         </button>
-        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_quote" onclick="app.switchTab('quote')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-file-invoice-dollar"></i>
           <span>عرض السعر والواتساب</span>
         </button>
-                <button id="tabBtn_troubleshoot" onclick="app.switchTab('troubleshoot')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button id="tabBtn_troubleshoot" onclick="app.switchTab('troubleshoot')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-stethoscope text-rose-500"></i>
           <span>دليل المعايرة والأعطال</span>
         </button>
-        <button id="tabBtn_analytics" onclick="app.switchTab('analytics')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_analytics" onclick="app.switchTab('analytics')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-chart-pie text-indigo-500"></i>
           <span>التقارير والأرباح</span>
         </button>
-        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <button id="tabBtn_saved" onclick="app.switchTab('saved')" class="cyber-tab-btn tab-btn px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fas fa-folder-open"></i>
           <span>المشاريع المحفوظة</span>
         </button>
@@ -513,7 +513,7 @@
 
       <!-- Project Metadata Card (Expanded) -->
       <!-- Card A: Client & Order Info -->
-      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-4">
+      <div class="cyber-card p-5 mb-4">
         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
           <i class="fas fa-user-tie text-blue-600"></i>
           <span>بيانات العميل والطلب</span>
@@ -521,44 +521,44 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم القطعة / الموديل</label>
-            <input type="text" id="dash_projectName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مجسم تروس، حامل هاتف...">
+            <input type="text" id="dash_projectName" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مجسم تروس، حامل هاتف...">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل</label>
-            <input type="text" id="dash_clientName" list="savedClientsList" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none transition shadow-sm" placeholder="مثال: م. أحمد عبد الله">
+            <input type="text" id="dash_clientName" list="savedClientsList" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none transition shadow-sm" placeholder="مثال: م. أحمد عبد الله">
             <datalist id="savedClientsList"></datalist>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">رقم هاتف العميل</label>
-            <input type="tel" id="dash_clientPhone" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: 01012345678">
+            <input type="tel" id="dash_clientPhone" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: 01012345678">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">عنوان التسليم</label>
-            <input type="text" id="dash_clientAddress" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مدينة نصر، القاهرة">
+            <input type="text" id="dash_clientAddress" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مدينة نصر، القاهرة">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">المحافظة / منطقة الشحن</label>
-            <select id="dash_shippingGovSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none"></select>
+            <select id="dash_shippingGovSelect" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none"></select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تكلفة الشحن (ج.م)</label>
-            <input type="number" id="dash_shippingCost" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
+            <input type="number" id="dash_shippingCost" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">الكمية المطلوبة (Batch Qty)</label>
-            <input type="number" id="dash_batchQuantity" min="1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="1">
+            <input type="number" id="dash_batchQuantity" min="1" class="cyber-input text-sm font-bold text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="1">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">مبلغ العربون المدفوع (ج.م)</label>
-            <input type="number" id="dash_depositPaid" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
+            <input type="number" id="dash_depositPaid" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تاريخ التسليم المتوقع</label>
-            <input type="date" id="dash_deliveryDueDate" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="date" id="dash_deliveryDueDate" class="cyber-input text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">طريقة الدفع</label>
-            <select id="dash_paymentMethodSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200">
+            <select id="dash_paymentMethodSelect" class="cyber-input text-xs font-medium text-slate-700 dark:text-slate-200">
               <option value="cash">💵 كاش عند الاستلام</option>
               <option value="instapay">⚡ إنستاباي InstaPay</option>
               <option value="vodafone_cash">📱 فودافون كاش (Vodafone Cash)</option>
@@ -567,7 +567,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">حالة الطلب</label>
-            <select id="dash_orderStatusSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400">
+            <select id="dash_orderStatusSelect" class="cyber-input text-xs font-bold text-blue-600 dark:text-blue-400">
               <option value="pending_design">✏️ قيد التصميم الهندسي</option>
               <option value="ready_print">⏳ جاهز للطباعة</option>
               <option value="printing">🖨️ جاري الطباعة الآن</option>
@@ -585,13 +585,13 @@
       </div>
 
       <!-- Card B: Part Print Specifications -->
-      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-4">
+      <div class="cyber-card p-5 mb-4">
         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
           <i class="fas fa-layer-group text-blue-600"></i>
           <span>مواصفات الطباعة والقطعة المطلوبة</span>
         </h3>
               <!-- Unified 3D STL & G-Code Smart Hub -->
-      <div class="pro-card p-5 space-y-4">
+      <div class="cyber-card p-5 space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-700/60">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-lg shadow-lg shadow-blue-500/30 shrink-0">
@@ -672,7 +672,7 @@
 
 
       <!-- Pricing Templates Quick Apply -->
-      <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="cyber-card p-4">
         <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
           <i class="fas fa-wand-magic-sparkles text-purple-600"></i>
           <span>قوالب تسعير سريعة (Pricing Templates) — تطبيق بضغطة واحدة</span>
@@ -702,7 +702,7 @@
       </div>
 
       <!-- Spool Roll Balance Card -->
-      <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="cyber-card p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-lg font-bold">
             <i class="fas fa-circle-notch"></i>
@@ -725,7 +725,7 @@
       <!-- Control Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div class="cyber-card p-5 flex flex-col justify-between">
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 class="font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -739,20 +739,20 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وزن القطعة (جرام)</label>
-              <input type="number" id="dash_partWeight" step="0.5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_partWeight" step="0.5" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">سعر البكرة (ج.م)</label>
-              <input type="number" id="dash_spoolPrice" step="10" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_spoolPrice" step="10" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وزن البكرة بالجرام</label>
-              <input type="number" id="dash_spoolWeight" step="50" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium font-mono-nums">
+              <input type="number" id="dash_spoolWeight" step="50" class="cyber-input text-sm font-medium font-mono-nums">
             </div>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div class="cyber-card p-5 flex flex-col justify-between">
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 class="font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -762,11 +762,11 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ساعات الطباعة (ساعة)</label>
-              <input type="number" id="dash_printHours" step="0.25" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_printHours" step="0.25" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">شريحة الكهرباء المصرية</label>
-              <select id="electricityTierSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200"></select>
+              <select id="electricityTierSelect" class="cyber-input text-xs font-medium text-slate-700 dark:text-slate-200"></select>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
@@ -781,7 +781,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div class="cyber-card p-5 flex flex-col justify-between">
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 class="font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -791,20 +791,20 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">موديل الطابعة</label>
-              <select id="printerPresetSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200"></select>
+              <select id="printerPresetSelect" class="cyber-input text-xs font-medium text-slate-700 dark:text-slate-200"></select>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">سعر الشراء (ج.م)</label>
-              <input type="number" id="dash_printerPrice" step="500" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_printerPrice" step="500" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">العمر الافتراضي (ساعة)</label>
-              <input type="number" id="dash_printerLifespanHours" step="500" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium font-mono-nums">
+              <input type="number" id="dash_printerLifespanHours" step="500" class="cyber-input text-sm font-medium font-mono-nums">
             </div>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="cyber-card p-5">
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 class="font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -814,16 +814,16 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">وقت العمل اليدوي (ساعة)</label>
-              <input type="number" id="dash_laborHours" step="0.1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_laborHours" step="0.1" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">أجرك في الساعة (ج.م)</label>
-              <input type="number" id="dash_laborRatePerHour" step="10" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_laborRatePerHour" step="10" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="cyber-card p-5">
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 class="font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -833,11 +833,11 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة الهدر وفشل الطباعة (%)</label>
-              <input type="number" id="dash_failureRatePercent" step="1" min="0" max="100" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 font-mono-nums">
+              <input type="number" id="dash_failureRatePercent" step="1" min="0" max="100" class="cyber-input text-sm font-bold text-blue-600 font-mono-nums">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">إضافة مستلزمات سريعة (مسامير/مغناطيس)</label>
-              <select id="hardwareQuickAddSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium"></select>
+              <select id="hardwareQuickAddSelect" class="cyber-input text-xs font-medium"></select>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
@@ -873,7 +873,7 @@
       </div>
 
       <!-- Material Cost Comparison Tool -->
-      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="cyber-card p-5">
         <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
           <i class="fas fa-scale-balanced text-indigo-600"></i>
           <span>مقارنة تكلفة الخامات لنفس القطعة (Material Cost Comparison)</span>
@@ -884,7 +884,7 @@
 
       <!-- Charts Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="cyber-card p-5">
           <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <i class="fas fa-chart-pie text-blue-600"></i>
             <span>توزيع عناصر التكلفة الحقيقية للقطعة</span>
@@ -894,7 +894,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div class="cyber-card p-5 flex flex-col justify-between">
           <div>
             <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
               <i class="fas fa-chart-bar text-emerald-600"></i>
@@ -950,7 +950,7 @@
 
     <!-- TAB 3: MULTI-PART ASSEMBLY -->
     <section id="tabPane_assembly" class="hidden space-y-6">
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+      <div class="cyber-card p-6 space-y-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
             <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -996,7 +996,7 @@
     <!-- TAB 4: BREAK-EVEN & ROI ANALYSIS -->
     <section id="tabPane_roi" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-blue-100 dark:bg-blue-900 text-blue-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-bullseye"></i>
           </div>
@@ -1005,7 +1005,7 @@
           <div class="text-[11px] text-slate-500 mt-1">لتغطية ثمن الطابعة بالكامل</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 dark:bg-amber-900 text-amber-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-business-time"></i>
           </div>
@@ -1014,7 +1014,7 @@
           <div class="text-[11px] text-slate-500 mt-1">من عمر الطابعة (5000 س)</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-100 dark:bg-emerald-900 text-emerald-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-sack-dollar"></i>
           </div>
@@ -1023,7 +1023,7 @@
           <div class="text-[11px] text-slate-500 mt-1">بمعدل 20 قطعة شهرياً</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-purple-100 dark:bg-purple-900 text-purple-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-calendar-check"></i>
           </div>
@@ -1033,7 +1033,7 @@
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <div class="cyber-card p-6 space-y-4">
         <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
           <i class="fas fa-sliders text-blue-600"></i>
           <span>محاكي خطة العمل والإنتاجية الشهرية (Business Productivity Simulator)</span>
@@ -1213,7 +1213,7 @@
     <!-- ================= TAB 7: ANALYTICS & REPORTS ================= -->
     <section id="tabPane_analytics" class="hidden space-y-6">
       
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="cyber-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
             <i class="fas fa-chart-line text-indigo-600"></i>
@@ -1230,7 +1230,7 @@
 
       <!-- KPI Summary Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-sack-dollar"></i>
           </div>
@@ -1239,7 +1239,7 @@
           <div class="text-[11px] text-slate-500 mt-1">من المشاريع المحفوظة</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-chart-pie"></i>
           </div>
@@ -1248,7 +1248,7 @@
           <div class="text-[11px] text-slate-500 mt-1">أرباح صافية مستهدفة</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-weight-hanging"></i>
           </div>
@@ -1257,7 +1257,7 @@
           <div class="text-[11px] text-slate-500 mt-1">مجموع أوزان الطلبات</div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+        <div class="cyber-card p-5 text-center">
           <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-lg mb-2">
             <i class="fas fa-clock"></i>
           </div>
@@ -1269,7 +1269,7 @@
 
       <!-- Analytics Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="cyber-card p-5">
           <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <i class="fas fa-chart-bar text-blue-600"></i>
             <span>توزيع المشاريع حسب حالة الطلب</span>
@@ -1279,7 +1279,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="cyber-card p-5">
           <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <i class="fas fa-list-check text-emerald-600"></i>
             <span>العملاء الأكثر طلباً والمشاريع النشطة</span>
@@ -1294,7 +1294,7 @@
     <!-- ================= TAB 8: TROUBLESHOOTING & CALIBRATION GUIDE ================= -->
     <section id="tabPane_troubleshoot" class="hidden space-y-6">
       
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="cyber-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
             <i class="fas fa-stethoscope text-rose-600"></i>
@@ -1363,7 +1363,7 @@
       <!-- Troubleshooting Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div class="cyber-card p-5 space-y-2">
           <div class="flex items-center gap-2 text-sm font-bold text-rose-600">
             <i class="fas fa-triangle-exclamation"></i>
             <span>1. عدم التصاق الطبقة الأولى أو فك القطعة (Bed Adhesion)</span>
@@ -1375,7 +1375,7 @@
           </ul>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div class="cyber-card p-5 space-y-2">
           <div class="flex items-center gap-2 text-sm font-bold text-amber-600">
             <i class="fas fa-spider"></i>
             <span>2. ظهور خيوط وشعر عنكبوتي زائد (Stringing & Oozing)</span>
@@ -1387,7 +1387,7 @@
           </ul>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div class="cyber-card p-5 space-y-2">
           <div class="flex items-center gap-2 text-sm font-bold text-indigo-600">
             <i class="fas fa-layer-group"></i>
             <span>3. إزاحة وتداخل الطبقات المفاجئ (Layer Shift)</span>
@@ -1399,7 +1399,7 @@
           </ul>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div class="cyber-card p-5 space-y-2">
           <div class="flex items-center gap-2 text-sm font-bold text-purple-600">
             <i class="fas fa-faucet-drip"></i>
             <span>4. انسداد الفوهة أو نقص تدفق الخامة (Under-Extrusion & Clog)</span>
@@ -1452,8 +1452,8 @@
     </div>
   </footer>
 
-  <script src="presets.js?v=6.1"></script>
-  <script src="app.js?v=6.1"></script>
+  <script src="presets.js?v=7.0"></script>
+  <script src="app.js?v=7.0"></script>
 
 <script>
 if ('serviceWorker' in navigator) {

@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=13.0">
+  <link rel="stylesheet" href="style.css?v=13.1">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -256,7 +256,17 @@
             </tr>
 
             <!-- 2) Power -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">2) تكلفة استهلاك الكهرباء (Power Cost)</td></tr>
+            <tr class="section-header-row font-bold">
+              <td colspan="4" class="p-2">
+                <div class="flex items-center justify-between px-1 flex-wrap gap-2">
+                  <span>2) تكلفة استهلاك الكهرباء (Power Cost)</span>
+                  <div class="flex items-center gap-1.5 text-xs font-normal">
+                    <span class="text-blue-200">الشريحة:</span>
+                    <select id="electricityTierSelect" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold"></select>
+                  </div>
+                </div>
+              </td>
+            </tr>
             <tr>
               <td class="font-bold">ساعات الطباعة</td>
               <td class="text-center"><input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="0.00"></td>
@@ -283,7 +293,17 @@
             </tr>
 
             <!-- 3) Depreciation -->
-            <tr class="section-header-row font-bold"><td colspan="4" class="p-2">3) إهلاك وصيانة الطابعة (Depreciation)</td></tr>
+            <tr class="section-header-row font-bold">
+              <td colspan="4" class="p-2">
+                <div class="flex items-center justify-between px-1 flex-wrap gap-2">
+                  <span>3) إهلاك وصيانة الطابعة (Depreciation)</span>
+                  <div class="flex items-center gap-1.5 text-xs font-normal">
+                    <span class="text-blue-200">موديل الطابعة:</span>
+                    <select id="printerPresetSelect" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs px-2 py-1 rounded font-bold"></select>
+                  </div>
+                </div>
+              </td>
+            </tr>
             <tr>
               <td class="font-bold">سعر شراء الطابعة</td>
               <td class="text-center"><input type="number" id="tbl_printerPrice" step="500" min="1000" class="tbl-number-input cell-input-blue" value="26000.00"></td>
@@ -686,7 +706,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=13.0"></script>
-  <script src="app.js?v=13.0"></script>
+  <script src="presets.js?v=13.1"></script>
+  <script src="app.js?v=13.1"></script>
 </body>
 </html>

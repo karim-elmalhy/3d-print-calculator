@@ -1442,73 +1442,55 @@ class CostCalculatorApp {
     setTimeout(() => this.init3DScene(), 150);
   }
 
-  init3DScene() {
+    init3DScene() {
     const container = document.getElementById('stlCanvasContainer');
     if (!container || typeof THREE === 'undefined') return;
+
+    if (this.threeRenderer && this.threeScene) return;
 
     container.innerHTML = '';
     const width = container.clientWidth || 380;
     const height = 300;
 
     this.threeScene = new THREE.Scene();
-    this.threeScene.background = new THREE.Color(this.state.darkMode ? 0x0f172a : 0xf1f5f9);
+    this.threeScene.background = new THREE.Color(this.state.darkMode ? 0x0f172a : 0x0a0f1d);
 
     this.threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     this.threeCamera.position.set(80, 80, 100);
 
-    this.threeRenderer = new THREE.WebGLRenderer({ antialias: true });
+    this.threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.threeRenderer.setSize(width, height);
     this.threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.threeRenderer.shadowMap.enabled = true;
     container.appendChild(this.threeRenderer.domElement);
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.75);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.85);
     this.threeScene.add(ambient);
 
-    const dir1 = new THREE.DirectionalLight(0xffffff, 0.85);
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.9);
     dir1.position.set(100, 150, 100);
     this.threeScene.add(dir1);
 
-    const dir2 = new THREE.DirectionalLight(0x3b82f6, 0.5);
+    const dir2 = new THREE.DirectionalLight(0x3b82f6, 0.6);
     dir2.position.set(-100, -50, -100);
     this.threeScene.add(dir2);
 
-    // Grid Floor (Neptune 4 Pro 225x225 build plate representation)
-    const grid = new THREE.GridHelper(150, 15, 0x3b82f6, 0x94a3b8);
+    const grid = new THREE.GridHelper(160, 16, 0x3b82f6, 0x475569);
     grid.position.y = 0;
     this.threeScene.add(grid);
 
-    // Controls (Orbit or mouse rotation)
     if (typeof THREE.OrbitControls !== 'undefined') {
       this.threeControls = new THREE.OrbitControls(this.threeCamera, this.threeRenderer.domElement);
       this.threeControls.enableDamping = true;
       this.threeControls.dampingFactor = 0.05;
-    } else {
-      // Fallback simple mouse rotation
-      let isDragging = false;
-      let prevMousePos = { x: 0, y: 0 };
-      const dom = this.threeRenderer.domElement;
-      dom.addEventListener('mousedown', (e) => { isDragging = true; prevMousePos = { x: e.clientX, y: e.clientY }; });
-      window.addEventListener('mouseup', () => { isDragging = false; });
-      dom.addEventListener('mousemove', (e) => {
-        if (!isDragging || !this.threeMesh) return;
-        const deltaX = e.clientX - prevMousePos.x;
-        const deltaY = e.clientY - prevMousePos.y;
-        this.threeMesh.rotation.y += deltaX * 0.01;
-        this.threeMesh.rotation.x += deltaY * 0.01;
-        prevMousePos = { x: e.clientX, y: e.clientY };
-      });
     }
 
-    // Add a default placeholder calibration cube until user drops STL
-    const sampleGeom = new THREE.BoxGeometry(20, 20, 20);
-    const sampleMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.1 });
+    const sampleGeom = new THREE.BoxGeometry(25, 25, 25);
+    const sampleMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.35, metalness: 0.15 });
     this.threeMesh = new THREE.Mesh(sampleGeom, sampleMat);
-    this.threeMesh.position.set(0, 10, 0);
+    this.threeMesh.position.set(0, 12.5, 0);
     this.threeScene.add(this.threeMesh);
 
-    // Animation Loop
     const animate = () => {
       this.threeAnimId = requestAnimationFrame(animate);
       if (this.threeControls) this.threeControls.update();
@@ -1520,34 +1502,13 @@ class CostCalculatorApp {
     animate();
   }
 
-  
-  // ================= UNIFIED FILE UPLOADER (STL & GCODE) =================
-  handleUnifiedFile(file) {
-    if (!file) return;
-    const name = file.name.toLowerCase();
-
-    if (name.endsWith('.stl')) {
-      this.loadSTLFile(file);
-    } else if (name.endsWith('.gcode') || name.endsWith('.g')) {
-      this.parseGCodeFile(file);
-    } else {
-      alert('يرجى اختيار ملف مجسم STL (.stl) أو ملف تقطيع G-Code (.gcode)');
-    }
-  }
-
-  handleFileInputChange(e) {
-    if (e.target.files && e.target.files.length > 0) {
-      this.handleUnifiedFile(e.target.files[0]);
-    }
-  }
-
   loadSTLFile(file) {
-    if (!file.name.toLowerCase().endsWith('.stl')) {
+    if (!file || !file.name.toLowerCase().endsWith('.stl')) {
       alert('يرجى اختيار ملف مجسم بصيغة STL (.stl)');
       return;
     }
 
-    this.showToast('⏳ جاري قراءة وتحليل مجسم الـ STL...');
+    this.showToast('⏳ جاري معالجة وتحليل مجسم الـ STL...');
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -1555,14 +1516,17 @@ class CostCalculatorApp {
         this.parseAndRenderSTL(buffer, file.name);
       } catch (err) {
         console.error('STL Parse error:', err);
-        alert('حدث خطأ أثناء قراءة ملف الـ STL. تأكد من سلامة الملف.');
+        alert('حدث خطأ أثناء معالجة ملف الـ STL. تأكد من سلامة الملف.');
       }
     };
     reader.readAsArrayBuffer(file);
   }
 
   parseAndRenderSTL(buffer, filename) {
-    // 1. Standalone Binary & ASCII STL Parser (Zero CDN dependencies)
+    if (!this.threeScene || !this.threeRenderer) {
+      this.init3DScene();
+    }
+
     const isBinary = () => {
       if (buffer.byteLength < 84) return false;
       const reader = new DataView(buffer);
@@ -1595,7 +1559,6 @@ class CostCalculatorApp {
         offset += 2;
       }
     } else {
-      // ASCII STL
       const text = new TextDecoder().decode(buffer);
       const normalMatches = [...text.matchAll(/facet\s+normal\s+([\s\S]*?)endfacet/gi)];
       for (const match of normalMatches) {
@@ -1615,7 +1578,7 @@ class CostCalculatorApp {
     }
 
     if (positions.length === 0) {
-      alert('لم يتم العثور على أوجه ثلاثية الأبعاد في هذا الملف.');
+      alert('لم يتم العثور على أوجه ثلاثية الأبعاد في ملف الـ STL.');
       return;
     }
 
@@ -1626,16 +1589,14 @@ class CostCalculatorApp {
       geometry.computeVertexNormals();
     }
 
-    // 2. Remove previous mesh
-    if (this.threeMesh) {
+    if (this.threeMesh && this.threeScene) {
       this.threeScene.remove(this.threeMesh);
     }
 
-    // 3. Create new mesh
     const material = new THREE.MeshStandardMaterial({
-      color: 0x2563eb,
-      roughness: 0.35,
-      metalness: 0.15
+      color: 0x3b82f6,
+      roughness: 0.3,
+      metalness: 0.2
     });
 
     this.threeMesh = new THREE.Mesh(geometry, material);
@@ -1646,12 +1607,12 @@ class CostCalculatorApp {
     const center = new THREE.Vector3();
     box.getCenter(center);
 
-    // Center and place on grid
     this.threeMesh.position.set(-center.x, -box.min.y, -center.z);
-    this.threeScene.add(this.threeMesh);
+    if (this.threeScene) {
+      this.threeScene.add(this.threeMesh);
+    }
     this.customSTLLoaded = true;
 
-    // Adjust camera
     const maxDim = Math.max(size.x, size.y, size.z);
     if (this.threeCamera) {
       this.threeCamera.position.set(maxDim * 1.5, maxDim * 1.3, maxDim * 1.8);
@@ -1659,7 +1620,6 @@ class CostCalculatorApp {
       if (this.threeControls) this.threeControls.target.set(0, size.y / 2, 0);
     }
 
-    // 4. Calculate Net Geometric Volume (mm³ -> cm³)
     let volumeCm3 = 0;
     const posAttr = geometry.attributes.position;
     if (posAttr) {
@@ -1673,7 +1633,6 @@ class CostCalculatorApp {
       volumeCm3 = Math.abs(volumeCm3) / 1000.0;
     }
 
-    // 5. Estimate Weight based on Filament Density and Infill
     const filamentItem = typeof PRESETS !== 'undefined' ? PRESETS.filaments.find(f => f.id === this.state.selectedFilamentPreset) : null;
     const density = filamentItem?.density || 1.24;
     const infillRatio = ((this.state.infillPercent || 20) / 100) * 0.45 + 0.25;
@@ -1686,7 +1645,6 @@ class CostCalculatorApp {
       estimatedGrams: estimatedGrams
     };
 
-    // Update Info Box
     const infoBox = document.getElementById('stlInfoBox');
     if (infoBox) infoBox.classList.remove('hidden');
 

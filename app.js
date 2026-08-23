@@ -972,21 +972,23 @@ class CostCalculatorApp {
     const name = file.name.toLowerCase();
     if (name.endsWith('.stl')) {
       this.loadSTLFile(file);
-    } else if (name.endsWith('.gcode') || name.endsWith('.g')) {
+    } else if (name.endsWith('.gcode') || name.endsWith('.g') || name.endsWith('.gco') || name.endsWith('.nc')) {
       this.parseGCodeFile(file);
     } else {
-      alert('يرجى اختيار ملف مجسم بصيغة STL (.stl) أو ملف تقطيع G-Code (.gcode)');
+      // Try parsing as G-Code or STL based on content
+      this.parseGCodeFile(file);
     }
   }
 
   handleFileInputChange(e) {
     if (e && e.target && e.target.files && e.target.files.length > 0) {
       this.handleUnifiedFile(e.target.files[0]);
+      e.target.value = ''; // Reset input to allow re-uploading same file
     }
   }
 
   loadSTLFile(file) {
-    if (!file || !file.name.toLowerCase().endsWith('.stl')) return;
+    if (!file) return;
     this.showToast('⏳ جاري قراءة وعرض مجسم الـ STL...');
 
     const reader = new FileReader();
@@ -1149,41 +1151,118 @@ class CostCalculatorApp {
   }
 
   parseGCodeFile(file) {
-    this.showToast('⏳ جاري قراءة وتحليل ملف الـ G-Code...');
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result;
+    if (!file) return;
+    this.showToast('⏳ جاري تحليل ملف الـ G-Code فورياً...');
+
+    const parseTextContent = (text) => {
       let printTimeSeconds = 0;
       let filamentGrams = 0;
 
-      const timeMatch = text.match(/;\s*TIME:\s*(\d+)/i) || text.match(/;\s*estimated printing time[^=]*=\s*([^\n]+)/i);
-      const filamentMatch = text.match(/;\s*Filament used:\s*([\d.]+)\s*g/i) || text.match(/;\s*total filament used \[g\]\s*=\s*([\d.]+)/i) || text.match(/;\s*filament_used_g\s*=\s*([\d.]+)/i);
+      // 1. Filament Weight Extraction
+      const mG = text.match(/;\s*(?:total\s+)?filament\s+used\s*\[g\]\s*=\s*([\d.]+)/i) ||
+                 text.match(/;\s*filament_used_g\s*=\s*([\d.]+)/i) ||
+                 text.match(/;\s*(?:total_)?filament_weight\s*[:=]\s*([\d.]+)/i) ||
+                 text.match(/;\s*material_weight\s*[:=]\s*([\d.]+)/i) ||
+                 text.match(/;\s*Filament used:\s*([\d.]+)\s*g/i) ||
+                 text.match(/;\s*Filament used:\s*([\d.]+)\s*grams/i) ||
+                 text.match(/;\s*Filament weight\s*[:=]\s*([\d.]+)\s*g/i);
 
-      if (filamentMatch) filamentGrams = parseFloat(filamentMatch[1]);
-      if (timeMatch) {
-        const rawTime = timeMatch[1];
-        if (!isNaN(rawTime)) {
-          printTimeSeconds = parseInt(rawTime, 10);
+      if (mG) {
+        filamentGrams = parseFloat(mG[1]);
+      } else {
+        // Volume in cm3
+        const mCm3 = text.match(/;\s*filament\s+used\s*\[cm3\]\s*=\s*([\d.]+)/i) ||
+                     text.match(/;\s*Filament volume\s*[:=]\s*([\d.]+)\s*cm3/i);
+        if (mCm3) {
+          const density = PRESETS.filaments.find(f => f.id === this.state.selectedFilamentPreset)?.density || 1.24;
+          filamentGrams = parseFloat(mCm3[1]) * density;
         } else {
+          // Length in meters
+          const mM = text.match(/;\s*Filament used:\s*([\d.]+)\s*m\b/i) ||
+                     text.match(/;\s*Filament length\s*[:=]\s*([\d.]+)\s*m\b/i);
+          if (mM) {
+            filamentGrams = parseFloat(mM[1]) * 2.98;
+          } else {
+            // Length in mm
+            const mMm = text.match(/;\s*(?:total\s+)?filament\s+used\s*\[mm\]\s*=\s*([\d.]+)/i) ||
+                        text.match(/;\s*Filament used:\s*([\d.]+)\s*mm\b/i) ||
+                        text.match(/;\s*Filament length\s*[:=]\s*([\d.]+)\s*mm\b/i);
+            if (mMm) {
+              filamentGrams = (parseFloat(mMm[1]) / 1000.0) * 2.98;
+            }
+          }
+        }
+      }
+
+      // 2. Print Time Extraction
+      const mSec = text.match(/;\s*(?:TIME|print_time|PRINT\.TIME|TIME_ELAPSED)\s*:\s*(\d+)/i) ||
+                   text.match(/;\s*estimated printing time[^=]*=\s*(\d+)\s*s/i);
+      if (mSec) {
+        printTimeSeconds = parseInt(mSec[1], 10);
+      } else {
+        const mStr = text.match(/;\s*(?:estimated printing time|model printing time|total estimated time|Build time|Print time)[^=:]*[=:]\s*([^\n\r]+)/i);
+        if (mStr) {
+          const raw = mStr[1];
           let h = 0, m = 0, s = 0;
-          const hMatch = rawTime.match(/(\d+)\s*h/i);
-          const mMatch = rawTime.match(/(\d+)\s*m/i);
-          const sMatch = rawTime.match(/(\d+)\s*s/i);
-          if (hMatch) h = parseInt(hMatch[1], 10);
-          if (mMatch) m = parseInt(mMatch[1], 10);
-          if (sMatch) s = parseInt(sMatch[1], 10);
+          const hM = raw.match(/(\d+)\s*(?:h|hour|hours)/i);
+          const mM = raw.match(/(\d+)\s*(?:m|min|minute|minutes)/i);
+          const sM = raw.match(/(\d+)\s*(?:s|sec|second|seconds)/i);
+          if (hM) h = parseInt(hM[1], 10);
+          if (mM) m = parseInt(mM[1], 10);
+          if (sM) s = parseInt(sM[1], 10);
           printTimeSeconds = h * 3600 + m * 60 + s;
         }
       }
 
+      // 3. Layer Height (optional)
+      const mLayer = text.match(/;\s*layer_height\s*=\s*([\d.]+)/i) ||
+                     text.match(/;\s*Layer height:\s*([\d.]+)/i);
+      if (mLayer) {
+        const lh = parseFloat(mLayer[1]);
+        if (lh <= 0.14) this.state.layerHeight = '0.12 مم (تفاصيل دقيقة جداً)';
+        else if (lh <= 0.18) this.state.layerHeight = '0.16 مم (تفاصيل عالية)';
+        else if (lh <= 0.24) this.state.layerHeight = '0.20 مم (قياسي)';
+        else if (lh <= 0.30) this.state.layerHeight = '0.28 مم (سريع)';
+        else this.state.layerHeight = '0.32 مم (Draft سريع جداً)';
+      }
+
+      // 4. Update State & UI
       if (filamentGrams > 0) this.state.partWeight = Number(filamentGrams.toFixed(1));
       if (printTimeSeconds > 0) this.state.printHours = Number((printTimeSeconds / 3600).toFixed(2));
-      this.state.projectName = file.name.replace(/\.gcode$/i, '').replace(/\.g$/i, '');
+
+      const cleanName = file.name.replace(/\.gcode$/i, '').replace(/\.g$/i, '').replace(/\.gco$/i, '').replace(/\.nc$/i, '');
+      if (cleanName) this.state.projectName = cleanName;
 
       this.render();
-      this.showToast(`⚡ تم استخراج البيانات من الـ G-Code: ${this.state.partWeight} جم • ${this.state.printHours} ساعة`);
+
+      if (filamentGrams > 0 || printTimeSeconds > 0) {
+        this.showToast(`⚡ تم استخراج بيانات الـ G-Code: ${this.state.partWeight} جم • ${this.state.printHours} ساعة • ${this.state.projectName}`);
+      } else {
+        this.showToast(`⚠️ تم فتح ملف G-Code (${file.name}). يرجى التحقق من أرقام Slicer.`);
+      }
     };
-    reader.readAsText(file);
+
+    // Fast chunked reading (Header 128KB + Footer 128KB)
+    if (file.size > 262144) {
+      const headBlob = file.slice(0, 131072);
+      const footBlob = file.slice(-131072);
+
+      const r1 = new FileReader();
+      r1.onload = (e1) => {
+        const headText = e1.target.result;
+        const r2 = new FileReader();
+        r2.onload = (e2) => {
+          const footText = e2.target.result;
+          parseTextContent(headText + '\n' + footText);
+        };
+        r2.readAsText(footBlob);
+      };
+      r1.readAsText(headBlob);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => parseTextContent(e.target.result);
+      reader.readAsText(file);
+    }
   }
 
   // ================= 13. CHARTS & QR CODE =================

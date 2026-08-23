@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=14.0">
+  <link rel="stylesheet" href="style.css?v=15.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -48,7 +48,7 @@
     }
   </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
+<body ondragover="event.preventDefault();" ondrop="event.preventDefault(); if(event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) app.handleUnifiedFile(event.dataTransfer.files[0]);" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
 
   <!-- ================= TOP DEADLINE ALERT BANNER ================= -->
   <div id="deadlineAlertBanner" class="hidden no-print"></div>
@@ -211,7 +211,11 @@
       </nav>
 
       <div class="flex items-center gap-2">
-        <button onclick="app.exportCSV()" title="تصدير جدول التكاليف كملف Excel / CSV" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="document.getElementById('unifiedFileInput').click()" title="رفع ملف STL أو G-Code واستخراج الوزن والوقت فورياً" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fas fa-file-arrow-up"></i>
+          <span>رفع G-Code / STL ⚡</span>
+        </button>
+        <button onclick="app.exportCSV()"  title="تصدير جدول التكاليف كملف Excel / CSV" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
           <i class="fas fa-file-csv text-emerald-600"></i>
           <span>تصدير CSV</span>
         </button>
@@ -1073,7 +1077,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=14.0"></script>
-  <script src="app.js?v=14.0"></script>
+  <script src="presets.js?v=15.0"></script>
+  <script src="app.js?v=15.0"></script>
 </body>
 </html>

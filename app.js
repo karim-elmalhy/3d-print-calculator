@@ -40,7 +40,25 @@ const DEFAULT_STATE = {
 
   activeTab: 'table',
   darkMode: false,
-  currency: 'EGP'
+  currency: 'EGP',
+
+  // Client & Order Info
+  clientPhone: '',
+  clientAddress: '',
+  selectedGovernorate: 'local-pickup',
+  shippingCost: 0,
+  depositPaid: 0,
+  deliveryDueDate: '',
+
+  // Part Specifications
+  partColor: 'أسود (Black)',
+  layerHeight: '0.20 مم (قياسي)',
+  infillPercent: 20,
+  supportsType: 'شجرية (Tree Supports)',
+
+  // CAD Design service
+  cadDesignHours: 0,
+  cadDesignRatePerHour: 150.00,
 };
 
 const CURRENCY_RATES = {
@@ -59,7 +77,7 @@ class CostCalculatorApp {
 
   loadState() {
     try {
-      const saved = localStorage.getItem('3d_calc_current_state_v2');
+      const saved = localStorage.getItem('3d_calc_current_state_v3');
       if (saved) return { ...DEFAULT_STATE, ...JSON.parse(saved) };
     } catch (e) {}
     return { ...DEFAULT_STATE };
@@ -67,13 +85,13 @@ class CostCalculatorApp {
 
   saveState() {
     try {
-      localStorage.setItem('3d_calc_current_state_v2', JSON.stringify(this.state));
+      localStorage.setItem('3d_calc_current_state_v3', JSON.stringify(this.state));
     } catch (e) {}
   }
 
   loadSavedProjects() {
     try {
-      const projects = localStorage.getItem('3d_calc_saved_projects_v2');
+      const projects = localStorage.getItem('3d_calc_saved_projects_v3');
       return projects ? JSON.parse(projects) : [];
     } catch (e) {
       return [];
@@ -82,7 +100,7 @@ class CostCalculatorApp {
 
   saveProjectsList() {
     try {
-      localStorage.setItem('3d_calc_saved_projects_v2', JSON.stringify(this.savedProjects));
+      localStorage.setItem('3d_calc_saved_projects_v3', JSON.stringify(this.savedProjects));
     } catch (e) {}
   }
 
@@ -117,6 +135,18 @@ class CostCalculatorApp {
     if (hwSelect && typeof PRESETS !== 'undefined' && PRESETS.hardwareAccessories) {
       hwSelect.innerHTML = '<option value="">+ إضافة مستلزمات تجميع جاهزة</option>' + 
         PRESETS.hardwareAccessories.map((h, i) => `<option value="${i}">${h.name} (${h.unitCost} ج.م/${h.unit})</option>`).join('');
+    }
+
+    const shipSelect = document.getElementById('dash_shippingGovSelect');
+    if (shipSelect && typeof PRESETS !== 'undefined' && PRESETS.shippingGovernorates) {
+      shipSelect.innerHTML = '<option value="local-pickup">استلام من المقر (0 ج.م)</option>' + 
+        PRESETS.shippingGovernorates.map(g => `<option value="${g.id}" ${g.id === this.state.selectedGovernorate ? 'selected' : ''}>${g.name} — ${g.cost} ج.م</option>`).join('');
+    }
+
+    const colorSelect = document.getElementById('dash_partColorSelect');
+    if (colorSelect && typeof PRESETS !== 'undefined' && PRESETS.colors) {
+      colorSelect.innerHTML = '<option value="">-- اختر اللون --</option>' + 
+        PRESETS.colors.map(c => `<option value="${c}" ${c === this.state.partColor ? 'selected' : ''}>${c}</option>`).join('');
     }
   }
 
@@ -170,6 +200,12 @@ class CostCalculatorApp {
     const monthlyProfit = profitAmount * monthlyPrints;
     const monthsToBreakEven = monthlyProfit > 0 ? (s.printerPrice / monthlyProfit).toFixed(1) : '∞';
 
+    const cadFee = (Number(s.cadDesignHours) || 0) * (Number(s.cadDesignRatePerHour) || 0);
+    const shippingFee = Number(s.shippingCost) || 0;
+    const grandOrderTotal = (finalSellingPrice * qty) + shippingFee + cadFee;
+    const deposit = Number(s.depositPaid) || 0;
+    const remainingBalance = Math.max(0, grandOrderTotal - deposit);
+
     return {
       effectiveWeight, effectiveHours, materialCost, powerCost,
       depreciationPerHour, depreciationCost, laborCost, additionalCost,
@@ -177,7 +213,8 @@ class CostCalculatorApp {
       finalSellingPrice, profitAmount, markupPercent, qty,
       batchTotalCost, batchTotalPrice, batchTotalProfit,
       costPerGram, costPerHour, remainingAfterPrint, printsLeftInSpool,
-      piecesToBreakEven, hoursToBreakEven, monthlyPrints, monthlyProfit, monthsToBreakEven
+      piecesToBreakEven, hoursToBreakEven, monthlyPrints, monthlyProfit, monthsToBreakEven,
+      cadFee, shippingFee, grandOrderTotal, deposit, remainingBalance
     };
   }
 
@@ -251,6 +288,14 @@ class CostCalculatorApp {
     this.updateElementValue('dash_additionalCost', this.state.additionalCost);
     this.updateElementValue('dash_additionalCostNotes', this.state.additionalCostNotes || '');
     this.updateElementValue('dash_printsPerMonth', this.state.printsPerMonth);
+
+    this.updateElementValue('dash_clientPhone', this.state.clientPhone || '');
+    this.updateElementValue('dash_clientAddress', this.state.clientAddress || '');
+    this.updateElementValue('dash_shippingCost', this.state.shippingCost);
+    this.updateElementValue('dash_depositPaid', this.state.depositPaid);
+    this.updateElementValue('dash_deliveryDueDate', this.state.deliveryDueDate || '');
+    this.updateElementValue('dash_cadDesignHours', this.state.cadDesignHours);
+    this.updateElementValue('dash_cadDesignRatePerHour', this.state.cadDesignRatePerHour);
 
     // Spool Roll Tracker UI
     const spoolBar = document.getElementById('spoolProgress');
@@ -534,6 +579,18 @@ class CostCalculatorApp {
     this.updateElementText('quoteQuantity', `${res.qty} قطعة`);
     this.updateElementText('quoteTotalPrice', this.formatCurrency(res.batchTotalPrice));
     this.updateElementText('quoteNotes', s.notes || 'الطباعة بدقة عالية وجودة ممتازة شاملة إزالة الدعامات والتشطيب الأولي.');
+
+    this.updateElementText('quoteDueDate', s.deliveryDueDate || 'خلال 2-3 أيام عمل');
+    this.updateElementText('quoteClientPhone', s.clientPhone || 'غير مسجل');
+    this.updateElementText('quoteClientAddress', s.clientAddress || (s.selectedGovernorate !== 'local-pickup' ? s.selectedGovernorate : 'استلام من المقر'));
+    this.updateElementText('quoteColor', s.partColor);
+    this.updateElementText('quoteLayerHeight', s.layerHeight);
+    this.updateElementText('quoteInfill', s.infillPercent + '%');
+    this.updateElementText('quotePrintSubtotal', this.formatCurrency(res.finalSellingPrice * res.qty));
+    this.updateElementText('quoteShippingCost', this.formatCurrency(res.shippingFee));
+    this.updateElementText('quoteCadFee', this.formatCurrency(res.cadFee));
+    this.updateElementText('quoteDepositPaid', this.formatCurrency(res.deposit));
+    this.updateElementText('quoteRemainingBalance', this.formatCurrency(res.remainingBalance));
   }
 
   renderSavedProjects() {
@@ -551,12 +608,14 @@ class CostCalculatorApp {
           <div class="flex items-center gap-2">
             <span class="font-bold text-slate-800 dark:text-slate-100 text-lg">${p.projectName || 'مشروع بدون اسم'}</span>
             ${p.clientName ? `<span class="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs px-2.5 py-0.5 rounded-full font-medium">${p.clientName}</span>` : ''}
+            ${p.clientPhone ? `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs px-2.5 py-0.5 rounded-full font-medium">${p.clientPhone}</span>` : ''}
           </div>
           <div class="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap gap-x-4 gap-y-1">
+            <span><i class="fas fa-palette ml-1"></i> ${p.partColor || 'غير محدد'}</span>
             <span><i class="fas fa-weight-hanging ml-1"></i> ${p.partWeight} جم</span>
             <span><i class="fas fa-clock ml-1"></i> ${p.printHours} ساعة</span>
             <span><i class="fas fa-coins ml-1"></i> التكلفة: ${p.calcSummary?.totalCost || '-'}</span>
-            <span><i class="fas fa-tag ml-1 text-emerald-600"></i> سعر البيع: ${p.calcSummary?.sellingPrice || '-'}</span>
+            <span><i class="fas fa-tag ml-1 text-emerald-600"></i> الإجمالي: ${p.calcSummary?.grandOrderTotal || '-'}</span>
           </div>
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto justify-end">
@@ -579,7 +638,8 @@ class CostCalculatorApp {
       calcSummary: {
         totalCost: this.formatCurrency(res.totalCost),
         sellingPrice: this.formatCurrency(res.finalSellingPrice),
-        profit: this.formatCurrency(res.profitAmount)
+        profit: this.formatCurrency(res.profitAmount),
+        grandOrderTotal: this.formatCurrency(res.grandOrderTotal)
       }
     };
 
@@ -668,7 +728,15 @@ class CostCalculatorApp {
       { id: 'dash_batchQuantity', key: 'batchQuantity', type: 'int' },
       { id: 'dash_additionalCost', key: 'additionalCost' },
       { id: 'dash_additionalCostNotes', key: 'additionalCostNotes', type: 'string' },
-      { id: 'dash_printsPerMonth', key: 'printsPerMonth', type: 'int' }
+      { id: 'dash_printsPerMonth', key: 'printsPerMonth', type: 'int' },
+      { id: 'dash_clientPhone', key: 'clientPhone', type: 'string' },
+      { id: 'dash_clientAddress', key: 'clientAddress', type: 'string' },
+      { id: 'dash_shippingCost', key: 'shippingCost' },
+      { id: 'dash_depositPaid', key: 'depositPaid' },
+      { id: 'dash_deliveryDueDate', key: 'deliveryDueDate', type: 'string' },
+      { id: 'dash_cadDesignHours', key: 'cadDesignHours' },
+      { id: 'dash_cadDesignRatePerHour', key: 'cadDesignRatePerHour' },
+      { id: 'dash_infillPercent', key: 'infillPercent', type: 'int' }
     ];
 
     dashBindings.forEach(b => {
@@ -731,6 +799,47 @@ class CostCalculatorApp {
         }
       });
     }
+
+    const shipSelect = document.getElementById('dash_shippingGovSelect');
+    if (shipSelect && typeof PRESETS !== 'undefined' && PRESETS.shippingGovernorates) {
+      shipSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'local-pickup') {
+          this.state.selectedGovernorate = 'local-pickup';
+          this.state.shippingCost = 0;
+        } else {
+          const item = PRESETS.shippingGovernorates.find(g => g.id === e.target.value);
+          if (item) {
+            this.state.selectedGovernorate = item.id;
+            this.state.shippingCost = item.cost;
+          }
+        }
+        this.render();
+      });
+    }
+
+    const colorSelect = document.getElementById('dash_partColorSelect');
+    if (colorSelect) {
+      colorSelect.addEventListener('change', (e) => {
+        this.state.partColor = e.target.value;
+        this.render();
+      });
+    }
+
+    const lhSelect = document.getElementById('dash_layerHeightSelect');
+    if (lhSelect) {
+      lhSelect.addEventListener('change', (e) => {
+        this.state.layerHeight = e.target.value;
+        this.render();
+      });
+    }
+
+    const suppSelect = document.getElementById('dash_supportsTypeSelect');
+    if (suppSelect) {
+      suppSelect.addEventListener('change', (e) => {
+        this.state.supportsType = e.target.value;
+        this.render();
+      });
+    }
   }
 
   switchTab(tabName) {
@@ -785,41 +894,48 @@ class CostCalculatorApp {
     const s = this.state;
     const filament = typeof PRESETS !== 'undefined' ? (PRESETS.filaments.find(f => f.id === s.selectedFilamentPreset)?.name || 'PLA') : 'PLA';
     
-    let text = `مرحباً ${s.clientName || 'عزيزي العميل'} 👋
-`;
-    text += `إليك عرض سعر لخدمة الطباعة ثلاثية الأبعاد:
-
-`;
-    text += `📦 *القطعة / المشروع:* ${s.projectName || 'قطعة مخصصة'}
-`;
-    text += `⚖️ *الوزن الإجمالي:* ${res.effectiveWeight} جرام
-`;
-    text += `🧵 *الخامة:* ${filament}
-`;
-    text += `⏱️ *مدة الطباعة المقدرة:* ${res.effectiveHours} ساعة
-`;
-    text += `🔢 *الكمية:* ${res.qty} قطعة
-`;
-    text += `--------------------------
-`;
-    text += `💰 *سعر القطعة:* ${this.formatCurrency(res.finalSellingPrice)}
-`;
-    if (res.qty > 1) {
-      text += `💵 *الإجمالي للكمية (${res.qty} قطع):* ${this.formatCurrency(res.batchTotalPrice)}
-`;
+    let text = `مرحباً ${s.clientName || 'عزيزي العميل'} 👋\n`;
+    text += `إليك عرض سعر لخدمة الطباعة ثلاثية الأبعاد:\n\n`;
+    text += `📦 *القطعة / المشروع:* ${s.projectName || 'قطعة مخصصة'}\n`;
+    text += `🎨 *اللون:* ${s.partColor}\n`;
+    text += `🧵 *الخامة:* ${filament}\n`;
+    text += `📏 *دقة الطباعة (Layer):* ${s.layerHeight}\n`;
+    text += `🧱 *نسبة التعبئة (Infill):* ${s.infillPercent}%\n`;
+    text += `⚖️ *الوزن الإجمالي:* ${res.effectiveWeight} جرام\n`;
+    text += `⏱️ *مدة الطباعة المقدرة:* ${res.effectiveHours} ساعة\n`;
+    text += `🔢 *الكمية:* ${res.qty} قطعة\n`;
+    text += `--------------------------\n`;
+    text += `💰 *سعر القطعة:* ${this.formatCurrency(res.finalSellingPrice)}\n`;
+    text += `💵 *إجمالي الطباعة:* ${this.formatCurrency(res.finalSellingPrice * res.qty)}\n`;
+    
+    if (res.cadFee > 0) {
+      text += `✏️ *تكلفة التصميم:* ${this.formatCurrency(res.cadFee)}\n`;
     }
-    text += `--------------------------
-`;
-    text += `✨ *ملاحظات:* ${s.notes || 'الطباعة بأعلى دقة ومعايرة وتشطيب أولي.'}
+    
+    if (res.shippingFee > 0) {
+      text += `🚚 *تكلفة الشحن:* ${this.formatCurrency(res.shippingFee)}\n`;
+    }
+    
+    text += `💳 *الإجمالي الكلي:* ${this.formatCurrency(res.grandOrderTotal)}\n`;
 
-`;
+    if (res.deposit > 0) {
+      text += `💵 *المدفوع مقدماً:* ${this.formatCurrency(res.deposit)}\n`;
+      text += `💰 *المبلغ المتبقي:* ${this.formatCurrency(res.remainingBalance)}\n`;
+    }
+    text += `--------------------------\n`;
+    text += `📅 *موعد التسليم المتوقع:* ${s.deliveryDueDate || 'خلال 2-3 أيام عمل'}\n`;
+    text += `✨ *ملاحظات:* ${s.notes || 'الطباعة بأعلى دقة ومعايرة وتشطيب أولي.'}\n\n`;
     text += `جاهزون للبدء فور تأكيد الطلب! 🚀`;
 
     return encodeURIComponent(text);
   }
 
   openWhatsApp() {
-    window.open(`https://wa.me/?text=${this.generateWhatsAppText()}`, '_blank');
+    const s = this.state;
+    let phoneClean = s.clientPhone ? s.clientPhone.replace(/[^0-9]/g, '') : '';
+    if (phoneClean.startsWith('01')) phoneClean = '2' + phoneClean;
+    const url = phoneClean ? `https://wa.me/${phoneClean}?text=${this.generateWhatsAppText()}` : `https://wa.me/?text=${this.generateWhatsAppText()}`;
+    window.open(url, '_blank');
   }
 
   copyWhatsAppText() {
@@ -833,6 +949,11 @@ class CostCalculatorApp {
     const res = this.calculate();
     const rows = [
       ['البند', 'القيمة', 'الوحدة'],
+      ['العميل', this.state.clientName || 'غير مسجل', ''],
+      ['رقم الهاتف', this.state.clientPhone || 'غير مسجل', ''],
+      ['اللون', this.state.partColor, ''],
+      ['دقة الطباعة', this.state.layerHeight, ''],
+      ['نسبة التعبئة', this.state.infillPercent + '%', '%'],
       ['وزن القطعة', res.effectiveWeight, 'جرام'],
       ['سعر البكرة', this.state.spoolPrice, 'ج.م'],
       ['تكلفة المادة الخام', res.materialCost.toFixed(2), 'ج.م'],
@@ -852,10 +973,15 @@ class CostCalculatorApp {
       ['سعر البيع النهائي', res.finalSellingPrice.toFixed(2), 'ج.م'],
       ['صافي مبلغ الربح', res.profitAmount.toFixed(2), 'ج.م'],
       ['الكمية المطلوبة', res.qty, 'قطعة'],
-      ['إجمالي الطلبية', res.batchTotalPrice.toFixed(2), 'ج.م']
+      ['إجمالي الطباعة', (res.finalSellingPrice * res.qty).toFixed(2), 'ج.م'],
+      ['تكلفة التصميم', res.cadFee.toFixed(2), 'ج.م'],
+      ['تكلفة الشحن', res.shippingFee.toFixed(2), 'ج.م'],
+      ['الإجمالي الكلي', res.grandOrderTotal.toFixed(2), 'ج.م'],
+      ['المدفوع مقدماً', res.deposit.toFixed(2), 'ج.م'],
+      ['المبلغ المتبقي', res.remainingBalance.toFixed(2), 'ج.م']
     ];
 
-    const csvContent = '\uFEFF' + rows.map(e => e.join(',')).join('\n');
+    const csvContent = '\\uFEFF' + rows.map(e => e.join(',')).join('\\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

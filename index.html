@@ -444,11 +444,12 @@
     <!-- TAB 2: DASHBOARD & VISUALS -->
     <section id="tabPane_dashboard" class="hidden space-y-6">
 
-      <!-- Project Metadata Card -->
-      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <!-- Project Metadata Card (Expanded) -->
+      <!-- Card A: Client & Order Info -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-4">
         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-          <i class="fas fa-edit text-blue-600"></i>
-          <span>بيانات القطعة والطلب</span>
+          <i class="fas fa-user-tie text-blue-600"></i>
+          <span>بيانات العميل والطلب</span>
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -456,12 +457,81 @@
             <input type="text" id="dash_projectName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مجسم تروس، حامل هاتف...">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل (اختياري)</label>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم العميل</label>
             <input type="text" id="dash_clientName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: م. أحمد عبد الله">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">رقم هاتف العميل</label>
+            <input type="tel" id="dash_clientPhone" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: 01012345678">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">عنوان التسليم</label>
+            <input type="text" id="dash_clientAddress" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="مثال: مدينة نصر، القاهرة">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">المحافظة / منطقة الشحن</label>
+            <select id="dash_shippingGovSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تكلفة الشحن (ج.م)</label>
+            <input type="number" id="dash_shippingCost" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">الكمية المطلوبة (Batch Qty)</label>
             <input type="number" id="dash_batchQuantity" min="1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="1">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">مبلغ العربون المدفوع (ج.م)</label>
+            <input type="number" id="dash_depositPaid" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">تاريخ التسليم المتوقع</label>
+            <input type="date" id="dash_deliveryDueDate" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- Card B: Part Print Specifications -->
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-4">
+        <h3 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+          <i class="fas fa-layer-group text-blue-600"></i>
+          <span>مواصفات الطباعة والقطعة المطلوبة</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">لون القطعة المطلوب</label>
+            <select id="dash_partColorSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ارتفاع الطبقة (Layer Height)</label>
+            <select id="dash_layerHeightSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="0.12">0.12 مم (تفاصيل دقيقة جداً)</option>
+              <option value="0.16">0.16 مم (تفاصيل عالية)</option>
+              <option value="0.20" selected>0.20 مم (قياسي)</option>
+              <option value="0.28">0.28 مم (سريع)</option>
+              <option value="0.32">0.32 مم (Draft سريع جداً)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نسبة التعبئة Infill (%)</label>
+            <input type="number" id="dash_infillPercent" min="5" max="100" step="5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="15">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">نوع الدعامات (Supports)</label>
+            <select id="dash_supportsTypeSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="none">بدون دعامات (None)</option>
+              <option value="tree" selected>شجرية (Tree Supports)</option>
+              <option value="normal">عادية (Normal Supports)</option>
+              <option value="organic">عضوية (Organic Supports)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">ساعات التصميم الهندسي CAD</label>
+            <input type="number" id="dash_cadDesignHours" step="0.5" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">أجر ساعة التصميم (ج.م)</label>
+            <input type="number" id="dash_cadDesignRatePerHour" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono-nums" value="0">
           </div>
         </div>
       </div>
@@ -864,6 +934,18 @@
             <span class="text-slate-400 block mb-1">اسم القطعة / المشروع:</span>
             <span id="quoteProjectTitle" class="font-bold text-sm text-blue-600 dark:text-blue-400">قطعة نموذجية — Elegoo Neptune 4 Pro</span>
           </div>
+          <div>
+            <span class="text-slate-400 block mb-1">رقم الهاتف:</span>
+            <span id="quoteClientPhone" class="font-bold text-sm text-slate-800 dark:text-slate-100">-</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block mb-1">عنوان التسليم:</span>
+            <span id="quoteClientAddress" class="font-bold text-sm text-slate-800 dark:text-slate-100">-</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block mb-1">تاريخ التسليم المتوقع:</span>
+            <span id="quoteDueDate" class="font-bold text-sm text-slate-800 dark:text-slate-100">-</span>
+          </div>
         </div>
 
         <div>
@@ -884,13 +966,42 @@
                 <td class="p-3 text-slate-600 dark:text-slate-300">
                   <div class="space-y-0.5">
                     <div>الخامة: <span id="quoteFilamentType" class="font-bold text-slate-800 dark:text-slate-100">eSUN PLA</span></div>
+                    <div>اللون: <span id="quoteColor" class="font-bold text-slate-800 dark:text-slate-100">-</span></div>
+                    <div>ارتفاع الطبقة: <span id="quoteLayerHeight" class="font-bold text-slate-800 dark:text-slate-100">-</span></div>
+                    <div>نسبة التعبئة: <span id="quoteInfill" class="font-bold text-slate-800 dark:text-slate-100">-</span></div>
                     <div>الوزن المقدر: <span id="quoteWeight" class="font-mono-nums">165 جرام</span> | مدة الطباعة: <span id="quotePrintTime" class="font-mono-nums">7.5 ساعة</span></div>
                     <div>الطابعة المستخدمة: <span id="quotePrinterModel">Elegoo Neptune 4 Pro</span></div>
                   </div>
                 </td>
                 <td class="p-3 text-center font-bold font-mono-nums" id="quoteQuantity">1 قطعة</td>
                 <td class="p-3 text-left font-bold font-mono-nums" id="quoteUnitPrice">378.24 ج.م</td>
+                <td class="p-3 text-left font-bold font-mono-nums" id="quotePrintSubtotal">378.24 ج.م</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">رسوم التصميم (CAD)</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">تصميم وتجهيز الملفات</td>
+                <td class="p-3 text-center font-bold font-mono-nums">-</td>
+                <td class="p-3 text-left font-bold font-mono-nums">-</td>
+                <td class="p-3 text-left font-bold font-mono-nums" id="quoteCadFee">0.00 ج.م</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">تكلفة الشحن</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">شحن وتوصيل</td>
+                <td class="p-3 text-center font-bold font-mono-nums">-</td>
+                <td class="p-3 text-left font-bold font-mono-nums">-</td>
+                <td class="p-3 text-left font-bold font-mono-nums" id="quoteShippingCost">0.00 ج.م</td>
+              </tr>
+              <tr class="bg-slate-50 dark:bg-slate-800/50">
+                <td colspan="4" class="p-3 font-bold text-left">الإجمالي الكلي:</td>
                 <td class="p-3 text-left font-black text-emerald-600 font-mono-nums text-sm" id="quoteTotalPrice">378.24 ج.م</td>
+              </tr>
+              <tr class="bg-slate-50 dark:bg-slate-800/50">
+                <td colspan="4" class="p-3 font-bold text-left text-slate-600 dark:text-slate-400">العربون المدفوع:</td>
+                <td class="p-3 text-left font-bold text-slate-600 dark:text-slate-400 font-mono-nums" id="quoteDepositPaid">0.00 ج.م</td>
+              </tr>
+              <tr class="bg-slate-50 dark:bg-slate-800/50">
+                <td colspan="4" class="p-3 font-bold text-left text-rose-600 dark:text-rose-400">المبلغ المتبقي:</td>
+                <td class="p-3 text-left font-black text-rose-600 dark:text-rose-400 font-mono-nums text-sm" id="quoteRemainingBalance">378.24 ج.م</td>
               </tr>
             </tbody>
           </table>

@@ -122,6 +122,22 @@ const PRESETS = {
     { id: 'tier-comm-4', name: 'النشاط التجاري (أكثر من 1000 ك.و.س)', rate: 2.33, desc: 'شريحة تجارية عليا (2.33 ج.م)' }
   ],
 
+  shippingGovernorates: [
+    { id: 'local-pickup', name: 'استلام من مقر الورشة / المعمل (مجاناً)', cost: 0 },
+    { id: 'cairo-giza', name: 'القاهرة والجيزة (45 - 60 ج.م)', cost: 50 },
+    { id: 'alexandria', name: 'الإسكندرية (65 ج.م)', cost: 65 },
+    { id: 'delta', name: 'محافظات الدلتا والقناة (70 ج.م)', cost: 70 },
+    { id: 'upper-egypt', name: 'محافظات الصعيد (85 ج.م)', cost: 85 },
+    { id: 'redsea-sinai', name: 'البحر الأحمر وشمال/جنوب سيناء ومطروح (100 ج.م)', cost: 100 }
+  ],
+
+  colors: [
+    'أسود (Black)', 'أبيض (White)', 'رمادي (Grey)', 'فضي (Silver)',
+    'أزرق (Blue)', 'أحمر (Red)', 'أصفر (Yellow)', 'أخضر (Green)',
+    'برتقالي (Orange)', 'بنفسجي (Purple)', 'شفاف (Transparent)',
+    'خشب (Wood PLA)', 'حريري ذهبي (Silk Gold)'
+  ],
+
   hardwareAccessories: [
     { name: 'صمولة نحاسية حرارية (M3 Heat-Set Brass Insert)', unitCost: 3.50, unit: 'قطعة' },
     { name: 'صمولة نحاسية حرارية (M4 Heat-Set Brass Insert)', unitCost: 4.50, unit: 'قطعة' },

@@ -1066,24 +1066,27 @@ class CostCalculatorApp {
     this.render();
   }
 
-  applyTheme() {
-    const html = document.documentElement;
-    const themeIcon = document.getElementById('themeIcon');
-    const themeText = document.getElementById('themeText');
-    if (this.state.darkMode) {
-      html.classList.add('dark');
-      if (themeIcon) themeIcon.className = 'fas fa-sun text-amber-400';
-      if (themeText) themeText.textContent = 'الوضع النهاري';
-    } else {
-      html.classList.remove('dark');
-      if (themeIcon) themeIcon.className = 'fas fa-moon text-slate-600';
-      if (themeText) themeText.textContent = 'الوضع الليلي';
+    applyTheme() {
+    const isDark = this.state.darkMode;
+    document.documentElement.classList.toggle('dark', isDark);
+
+    const icon = document.getElementById('themeIcon');
+    const text = document.getElementById('themeText');
+    if (icon) icon.className = isDark ? 'fas fa-sun text-amber-400 text-sm' : 'fas fa-moon text-slate-600 dark:text-slate-300 text-sm';
+    if (text) text.textContent = isDark ? 'الوضع النهاري ☀️' : 'الوضع الليلي 🌙';
+
+    if (this.threeScene && typeof THREE !== 'undefined') {
+      this.threeScene.background = new THREE.Color(isDark ? 0x0a0f1d : 0xf1f5f9);
+    }
+
+    if (this.charts) {
+      this.renderCharts();
     }
   }
 
   generateWhatsAppText() {
-    const res = this.calculate();
     const s = this.state;
+    const res = this.calculate();
     const filament = typeof PRESETS !== 'undefined' ? (PRESETS.filaments.find(f => f.id === s.selectedFilamentPreset)?.name || 'PLA') : 'PLA';
     
     let text = `مرحباً ${s.clientName || 'عزيزي العميل'} 👋\n`;

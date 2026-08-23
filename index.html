@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=20.0">
+  <link rel="stylesheet" href="style.css?v=21.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -201,53 +201,52 @@
     
     <!-- Top Header Bar -->
     <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm no-print">
-      <div class="px-3 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap max-w-[1600px] mx-auto">
+      <div class="px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-2 flex-nowrap max-w-[1600px] mx-auto overflow-x-auto no-scrollbar">
         
-        <!-- Mobile Toggle & Brand -->
-        <div class="flex items-center gap-3">
+        <!-- Mobile Sidebar Toggle & Filament Presets -->
+        <div class="flex items-center gap-2 shrink-0">
           <button onclick="app.toggleSidebar()" class="lg:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 text-sm">
             <i class="fas fa-bars"></i>
           </button>
           
-          <div class="flex items-center gap-2">
-            <!-- Filament Preset Select -->
-            <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs">
-              <i class="fas fa-layer-group text-blue-600 shrink-0"></i>
-              <select id="filamentPresetSelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs"></select>
-            </div>
+          <!-- Filament Preset Select -->
+          <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 sm:px-2.5 py-1.5 text-xs">
+            <i class="fas fa-layer-group text-blue-600 shrink-0"></i>
+            <select id="filamentPresetSelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs max-w-[140px] sm:max-w-none truncate"></select>
+          </div>
 
-            <!-- Currency Select -->
-            <div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-xs">
-              <i class="fas fa-coins text-amber-500 shrink-0"></i>
-              <select id="currencySelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs">
-                <option value="EGP">🇪🇬 ج.م (EGP)</option>
-                <option value="SAR">🇸🇦 ر.س (SAR)</option>
-                <option value="AED">🇦🇪 د.إ (AED)</option>
-                <option value="USD">🇺🇸 $ (USD)</option>
-              </select>
-            </div>
+          <!-- Currency Select -->
+          <div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-1.5 sm:px-2 py-1.5 text-xs">
+            <i class="fas fa-coins text-amber-500 shrink-0"></i>
+            <select id="currencySelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 text-xs">
+              <option value="EGP">🇪🇬 ج.م</option>
+              <option value="SAR">🇸🇦 ر.س</option>
+              <option value="AED">🇦🇪 د.إ</option>
+              <option value="USD">🇺🇸 $</option>
+            </select>
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex items-center gap-1.5 flex-wrap">
-          <button onclick="document.getElementById('unifiedFileInput').click()" title="رفع ملف STL أو G-Code واستخراج الوزن والوقت فورياً" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+        <!-- Action Buttons Bar -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="document.getElementById('unifiedFileInput').click()" title="رفع ملف STL أو G-Code واستخراج الوزن والوقت فورياً" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
             <i class="fas fa-file-arrow-up"></i>
-            <span>رفع G-Code / STL ⚡</span>
+            <span class="hidden sm:inline">رفع G-Code / STL ⚡</span>
+            <span class="sm:hidden">رفع ⚡</span>
           </button>
-          <button onclick="app.exportCSV()" title="تصدير جدول التكاليف كملف Excel / CSV" class="hidden sm:flex bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg font-bold transition items-center gap-1.5 shadow-sm">
+          <button onclick="app.exportCSV()" title="تصدير جدول التكاليف كملف Excel / CSV" class="hidden md:flex bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-bold transition items-center gap-1 shadow-sm whitespace-nowrap">
             <i class="fas fa-file-csv text-emerald-600"></i>
             <span>CSV</span>
           </button>
-          <button onclick="app.openWhatsApp()" title="إرسال عرض السعر للعميل على واتساب" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+          <button onclick="app.openWhatsApp()" title="إرسال عرض السعر للعميل على واتساب" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
             <i class="fab fa-whatsapp text-sm"></i>
             <span class="hidden sm:inline">واتساب</span>
           </button>
-          <button onclick="app.printQuote()" title="طباعة عرض السعر" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+          <button onclick="app.printQuote()" title="طباعة عرض السعر" class="hidden sm:flex bg-slate-800 hover:bg-slate-700 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold transition items-center gap-1 shadow-sm whitespace-nowrap">
             <i class="fas fa-print"></i>
-            <span class="hidden sm:inline">طباعة</span>
+            <span>طباعة</span>
           </button>
-          <button onclick="app.saveCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold shadow-sm transition flex items-center gap-1.5 shrink-0">
+          <button onclick="app.saveCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg font-bold shadow-sm transition flex items-center gap-1 shrink-0 whitespace-nowrap">
             <i class="fas fa-bookmark"></i>
             <span>حفظ</span>
           </button>
@@ -259,7 +258,7 @@
     <!-- ================= HERO SUMMARY METRICS RIBBON ================= -->
     <section id="heroBanner" class="bg-blue-900 dark:bg-slate-900 text-white py-3.5 sm:py-4 shadow-md border-b border-slate-200 dark:border-slate-800 no-print">
       <div class="px-3 sm:px-6 lg:px-8 max-w-[1600px] mx-auto">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5 sm:gap-3">
           
           <div class="bg-white/10 dark:bg-slate-800/80 p-3 rounded-xl border border-white/10 dark:border-slate-700/60 text-center flex flex-col justify-between">
             <div class="text-[11px] text-blue-200 dark:text-slate-400 font-bold mb-1">إجمالي التكلفة للقطعة</div>
@@ -312,7 +311,7 @@
           <i class="fas fa-wand-magic-sparkles text-purple-600"></i>
           <span>قوالب تسعير سريعة (Pricing Templates) — تطبيق بضغطة واحدة</span>
         </h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-3">
           <button onclick="app.applyPricingTemplate('economy')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition text-center group bg-slate-50 dark:bg-slate-800/40">
             <div class="text-xl mb-1">💰</div>
             <div class="text-xs font-bold group-hover:text-blue-600">اقتصادي</div>
@@ -647,9 +646,9 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
           <!-- Dropzone -->
-          <div id="stlDropZone" ondragover="event.preventDefault(); this.classList.add('border-blue-500');" ondragleave="this.classList.remove('border-blue-500');" ondrop="event.preventDefault(); this.classList.remove('border-blue-500'); if(event.dataTransfer.files.length>0) app.handleUnifiedFile(event.dataTransfer.files[0]);" class="lg:col-span-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition">
+          <div id="stlDropZone" ondragover="event.preventDefault(); this.classList.add('border-blue-500');" ondragleave="this.classList.remove('border-blue-500');" ondrop="event.preventDefault(); this.classList.remove('border-blue-500'); if(event.dataTransfer.files.length>0) app.handleUnifiedFile(event.dataTransfer.files[0]);" class="xl:col-span-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition">
             <div onclick="document.getElementById('unifiedFileInput').click()" class="space-y-2">
               <div class="w-12 h-12 mx-auto rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-2xl">
                 <i class="fas fa-cloud-arrow-up"></i>
@@ -661,7 +660,7 @@
           </div>
 
           <!-- 3D Canvas Viewport -->
-          <div class="lg:col-span-8 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-900 relative min-h-[260px] flex flex-col justify-between shadow-inner">
+          <div class="xl:col-span-8 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-900 relative min-h-[260px] flex flex-col justify-between shadow-inner">
             <div id="stlCanvasContainer" class="w-full h-[260px] block"></div>
             <div class="bg-black/70 backdrop-blur-md px-3 py-1.5 text-[10px] text-slate-300 font-mono flex items-center justify-between border-t border-slate-800">
               <span class="flex items-center gap-1.5"><i class="fas fa-hand-pointer text-blue-400"></i> اسحب للتدوير 360° • حرك العجلة للزووم</span>
@@ -729,7 +728,7 @@
             <input type="number" id="dash_batchQuantity" min="1" step="1" class="w-16 px-2 py-1 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-slate-700 rounded-lg text-center text-xs font-mono font-bold" value="1">
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 text-center">
           <div class="bg-white dark:bg-slate-800/80 p-3 rounded-xl border border-emerald-200 dark:border-slate-700">
             <span class="text-slate-500 text-[11px] block">إجمالي الكمية:</span>
             <span id="batchTotalQty" class="text-lg font-black font-mono-nums">1 قطعة</span>
@@ -771,7 +770,7 @@
           <i class="fas fa-user-tie text-blue-600"></i>
           <span>بيانات العميل والطلب</span>
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">اسم القطعة / الموديل</label>
             <input type="text" id="dash_projectName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs" placeholder="مثال: مجسم تروس، حامل هاتف...">
@@ -838,7 +837,7 @@
           <i class="fas fa-sliders text-indigo-600"></i>
           <span>مواصفات الطباعة والقطعة المطلوبة</span>
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">لون القطعة المطلوب</label>
             <select id="dash_partColorSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"></select>
@@ -896,7 +895,7 @@
             <label for="dash_includeMarketing" class="text-xs font-bold cursor-pointer">تفعيل التسويق</label>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">طريقة الحساب</label>
             <select id="dash_marketingType" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium">
@@ -1118,7 +1117,7 @@
           <i class="fas fa-chart-pie text-indigo-600"></i>
           <span>لوحة تحليلات أداء ورشة الطباعة (Business Analytics)</span>
         </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 text-center mb-6">
           <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <span class="text-xs text-slate-500 block mb-1">إجمالي المبيعات المحققة:</span>
             <span id="kpiTotalRevenue" class="text-xl font-black text-emerald-600 font-mono-nums">0.00 ج.م</span>
@@ -1249,7 +1248,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=20.0"></script>
-  <script src="app.js?v=20.0"></script>
+  <script src="presets.js?v=21.0"></script>
+  <script src="app.js?v=21.0"></script>
 </body>
 </html>

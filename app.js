@@ -49,6 +49,9 @@ const DEFAULT_STATE = {
   shippingCost: 0,
   depositPaid: 0,
   deliveryDueDate: '',
+  orderStatus: 'ready_print',
+  paymentMethod: 'cash',
+  partImageUrl: '',
 
   // Part Specifications
   partColor: 'أسود (Black)',
@@ -65,6 +68,37 @@ const CURRENCY_RATES = {
   EGP: { symbol: 'ج.م', rate: 1 },
   USD: { symbol: '$', rate: 0.0205 },
   SAR: { symbol: 'ر.س', rate: 0.077 }
+};
+
+const PRICING_TEMPLATES = {
+  'economy': {
+    name: 'اقتصادي — Economy',
+    profitMarginPercent: 25,
+    layerHeight: '0.28 مم (سريع)',
+    infillPercent: 15,
+    failureRatePercent: 12
+  },
+  'standard': {
+    name: 'قياسي — Standard',
+    profitMarginPercent: 40,
+    layerHeight: '0.20 مم (قياسي)',
+    infillPercent: 20,
+    failureRatePercent: 10
+  },
+  'professional': {
+    name: 'احترافي — Professional',
+    profitMarginPercent: 55,
+    layerHeight: '0.12 مم (تفاصيل دقيقة جداً)',
+    infillPercent: 40,
+    failureRatePercent: 8
+  },
+  'industrial': {
+    name: 'صناعي — Industrial',
+    profitMarginPercent: 50,
+    layerHeight: '0.20 مم (قياسي)',
+    infillPercent: 60,
+    failureRatePercent: 5
+  }
 };
 
 class CostCalculatorApp {
@@ -110,6 +144,7 @@ class CostCalculatorApp {
     this.setupGCodeDropZone();
     this.applyTheme();
     this.render();
+    this.checkDeadlineAlerts();
   }
 
   populatePresets() {
@@ -129,6 +164,51 @@ class CostCalculatorApp {
     if (powerSelect && typeof PRESETS !== 'undefined') {
       powerSelect.innerHTML = '<option value="">-- اختر شريحة الكهرباء في مصر --</option>' + 
         PRESETS.electricityTiers.map(t => `<option value="${t.id}" ${t.id === this.state.selectedPowerPreset ? 'selected' : ''}>${t.name} (${t.rate} ج.م/ك.و.س)</option>`).join('');
+    }
+
+    
+    const imgInput = document.getElementById('dash_partImageInput');
+    if (imgInput) {
+      imgInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            this.state.partImageUrl = ev.target.result;
+            this.render();
+            this.showToast('تم إرفاق صورة القطعة بنجاح!');
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        }
+      });
+    }
+
+    const paySelect = document.getElementById('dash_paymentMethodSelect');
+    if (paySelect) {
+      paySelect.addEventListener('change', (e) => {
+        this.state.paymentMethod = e.target.value;
+        this.render();
+      });
+    }
+
+    const statusSelect = document.getElementById('dash_orderStatusSelect');
+    if (statusSelect) {
+      statusSelect.addEventListener('change', (e) => {
+        this.state.orderStatus = e.target.value;
+        this.render();
+      });
+    }
+
+    const clientInput = document.getElementById('dash_clientName');
+    if (clientInput) {
+      clientInput.addEventListener('change', (e) => {
+        const found = this.savedProjects.find(p => p.clientName === e.target.value);
+        if (found) {
+          if (found.clientPhone && !this.state.clientPhone) this.state.clientPhone = found.clientPhone;
+          if (found.clientAddress && !this.state.clientAddress) this.state.clientAddress = found.clientAddress;
+          this.render();
+          this.showToast(`✨ تم استرجاع بيانات العميل: ${found.clientName}`);
+        }
+      });
     }
 
     const hwSelect = document.getElementById('hardwareQuickAddSelect');
@@ -325,6 +405,7 @@ class CostCalculatorApp {
     this.renderQuotationPreview(res);
     this.renderSavedProjects();
     this.renderCharts(res);
+    this.showMaterialComparison();
     this.saveState();
   }
 
@@ -578,6 +659,42 @@ class CostCalculatorApp {
     this.updateElementText('quoteUnitPrice', this.formatCurrency(res.finalSellingPrice));
     this.updateElementText('quoteQuantity', `${res.qty} قطعة`);
     this.updateElementText('quoteTotalPrice', this.formatCurrency(res.batchTotalPrice));
+    
+    // Render dynamic QR code for WhatsApp Quote
+    const qrCanvas = document.getElementById('quoteQRCode');
+    if (qrCanvas && typeof QRious !== 'undefined') {
+      const waUrl = decodeURIComponent(this.generateWhatsAppText());
+      let phoneClean = s.clientPhone ? s.clientPhone.replace(/[^0-9]/g, '') : '';
+      if (phoneClean.startsWith('01')) phoneClean = '2' + phoneClean;
+      const directUrl = phoneClean ? `https://wa.me/${phoneClean}?text=${encodeURIComponent(waUrl)}` : `https://wa.me/?text=${encodeURIComponent(waUrl)}`;
+      new QRious({
+        element: qrCanvas,
+        value: directUrl,
+        size: 120,
+        level: 'M'
+      });
+    }
+
+    // Payment method & Part Image in Quote
+    const payLabels = {
+      'cash': '💵 كاش عند الاستلام',
+      'instapay': '⚡ إنستاباي InstaPay',
+      'vodafone_cash': '📱 فودافون كاش (Vodafone Cash)',
+      'bank_transfer': '🏦 تحويل بنكي'
+    };
+    this.updateElementText('quotePaymentMethod', payLabels[s.paymentMethod] || 'كاش عند الاستلام');
+
+    const imgContainer = document.getElementById('quotePartImageContainer');
+    const quoteImg = document.getElementById('quotePartImage');
+    if (imgContainer && quoteImg) {
+      if (s.partImageUrl) {
+        quoteImg.src = s.partImageUrl;
+        imgContainer.classList.remove('hidden');
+      } else {
+        imgContainer.classList.add('hidden');
+      }
+    }
+
     this.updateElementText('quoteNotes', s.notes || 'الطباعة بدقة عالية وجودة ممتازة شاملة إزالة الدعامات والتشطيب الأولي.');
 
     this.updateElementText('quoteDueDate', s.deliveryDueDate || 'خلال 2-3 أيام عمل');
@@ -602,20 +719,34 @@ class CostCalculatorApp {
       return;
     }
 
-    list.innerHTML = this.savedProjects.map((p, idx) => `
+    
+    let filtered = this.savedProjects;
+    if (this.currentSavedFilter && this.currentSavedFilter !== 'all') {
+      filtered = filtered.filter(p => (p.orderStatus || 'ready_print') === this.currentSavedFilter);
+    }
+
+    const statusBadges = {
+      'pending_design': '<span class="bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs px-2.5 py-0.5 rounded-full font-bold">✏️ قيد التصميم</span>',
+      'ready_print': '<span class="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs px-2.5 py-0.5 rounded-full font-bold">⏳ جاهز للطباعة</span>',
+      'printing': '<span class="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 text-xs px-2.5 py-0.5 rounded-full font-bold">🖨️ جاري الطباعة</span>',
+      'post_processing': '<span class="bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300 text-xs px-2.5 py-0.5 rounded-full font-bold">🔧 تشطيب ومعالجة</span>',
+      'ready_ship': '<span class="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-xs px-2.5 py-0.5 rounded-full font-bold">📦 جاهز للشحن</span>',
+      'delivered': '<span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs px-2.5 py-0.5 rounded-full font-bold">✅ تم التسليم</span>'
+    };
+
+    list.innerHTML = filtered.map((p, idx) => `
       <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition hover:border-blue-400">
         <div class="space-y-1">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="font-bold text-slate-800 dark:text-slate-100 text-lg">${p.projectName || 'مشروع بدون اسم'}</span>
-            ${p.clientName ? `<span class="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs px-2.5 py-0.5 rounded-full font-medium">${p.clientName}</span>` : ''}
-            ${p.clientPhone ? `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs px-2.5 py-0.5 rounded-full font-medium">${p.clientPhone}</span>` : ''}
+            ${p.clientName ? `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-2.5 py-0.5 rounded-full font-medium">${p.clientName}</span>` : ''}
+            ${statusBadges[p.orderStatus || 'ready_print'] || ''}
           </div>
           <div class="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap gap-x-4 gap-y-1">
-            <span><i class="fas fa-palette ml-1"></i> ${p.partColor || 'غير محدد'}</span>
             <span><i class="fas fa-weight-hanging ml-1"></i> ${p.partWeight} جم</span>
             <span><i class="fas fa-clock ml-1"></i> ${p.printHours} ساعة</span>
-            <span><i class="fas fa-coins ml-1"></i> التكلفة: ${p.calcSummary?.totalCost || '-'}</span>
-            <span><i class="fas fa-tag ml-1 text-emerald-600"></i> الإجمالي: ${p.calcSummary?.grandOrderTotal || '-'}</span>
+            <span><i class="fas fa-palette ml-1"></i> ${p.partColor || 'أسود'}</span>
+            <span><i class="fas fa-tag ml-1 text-emerald-600"></i> الإجمالي: ${p.calcSummary?.sellingPrice || '-'}</span>
           </div>
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto justify-end">
@@ -628,6 +759,7 @@ class CostCalculatorApp {
         </div>
       </div>
     `).join('');
+;
   }
 
   saveCurrentProject() {
@@ -786,6 +918,51 @@ class CostCalculatorApp {
       });
     }
 
+    
+    const imgInput = document.getElementById('dash_partImageInput');
+    if (imgInput) {
+      imgInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            this.state.partImageUrl = ev.target.result;
+            this.render();
+            this.showToast('تم إرفاق صورة القطعة بنجاح!');
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        }
+      });
+    }
+
+    const paySelect = document.getElementById('dash_paymentMethodSelect');
+    if (paySelect) {
+      paySelect.addEventListener('change', (e) => {
+        this.state.paymentMethod = e.target.value;
+        this.render();
+      });
+    }
+
+    const statusSelect = document.getElementById('dash_orderStatusSelect');
+    if (statusSelect) {
+      statusSelect.addEventListener('change', (e) => {
+        this.state.orderStatus = e.target.value;
+        this.render();
+      });
+    }
+
+    const clientInput = document.getElementById('dash_clientName');
+    if (clientInput) {
+      clientInput.addEventListener('change', (e) => {
+        const found = this.savedProjects.find(p => p.clientName === e.target.value);
+        if (found) {
+          if (found.clientPhone && !this.state.clientPhone) this.state.clientPhone = found.clientPhone;
+          if (found.clientAddress && !this.state.clientAddress) this.state.clientAddress = found.clientAddress;
+          this.render();
+          this.showToast(`✨ تم استرجاع بيانات العميل: ${found.clientName}`);
+        }
+      });
+    }
+
     const hwSelect = document.getElementById('hardwareQuickAddSelect');
     if (hwSelect && typeof PRESETS !== 'undefined') {
       hwSelect.addEventListener('change', (e) => {
@@ -844,7 +1021,7 @@ class CostCalculatorApp {
 
   switchTab(tabName) {
     this.state.activeTab = tabName;
-    ['table', 'dashboard', 'assembly', 'roi', 'quote', 'saved'].forEach(tab => {
+    ['table', 'dashboard', 'assembly', 'roi', 'quote', 'analytics', 'saved'].forEach(tab => {
       const pane = document.getElementById(`tabPane_${tab}`);
       const btn = document.getElementById(`tabBtn_${tab}`);
       if (pane) {
@@ -857,6 +1034,9 @@ class CostCalculatorApp {
       }
     });
 
+    if (tabName === 'analytics') {
+      setTimeout(() => this.renderAnalytics(), 100);
+    }
     if (tabName === 'dashboard' || tabName === 'table' || tabName === 'roi') {
       setTimeout(() => {
         const res = this.calculate();
@@ -995,6 +1175,221 @@ class CostCalculatorApp {
 
   printQuote() {
     window.print();
+  }
+
+
+  applyPricingTemplate(templateId) {
+    const template = PRICING_TEMPLATES[templateId];
+    if (template) {
+      this.state.profitMarginPercent = template.profitMarginPercent;
+      this.state.layerHeight = template.layerHeight;
+      this.state.infillPercent = template.infillPercent;
+      this.state.failureRatePercent = template.failureRatePercent;
+      this.render();
+      this.showToast(`تم تطبيق قالب: ${template.name}`);
+    }
+  }
+
+  checkDeadlineAlerts() {
+    let overdue = 0, urgent = 0, soon = 0;
+    const now = new Date();
+    this.savedProjects.forEach(p => {
+      if (p.deliveryDueDate) {
+        const dueDate = new Date(p.deliveryDueDate);
+        const diffDays = (dueDate - now) / (1000 * 60 * 60 * 24); 
+        if (diffDays < 0) overdue++;
+        else if (diffDays <= 2) urgent++;
+        else if (diffDays <= 5) soon++;
+      }
+    });
+
+    if (overdue > 0 || urgent > 0 || soon > 0) {
+      let banner = document.getElementById('deadlineAlertBanner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'deadlineAlertBanner';
+        const header = document.querySelector('header');
+        if (header) {
+          header.parentNode.insertBefore(banner, header.nextSibling);
+        } else {
+          document.body.prepend(banner);
+        }
+      }
+      
+      let html = '';
+      if (overdue > 0) html += `<div style="background-color: #fee2e2; color: #991b1b; padding: 10px; margin-bottom: 5px;"><i class="fas fa-exclamation-triangle"></i> متأخر: ${overdue} مشروع</div>`;
+      if (urgent > 0) html += `<div style="background-color: #fef3c7; color: #92400e; padding: 10px; margin-bottom: 5px;">عاجل: ${urgent} مشروع</div>`;
+      if (soon > 0) html += `<div style="background-color: #dbeafe; color: #1e40af; padding: 10px; margin-bottom: 5px;">قريباً: ${soon} مشروع</div>`;
+      
+      banner.innerHTML = html;
+    }
+  }
+
+  showMaterialComparison() {
+    const container = document.getElementById('materialComparisonContainer');
+    if (!container || typeof PRESETS === 'undefined' || !PRESETS.filaments) return;
+
+    const res = this.calculate();
+    const comparisons = PRESETS.filaments.map(f => {
+      const materialCost = f.weight > 0 ? (res.effectiveWeight * f.price) / f.weight : 0;
+      const subtotal = materialCost + res.powerCost + res.depreciationCost + res.laborCost + res.additionalCost;
+      const failureCost = subtotal * (this.state.failureRatePercent / 100);
+      const totalCost = subtotal + failureCost;
+      
+      const marginFraction = this.state.profitMarginPercent / 100;
+      const baseSellingPrice = marginFraction < 1 ? totalCost / (1 - marginFraction) : 0;
+      const finalSellingPrice = baseSellingPrice * (1 - res.discountRate);
+      
+      return {
+        name: f.name,
+        price: f.price,
+        materialCost: materialCost,
+        totalCost: totalCost,
+        sellingPrice: finalSellingPrice,
+        savings: res.totalCost - totalCost
+      };
+    }).sort((a, b) => a.totalCost - b.totalCost);
+
+    let tableHtml = `<table class="w-full text-sm text-right">
+      <thead class="bg-slate-50 dark:bg-slate-800">
+        <tr>
+          <th class="p-2">الخامة</th>
+          <th class="p-2">تكلفة المادة</th>
+          <th class="p-2">التكلفة الإجمالية</th>
+          <th class="p-2">سعر البيع</th>
+          <th class="p-2">التوفير</th>
+        </tr>
+      </thead>
+      <tbody>`;
+      
+    comparisons.forEach(c => {
+      const savingsColor = c.savings > 0 ? 'text-emerald-600' : (c.savings < 0 ? 'text-rose-600' : '');
+      const sign = c.savings > 0 ? '+' : '';
+      tableHtml += `<tr class="border-b dark:border-slate-700">
+        <td class="p-2">${c.name}</td>
+        <td class="p-2">${this.formatCurrency(c.materialCost)}</td>
+        <td class="p-2">${this.formatCurrency(c.totalCost)}</td>
+        <td class="p-2">${this.formatCurrency(c.sellingPrice)}</td>
+        <td class="p-2 ${savingsColor}" dir="ltr">${sign}${this.formatCurrency(c.savings)}</td>
+      </tr>`;
+    });
+    
+    tableHtml += `</tbody></table>`;
+    container.innerHTML = tableHtml;
+  }
+
+  
+  populateClientCRM() {
+    const datalist = document.getElementById('savedClientsList');
+    if (!datalist) return;
+    const clientMap = new Map();
+    this.savedProjects.forEach(p => {
+      if (p.clientName && !clientMap.has(p.clientName)) {
+        clientMap.set(p.clientName, { phone: p.clientPhone || '', address: p.clientAddress || '' });
+      }
+    });
+    datalist.innerHTML = Array.from(clientMap.keys()).map(name => `<option value="${name}"></option>`).join('');
+  }
+
+  filterSavedProjects(status = 'all') {
+    this.currentSavedFilter = status;
+    this.renderSavedProjects();
+  }
+
+  renderAnalytics() {
+    const projects = this.savedProjects;
+    
+    // KPIs
+    let totalRevenue = 0;
+    let totalProfit = 0;
+    let totalFilamentGrams = 0;
+    let totalHours = 0;
+    const statusCounts = { pending_design: 0, ready_print: 0, printing: 0, post_processing: 0, ready_ship: 0, delivered: 0 };
+    const clientSpent = {};
+
+    projects.forEach(p => {
+      const price = parseFloat(String(p.calcSummary?.sellingPrice || '0').replace(/[^0-9.]/g, '')) || 0;
+      const profit = parseFloat(String(p.calcSummary?.profit || '0').replace(/[^0-9.]/g, '')) || 0;
+      const weight = (parseFloat(p.partWeight) || 0) * (parseInt(p.batchQuantity) || 1);
+      const hours = (parseFloat(p.printHours) || 0) * (parseInt(p.batchQuantity) || 1);
+
+      totalRevenue += price;
+      totalProfit += profit;
+      totalFilamentGrams += weight;
+      totalHours += hours;
+
+      const st = p.orderStatus || 'ready_print';
+      if (statusCounts[st] !== undefined) statusCounts[st]++;
+      else statusCounts['ready_print']++;
+
+      if (p.clientName) {
+        clientSpent[p.clientName] = (clientSpent[p.clientName] || 0) + price;
+      }
+    });
+
+    this.updateElementText('kpiTotalRevenue', this.formatCurrency(totalRevenue));
+    this.updateElementText('kpiTotalProfit', this.formatCurrency(totalProfit));
+    this.updateElementText('kpiTotalFilamentKg', `${(totalFilamentGrams / 1000).toFixed(2)} كجم`);
+    this.updateElementText('kpiTotalHours', `${totalHours.toFixed(1)} ساعة`);
+
+    // Top clients list
+    const topClientsContainer = document.getElementById('topClientsContainer');
+    if (topClientsContainer) {
+      const sortedClients = Object.entries(clientSpent).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      if (sortedClients.length === 0) {
+        topClientsContainer.innerHTML = '<div class="text-slate-400 py-3 text-center">لا توجد سجلات كافية بعد.</div>';
+      } else {
+        topClientsContainer.innerHTML = sortedClients.map(([name, total], idx) => `
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-slate-800 dark:text-slate-200">${idx + 1}. ${name}</span>
+            <span class="font-mono-nums font-bold text-emerald-600">${this.formatCurrency(total)}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Status Chart
+    const statusCtx = document.getElementById('orderStatusChart');
+    if (statusCtx && typeof Chart !== 'undefined') {
+      const labels = ['قيد التصميم', 'جاهز للطباعة', 'جاري الطباعة', 'تشطيب ومعالجة', 'جاهز للشحن', 'تم التسليم'];
+      const data = [
+        statusCounts.pending_design,
+        statusCounts.ready_print,
+        statusCounts.printing,
+        statusCounts.post_processing,
+        statusCounts.ready_ship,
+        statusCounts.delivered
+      ];
+
+      if (this.charts.status) {
+        this.charts.status.data.datasets[0].data = data;
+        this.charts.status.update();
+      } else {
+        this.charts.status = new Chart(statusCtx, {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: ['#6366F1', '#3B82F6', '#F59E0B', '#EC4899', '#8B5CF6', '#10B981'],
+              borderWidth: 2,
+              borderColor: this.state.darkMode ? '#1E293B' : '#FFFFFF'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                rtl: true,
+                labels: { font: { family: 'Tajawal, Cairo, sans-serif', size: 11 }, color: this.state.darkMode ? '#CBD5E1' : '#475569' }
+              }
+            }
+          }
+        });
+      }
+    }
   }
 
   showToast(msg) {

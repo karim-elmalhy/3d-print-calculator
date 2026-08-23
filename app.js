@@ -170,6 +170,7 @@ class CostCalculatorApp {
     this.renderSavedProjectsList();
     this.checkDeadlineAlerts();
     setTimeout(() => this.init3DScene(), 150);
+    window.addEventListener('resize', () => this.handleWindowResize());
   }
 
   // ================= 1. CALCULATION ENGINE =================
@@ -987,7 +988,7 @@ class CostCalculatorApp {
 
     container.innerHTML = '';
     const width = container.clientWidth || 380;
-    const height = 260;
+    const height = container.clientHeight || 280;
 
     this.threeScene = new THREE.Scene();
     this.threeScene.background = new THREE.Color(this.state.darkMode ? 0x090d16 : 0xf1f5f9);

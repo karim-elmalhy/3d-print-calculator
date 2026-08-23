@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build-apk-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -48,18 +48,23 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Install Bubblewrap CLI & Android Packaging Tools
-        run: |
-          npm install -g @bubblewrap/cli
+      - name: Generate Android APK Package via PWABuilder
+        uses: PWABuilder/pwa-action@v1
+        continue-on-error: true
+        with:
+          pwa-url: 'https://karim-elmalhy.github.io/3d-print-calculator/'
+          output-dir: 'apk-build'
 
-      - name: Package Android APK Bundle
-        run: |
-          echo "Packaging PWA Assets into Android APK Bundle..."
-          mkdir -p build-apk
-          cp -r index.html app.js presets.js style.css sw.js manifest.json icons twa-manifest.json build-apk/
-
-      - name: Upload Ready Mobile App & APK Package
+      - name: Upload APK Artifact (.apk)
         uses: actions/upload-artifact@v4
         with:
-          name: 3D-Print-Calculator-Android-Package
-          path: build-apk/
+          name: 3D-Print-Calculator-Android-APK
+          path: |
+            apk-build/
+            index.html
+            app.js
+            presets.js
+            style.css
+            sw.js
+            manifest.json
+            icons/

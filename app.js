@@ -1658,6 +1658,22 @@ class CostCalculatorApp {
     }
   }
 
+  toggleSidebar(forceState) {
+    const sb = document.getElementById('appSidebar');
+    const bd = document.getElementById('sidebarBackdrop');
+    if (!sb) return;
+    const isClosed = sb.classList.contains('translate-x-full');
+    const shouldOpen = (forceState !== undefined) ? forceState : isClosed;
+
+    if (shouldOpen) {
+      sb.classList.remove('translate-x-full');
+      if (bd) bd.classList.remove('hidden');
+    } else {
+      sb.classList.add('translate-x-full');
+      if (bd) bd.classList.add('hidden');
+    }
+  }
+
   switchTab(tabName) {
     this.state.activeTab = tabName;
     const tabs = ['table', 'dashboard', 'client', 'assembly', 'roi', 'quote', 'analytics', 'troubleshoot', 'saved'];
@@ -1670,12 +1686,16 @@ class CostCalculatorApp {
       }
       if (btn) {
         if (tab === tabName) {
-          btn.className = 'nav-tab-btn active font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 bg-blue-600 text-white shadow-sm transition whitespace-nowrap';
+          btn.className = 'sidebar-nav-item active flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-md transition group';
         } else {
-          btn.className = 'nav-tab-btn font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap';
+          btn.className = 'sidebar-nav-item flex items-center justify-between px-3 py-2.5 rounded-xl font-medium text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition group';
         }
       }
     });
+
+    if (window.innerWidth < 1024) {
+      this.toggleSidebar(false);
+    }
 
     if (tabName === 'dashboard' || tabName === 'table' || tabName === 'analytics') {
       setTimeout(() => {

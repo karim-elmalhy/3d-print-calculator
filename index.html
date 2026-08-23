@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=23.0">
+  <link rel="stylesheet" href="style.css?v=24.0">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -51,7 +51,23 @@
 <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); if(event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) app.handleUnifiedFile(event.dataTransfer.files[0]);" class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
 
   <!-- ================= TOP DEADLINE ALERT BANNER ================= -->
-  <div id="deadlineAlertBanner" class="hidden no-print"></div>
+  <!-- PWA Mobile Install Banner -->
+<div id="pwaInstallBanner" style="display:none;" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white px-4 py-2.5 shadow-md flex items-center justify-between gap-3 text-xs no-print">
+  <div class="flex items-center gap-2.5">
+    <i class="fas fa-mobile-screen text-base"></i>
+    <span>يمكنك تثبيت <strong>حاسبة 3D Pro</strong> كـ تطبيق على هاتفك أندرويد/أيفون للعمل بدون إنترنت!</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <button onclick="app.installPWA()" class="bg-white text-blue-700 hover:bg-blue-50 font-bold px-3 py-1 rounded-lg shadow transition text-xs">
+      تثبيت الآن 📲
+    </button>
+    <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" class="text-white/80 hover:text-white text-sm px-1">
+      ✕
+    </button>
+  </div>
+</div>
+
+<div id="deadlineAlertBanner"  class="hidden no-print"></div>
 
   <!-- ================= MAIN APP LAYOUT (SIDEBAR + CONTENT) ================= -->
 <div class="flex min-h-screen w-full relative">
@@ -177,6 +193,11 @@
     <!-- Sidebar Bottom Controls -->
     <div class="p-3 border-t border-slate-200 dark:border-slate-800 space-y-2 bg-slate-50/50 dark:bg-slate-900/50">
       
+      <button id="pwaInstallBtn" onclick="app.installPWA()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+        <i class="fas fa-mobile-screen-button"></i>
+        <span>تثبيت كـ تطبيق موبايل 📲</span>
+      </button>
+
       <div class="flex items-center justify-between gap-1.5">
         <button onclick="app.toggleTheme()" class="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-semibold transition">
           <i id="themeIcon" class="fas fa-sun text-amber-400"></i>
@@ -1533,7 +1554,7 @@
   <div id="appToast"></div>
 
   <!-- Scripts -->
-  <script src="presets.js?v=23.0"></script>
-  <script src="app.js?v=23.0"></script>
+  <script src="presets.js?v=24.0"></script>
+  <script src="app.js?v=24.0"></script>
 </body>
 </html>

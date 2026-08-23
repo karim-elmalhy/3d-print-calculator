@@ -171,6 +171,24 @@ class CostCalculatorApp {
     this.checkDeadlineAlerts();
     setTimeout(() => this.init3DScene(), 150);
     window.addEventListener('resize', () => this.handleWindowResize());
+
+    // PWA Mobile Install Event Listener
+    window.deferredPWAInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.deferredPWAInstallPrompt = e;
+      const installBtn = document.getElementById('pwaInstallBtn');
+      const installBanner = document.getElementById('pwaInstallBanner');
+      if (installBtn) installBtn.style.display = 'flex';
+      if (installBanner) installBanner.style.display = 'flex';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      window.deferredPWAInstallPrompt = null;
+      const installBanner = document.getElementById('pwaInstallBanner');
+      if (installBanner) installBanner.style.display = 'none';
+      this.showToast('🎉 تم تثبيت حاسبة 3D كـ تطبيق على هاتفك بنجاح!');
+    });
   }
 
   // ================= 1. CALCULATION ENGINE =================
@@ -1656,6 +1674,20 @@ class CostCalculatorApp {
       this.state = { ...DEFAULT_STATE };
       this.render();
       this.showToast('🔄 تم تصفير جميع المدخلات للبدء من الصفر!');
+    }
+  }
+
+  installPWA() {
+    if (window.deferredPWAInstallPrompt) {
+      window.deferredPWAInstallPrompt.prompt();
+      window.deferredPWAInstallPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          this.showToast('🚀 جاري تثبيت التطبيق على هاتفك...');
+        }
+        window.deferredPWAInstallPrompt = null;
+      });
+    } else {
+      alert('لتثبيت التطبيق على هاتفك أندرويد أو أيفون:\n\n1. افتح الموقع من المتصفح (Chrome أو Safari)\n2. اضغط القائمة (⋮) أو مشاركة (⎋)\n3. اختر "التثبيت كـ تطبيق" أو "إضافة إلى الشاشة الرئيسية"');
     }
   }
 

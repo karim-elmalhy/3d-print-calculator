@@ -2,50 +2,44 @@
 // Designed for Elegoo Neptune 4 Pro & Egyptian 3D Printing Market
 
 const DEFAULT_STATE = {
-  projectName: 'قطعة نموذجية — Elegoo Neptune 4 Pro',
+  // Basic Info
+  projectName: 'مشروع جديد',
   clientName: '',
+  clientPhone: '',
+  clientAddress: '',
   notes: '',
-  partWeight: 165.00,
-  spoolPrice: 700.00,
-  spoolWeight: 1000,
-  selectedFilamentPreset: 'esun-pla',
-  spoolRemainingGrams: 835,
 
-  printHours: 7.50,
+  // 1) Material (Starts at 0)
+  partWeight: 0.00,
+  spoolPrice: 0.00,
+  spoolWeight: 1000,
+  selectedFilamentPreset: '',
+  spoolRemainingGrams: 1000,
+
+  // 2) Power (Starts at 0 hours)
+  printHours: 0.00,
   printerPowerKw: 0.16,
   electricityRate: 1.5100,
   selectedPowerPreset: 'tier-custom',
   selectedPrinterPreset: 'neptune-4-pro',
 
+  // 3) Printer Depreciation
   printerPrice: 26000.00,
   printerLifespanHours: 5000,
 
-  laborHours: 0.50,
+  // 4) Labor (Starts at 0 hours)
+  laborHours: 0.00,
   laborRatePerHour: 100.00,
 
+  // 5) Margins & Failure
   failureRatePercent: 10.0,
   profitMarginPercent: 40.0,
   
+  // 6) Order & Batch Details
   batchQuantity: 1,
   volumeDiscountPercent: 0,
   additionalCost: 0,
   additionalCostNotes: '',
-
-  partsList: [
-    { name: 'الجسم الأساسي (Main Body)', weight: 120, time: 5.5, filament: 'eSUN PLA' },
-    { name: 'الغطاء العلوي (Top Cover)', weight: 45, time: 2.0, filament: 'eSUN PLA' }
-  ],
-  isMultiPartMode: false,
-  printsPerMonth: 20,
-
-  activeTab: 'table',
-  darkMode: false,
-  currency: 'EGP',
-
-  // Client & Order Info
-  clientPhone: '',
-  clientAddress: '',
-  selectedGovernorate: 'local-pickup',
   shippingCost: 0,
   depositPaid: 0,
   deliveryDueDate: '',
@@ -59,9 +53,19 @@ const DEFAULT_STATE = {
   infillPercent: 20,
   supportsType: 'شجرية (Tree Supports)',
 
-  // CAD Design service
+  // CAD Service
   cadDesignHours: 0,
   cadDesignRatePerHour: 150.00,
+
+  // Multi-Part Assembly
+  partsList: [],
+  isMultiPartMode: false,
+  printsPerMonth: 20,
+
+  // UI state
+  activeTab: 'table',
+  darkMode: false,
+  currency: 'EGP'
 };
 
 const CURRENCY_RATES = {
@@ -147,16 +151,28 @@ class CostCalculatorApp {
     this.checkDeadlineAlerts();
   }
 
-    populatePresets() {
+      populatePresets() {
     if (typeof PRESETS === 'undefined') return;
 
-    // Build filament options
-    const filamentOptions = '<option value="">-- اختر خامة (مثال: Patron / eSUN) --</option>' + 
-      PRESETS.filaments.map(f => `<option value="${f.id}" ${f.id === this.state.selectedFilamentPreset ? 'selected' : ''}>${f.name} — ${f.price} ج.م</option>`).join('');
+    // Build grouped filament options with 🇪🇬 Egyptian filaments prominently at the top
+    const egyptianFilaments = PRESETS.filaments.filter(f => f.isEgyptian);
+    const importedFilaments = PRESETS.filaments.filter(f => !f.isEgyptian);
+
+    let filamentHtml = '<option value="">-- اختر خامة (مثال: باترون 🇪🇬 / eSUN) --</option>';
+    if (egyptianFilaments.length > 0) {
+      filamentHtml += '<optgroup label="🇪🇬 خامات باترون مصرية (Patron 3D)">';
+      filamentHtml += egyptianFilaments.map(f => `<option value="${f.id}" ${f.id === this.state.selectedFilamentPreset ? 'selected' : ''}>${f.name} — ${f.price} ج.م</option>`).join('');
+      filamentHtml += '</optgroup>';
+    }
+    if (importedFilaments.length > 0) {
+      filamentHtml += '<optgroup label="🌐 خامات مستوردة">';
+      filamentHtml += importedFilaments.map(f => `<option value="${f.id}" ${f.id === this.state.selectedFilamentPreset ? 'selected' : ''}>${f.name} — ${f.price} ج.م</option>`).join('');
+      filamentHtml += '</optgroup>';
+    }
 
     ['filamentPresetSelect', 'dash_filamentSelect', 'tbl_filamentPresetSelect'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = filamentOptions;
+      if (el) el.innerHTML = filamentHtml;
     });
 
     const pSelect = document.getElementById('printerPresetSelect');

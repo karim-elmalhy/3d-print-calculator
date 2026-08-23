@@ -31,39 +31,55 @@
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
 
   <!-- Header -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[4rem] py-2 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-          <i class="fas fa-cube text-xl"></i>
+    <!-- Header -->
+  <header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4">
+      <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0">
+            <i class="fas fa-cube text-lg sm:text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base lg:text-lg font-black text-slate-900 dark:text-white leading-tight flex items-center gap-1.5">
+              <span>حاسبة تكلفة الطباعة 3D</span>
+              <span class="bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold border border-blue-200 dark:border-blue-800">مصر 🇪🇬</span>
+            </h1>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Elegoo Neptune 4 Pro — التكلفة الحقيقية وهامش الربح</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight flex items-center gap-2">
-            حاسبة تكلفة الطباعة 3D Pro
-            <span class="bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded font-bold border border-blue-200 dark:border-blue-800">مصر 🇪🇬</span>
-          </h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Elegoo Neptune 4 Pro — التكلفة الحقيقية وهامش الربح</p>
+
+        <!-- Mobile-only quick reset & theme icons -->
+        <div class="flex sm:hidden items-center gap-1">
+          <button onclick="app.resetToDefaults()" title="تصفير القيم" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+            <i class="fas fa-rotate-right text-sm"></i>
+          </button>
+          <button onclick="app.toggleTheme()" title="تبديل الوضع" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+            <i class="fas fa-moon text-sm"></i>
+          </button>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs">
-          <i class="fas fa-layer-group text-blue-600"></i>
-          <select id="filamentPresetSelect" class="bg-transparent font-medium focus:outline-none cursor-pointer text-slate-700 dark:text-slate-200"></select>
+      <!-- Filament Selector and Action Controls -->
+      <div class="flex items-center justify-between w-full sm:w-auto gap-2 flex-wrap sm:flex-nowrap">
+        <div class="flex-grow sm:flex-grow-0 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs shadow-inner">
+          <i class="fas fa-layer-group text-blue-600 shrink-0"></i>
+          <select id="filamentPresetSelect" class="bg-transparent font-bold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-100 w-full sm:w-auto text-xs"></select>
         </div>
 
-        <button onclick="app.resetToDefaults()" title="إعادة تعيين للقيم الافتراضية" class="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition">
-          <i class="fas fa-rotate-right"></i>
-        </button>
+        <div class="hidden sm:flex items-center gap-1.5">
+          <button onclick="app.resetToDefaults()" title="إعادة تعيين للقيم الافتراضية (0)" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition">
+            <i class="fas fa-rotate-right"></i>
+          </button>
 
-        <button onclick="app.toggleTheme()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition">
-          <i id="themeIcon" class="fas fa-moon text-slate-600"></i>
-          <span id="themeText" class="hidden sm:inline">الوضع الليلي</span>
-        </button>
+          <button onclick="app.toggleTheme()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition">
+            <i id="themeIcon" class="fas fa-moon text-slate-600"></i>
+            <span id="themeText" class="hidden sm:inline">الوضع الليلي</span>
+          </button>
+        </div>
 
-        <button onclick="app.saveCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-bold shadow-sm transition flex items-center gap-1.5">
+        <button onclick="app.saveCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm transition flex items-center justify-center gap-1.5 shrink-0">
           <i class="fas fa-bookmark"></i>
-          <span class="hidden sm:inline">حفظ المشروع</span>
+          <span>حفظ المشروع</span>
         </button>
       </div>
     </div>
@@ -250,7 +266,7 @@
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                 <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">وزن القطعة (شامل الدعامات والتعبئة)</td>
                 <td class="px-4 py-2 text-center">
-                  <input type="number" id="tbl_partWeight" step="0.5" min="0" class="tbl-number-input cell-input-blue" value="165.00">
+                  <input type="number" id="tbl_partWeight" step="0.5" min="0" class="tbl-number-input cell-input-blue" value="0.00">
                 </td>
                 <td class="px-4 py-3 text-center text-slate-500 dark:text-slate-400">جرام</td>
                 <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">من برنامج التقطيع Slicer — قيمة توضيحية، عدّلها</td>
@@ -259,7 +275,7 @@
                 <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">سعر بكرة الفيلامنت (PLA 1 كجم)</td>
                 <td class="px-4 py-2 text-center">
                   <div class="inline-flex items-center justify-center gap-1">
-                    <input type="number" id="tbl_spoolPrice" step="10" min="0" class="tbl-number-input cell-input-blue" value="700.00">
+                    <input type="number" id="tbl_spoolPrice" step="10" min="0" class="tbl-number-input cell-input-blue" value="0.00">
                     <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">ج.م</span>
                   </div>
                 </td>
@@ -289,7 +305,7 @@
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                 <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">ساعات الطباعة</td>
                 <td class="px-4 py-2 text-center">
-                  <input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="7.50">
+                  <input type="number" id="tbl_printHours" step="0.25" min="0" class="tbl-number-input cell-input-blue" value="0.00">
                 </td>
                 <td class="px-4 py-3 text-center text-slate-500 dark:text-slate-400">ساعة</td>
                 <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">من الوقت المقدر في الـ Slicer</td>
@@ -365,7 +381,7 @@
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                 <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">وقت العمل اليدوي</td>
                 <td class="px-4 py-2 text-center">
-                  <input type="number" id="tbl_laborHours" step="0.1" min="0" class="tbl-number-input cell-input-blue" value="0.50">
+                  <input type="number" id="tbl_laborHours" step="0.1" min="0" class="tbl-number-input cell-input-blue" value="0.00">
                 </td>
                 <td class="px-4 py-3 text-center text-slate-500 dark:text-slate-400">ساعة</td>
                 <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">إعداد الملف، تنظيف، إزالة دعامات، صنفرة وتجميع</td>

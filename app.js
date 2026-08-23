@@ -1405,7 +1405,7 @@ class CostCalculatorApp {
   }
 
   
-  // ================= 3D STL VIEWER ENGINE =================
+    // ================= 3D STL VIEWER ENGINE (STANDALONE) =================
   setupSTLViewer() {
     const dropZone = document.getElementById('stlDropZone');
     const fileInput = document.getElementById('stlFileInput');
@@ -1414,24 +1414,110 @@ class CostCalculatorApp {
     ['dragenter', 'dragover'].forEach(name => {
       dropZone.addEventListener(name, (e) => {
         e.preventDefault(); e.stopPropagation();
-        dropZone.classList.add('border-indigo-500', 'bg-indigo-50/50', 'dark:bg-indigo-950/40');
+        dropZone.classList.add('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/40');
       });
     });
 
     ['dragleave', 'drop'].forEach(name => {
       dropZone.addEventListener(name, (e) => {
         e.preventDefault(); e.stopPropagation();
-        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50', 'dark:bg-indigo-950/40');
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/40');
       });
     });
 
     dropZone.addEventListener('drop', (e) => {
-      if (e.dataTransfer.files.length > 0) this.loadSTLFile(e.dataTransfer.files[0]);
+      e.preventDefault();
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        this.loadSTLFile(e.dataTransfer.files[0]);
+      }
     });
 
     fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) this.loadSTLFile(e.target.files[0]);
+      if (e.target.files && e.target.files.length > 0) {
+        this.loadSTLFile(e.target.files[0]);
+      }
     });
+
+    // Initialize 3D scene immediately
+    setTimeout(() => this.init3DScene(), 150);
+  }
+
+  init3DScene() {
+    const container = document.getElementById('stlCanvasContainer');
+    if (!container || typeof THREE === 'undefined') return;
+
+    container.innerHTML = '';
+    const width = container.clientWidth || 380;
+    const height = 300;
+
+    this.threeScene = new THREE.Scene();
+    this.threeScene.background = new THREE.Color(this.state.darkMode ? 0x0f172a : 0xf1f5f9);
+
+    this.threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    this.threeCamera.position.set(80, 80, 100);
+
+    this.threeRenderer = new THREE.WebGLRenderer({ antialias: true });
+    this.threeRenderer.setSize(width, height);
+    this.threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.threeRenderer.shadowMap.enabled = true;
+    container.appendChild(this.threeRenderer.domElement);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.75);
+    this.threeScene.add(ambient);
+
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.85);
+    dir1.position.set(100, 150, 100);
+    this.threeScene.add(dir1);
+
+    const dir2 = new THREE.DirectionalLight(0x3b82f6, 0.5);
+    dir2.position.set(-100, -50, -100);
+    this.threeScene.add(dir2);
+
+    // Grid Floor (Neptune 4 Pro 225x225 build plate representation)
+    const grid = new THREE.GridHelper(150, 15, 0x3b82f6, 0x94a3b8);
+    grid.position.y = 0;
+    this.threeScene.add(grid);
+
+    // Controls (Orbit or mouse rotation)
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      this.threeControls = new THREE.OrbitControls(this.threeCamera, this.threeRenderer.domElement);
+      this.threeControls.enableDamping = true;
+      this.threeControls.dampingFactor = 0.05;
+    } else {
+      // Fallback simple mouse rotation
+      let isDragging = false;
+      let prevMousePos = { x: 0, y: 0 };
+      const dom = this.threeRenderer.domElement;
+      dom.addEventListener('mousedown', (e) => { isDragging = true; prevMousePos = { x: e.clientX, y: e.clientY }; });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+      dom.addEventListener('mousemove', (e) => {
+        if (!isDragging || !this.threeMesh) return;
+        const deltaX = e.clientX - prevMousePos.x;
+        const deltaY = e.clientY - prevMousePos.y;
+        this.threeMesh.rotation.y += deltaX * 0.01;
+        this.threeMesh.rotation.x += deltaY * 0.01;
+        prevMousePos = { x: e.clientX, y: e.clientY };
+      });
+    }
+
+    // Add a default placeholder calibration cube until user drops STL
+    const sampleGeom = new THREE.BoxGeometry(20, 20, 20);
+    const sampleMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.1 });
+    this.threeMesh = new THREE.Mesh(sampleGeom, sampleMat);
+    this.threeMesh.position.set(0, 10, 0);
+    this.threeScene.add(this.threeMesh);
+
+    // Animation Loop
+    const animate = () => {
+      this.threeAnimId = requestAnimationFrame(animate);
+      if (this.threeControls) this.threeControls.update();
+      else if (this.threeMesh && !this.customSTLLoaded) {
+        this.threeMesh.rotation.y += 0.008;
+      }
+      this.threeRenderer.render(this.threeScene, this.threeCamera);
+    };
+    animate();
   }
 
   loadSTLFile(file) {
@@ -1440,73 +1526,98 @@ class CostCalculatorApp {
       return;
     }
 
+    this.showToast('⏳ جاري قراءة وتحليل مجسم الـ STL...');
     const reader = new FileReader();
     reader.onload = (e) => {
-      const buffer = e.target.result;
-      this.renderSTL3D(buffer, file.name);
+      try {
+        const buffer = e.target.result;
+        this.parseAndRenderSTL(buffer, file.name);
+      } catch (err) {
+        console.error('STL Parse error:', err);
+        alert('حدث خطأ أثناء قراءة ملف الـ STL. تأكد من سلامة الملف.');
+      }
     };
     reader.readAsArrayBuffer(file);
   }
 
-  renderSTL3D(buffer, filename) {
-    const container = document.getElementById('stlCanvasContainer');
-    const infoBox = document.getElementById('stlInfoBox');
-    if (!container || typeof THREE === 'undefined' || typeof THREE.STLLoader === 'undefined') return;
+  parseAndRenderSTL(buffer, filename) {
+    // 1. Standalone Binary & ASCII STL Parser (Zero CDN dependencies)
+    const isBinary = () => {
+      if (buffer.byteLength < 84) return false;
+      const reader = new DataView(buffer);
+      const numTriangles = reader.getUint32(80, true);
+      return buffer.byteLength === 84 + numTriangles * 50;
+    };
 
-    container.innerHTML = '';
-    container.classList.remove('hidden');
-    if (infoBox) infoBox.classList.remove('hidden');
+    const geometry = new THREE.BufferGeometry();
+    const positions = [];
+    const normals = [];
 
-    const width = container.clientWidth || 350;
-    const height = 300;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(this.state.darkMode ? 0x0f172a : 0xf8fafc);
-
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    container.appendChild(renderer.domElement);
-
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight1.position.set(100, 150, 100);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0x3b82f6, 0.5);
-    dirLight2.position.set(-100, -50, -100);
-    scene.add(dirLight2);
-
-    // Controls
-    let controls;
-    if (typeof THREE.OrbitControls !== 'undefined') {
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
+    if (isBinary()) {
+      const view = new DataView(buffer);
+      const numTriangles = view.getUint32(80, true);
+      let offset = 84;
+      for (let i = 0; i < numTriangles; i++) {
+        const nx = view.getFloat32(offset, true);
+        const ny = view.getFloat32(offset + 4, true);
+        const nz = view.getFloat32(offset + 8, true);
+        offset += 12;
+        for (let j = 0; j < 3; j++) {
+          positions.push(
+            view.getFloat32(offset, true),
+            view.getFloat32(offset + 4, true),
+            view.getFloat32(offset + 8, true)
+          );
+          normals.push(nx, ny, nz);
+          offset += 12;
+        }
+        offset += 2;
+      }
+    } else {
+      // ASCII STL
+      const text = new TextDecoder().decode(buffer);
+      const normalMatches = [...text.matchAll(/facet\s+normal\s+([\s\S]*?)endfacet/gi)];
+      for (const match of normalMatches) {
+        const block = match[0];
+        const nMatch = block.match(/facet\s+normal\s+([-\d.eE+]+)\s+([-\d.eE+]+)\s+([-\d.eE+]+)/i);
+        const nx = nMatch ? parseFloat(nMatch[1]) : 0;
+        const ny = nMatch ? parseFloat(nMatch[2]) : 0;
+        const nz = nMatch ? parseFloat(nMatch[3]) : 0;
+        const vMatches = [...block.matchAll(/vertex\s+([-\d.eE+]+)\s+([-\d.eE+]+)\s+([-\d.eE+]+)/gi)];
+        if (vMatches.length === 3) {
+          for (let j = 0; j < 3; j++) {
+            positions.push(parseFloat(vMatches[j][1]), parseFloat(vMatches[j][2]), parseFloat(vMatches[j][3]));
+            normals.push(nx, ny, nz);
+          }
+        }
+      }
     }
 
-    // Grid Floor
-    const grid = new THREE.GridHelper(200, 20, 0x3b82f6, 0x94a3b8);
-    grid.position.y = 0;
-    scene.add(grid);
+    if (positions.length === 0) {
+      alert('لم يتم العثور على أوجه ثلاثية الأبعاد في هذا الملف.');
+      return;
+    }
 
-    // Load STL
-    const loader = new THREE.STLLoader();
-    const geometry = loader.parse(buffer);
-    geometry.computeVertexNormals();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    if (normals.length === positions.length) {
+      geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+    } else {
+      geometry.computeVertexNormals();
+    }
 
+    // 2. Remove previous mesh
+    if (this.threeMesh) {
+      this.threeScene.remove(this.threeMesh);
+    }
+
+    // 3. Create new mesh
     const material = new THREE.MeshStandardMaterial({
       color: 0x2563eb,
-      roughness: 0.4,
-      metalness: 0.2
+      roughness: 0.35,
+      metalness: 0.15
     });
 
-    const mesh = new THREE.Mesh(geometry, material);
+    this.threeMesh = new THREE.Mesh(geometry, material);
     geometry.computeBoundingBox();
     const box = geometry.boundingBox;
     const size = new THREE.Vector3();
@@ -1515,17 +1626,19 @@ class CostCalculatorApp {
     box.getCenter(center);
 
     // Center and place on grid
-    mesh.position.x = -center.x;
-    mesh.position.y = -box.min.y;
-    mesh.position.z = -center.z;
-    scene.add(mesh);
+    this.threeMesh.position.set(-center.x, -box.min.y, -center.z);
+    this.threeScene.add(this.threeMesh);
+    this.customSTLLoaded = true;
 
-    // Fit camera
+    // Adjust camera
     const maxDim = Math.max(size.x, size.y, size.z);
-    camera.position.set(maxDim * 1.5, maxDim * 1.3, maxDim * 1.8);
-    camera.lookAt(0, size.y / 2, 0);
+    if (this.threeCamera) {
+      this.threeCamera.position.set(maxDim * 1.5, maxDim * 1.3, maxDim * 1.8);
+      this.threeCamera.lookAt(0, size.y / 2, 0);
+      if (this.threeControls) this.threeControls.target.set(0, size.y / 2, 0);
+    }
 
-    // Calculate Volume & Estimated Weight
+    // 4. Calculate Net Geometric Volume (mm³ -> cm³)
     let volumeCm3 = 0;
     const posAttr = geometry.attributes.position;
     if (posAttr) {
@@ -1536,14 +1649,14 @@ class CostCalculatorApp {
         p3.fromBufferAttribute(posAttr, i + 2);
         volumeCm3 += p1.dot(p2.cross(p3)) / 6.0;
       }
-      volumeCm3 = Math.abs(volumeCm3) / 1000.0; // mm3 to cm3
+      volumeCm3 = Math.abs(volumeCm3) / 1000.0;
     }
 
-    // Estimate weight: Volume * Density (approx 1.24 for PLA) * Infill Factor
+    // 5. Estimate Weight based on Filament Density and Infill
     const filamentItem = typeof PRESETS !== 'undefined' ? PRESETS.filaments.find(f => f.id === this.state.selectedFilamentPreset) : null;
     const density = filamentItem?.density || 1.24;
-    const infillRatio = ((this.state.infillPercent || 20) / 100) * 0.4 + 0.25; // Shells + infill approximation
-    const estimatedGrams = Math.round(volumeCm3 * density * infillRatio);
+    const infillRatio = ((this.state.infillPercent || 20) / 100) * 0.45 + 0.25;
+    const estimatedGrams = Math.max(1, Math.round(volumeCm3 * density * infillRatio));
 
     this.currentSTLData = {
       filename: filename.replace(/\.stl$/i, ''),
@@ -1552,87 +1665,35 @@ class CostCalculatorApp {
       estimatedGrams: estimatedGrams
     };
 
-    // Update UI elements
+    // Update Info Box
+    const infoBox = document.getElementById('stlInfoBox');
+    if (infoBox) infoBox.classList.remove('hidden');
+
     this.updateElementText('stlDimsText', this.currentSTLData.dimensions);
     this.updateElementText('stlVolumeText', this.currentSTLData.volume);
     this.updateElementText('stlWeightText', `${estimatedGrams} جرام تقريباً`);
 
-    // Animation Loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      if (controls) controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    this.showToast(`🧊 تم تحليل المجسم بنجاح: ${estimatedGrams} جم مقدر`);
+    this.showToast(`🧊 تم تحميل وعرض المجسم 3D بنجاح: ${estimatedGrams} جم مقدر`);
   }
 
-  applySTLDataToCalculator() {
-    if (!this.currentSTLData) return;
-    this.state.projectName = this.currentSTLData.filename;
-    this.state.partWeight = this.currentSTLData.estimatedGrams;
-    this.render();
-    this.showToast(`✨ تم تطبيق الوزن (${this.currentSTLData.estimatedGrams} جم) واسم المجسم في الحاسبة!`);
+  toggleSTLWireframe() {
+    if (this.threeMesh && this.threeMesh.material) {
+      this.threeMesh.material.wireframe = !this.threeMesh.material.wireframe;
+      this.showToast(this.threeMesh.material.wireframe ? 'تم تفعيل وضع الشبكة (Wireframe)' : 'تم تفعيل وضع المجسم المصمت');
+    }
   }
 
-  // ================= SHAREABLE QUOTE LINK =================
-  generateShareableLink() {
-    const res = this.calculate();
-    const payload = {
-      p: this.state.projectName,
-      c: this.state.clientName,
-      ph: this.state.clientPhone,
-      w: res.effectiveWeight,
-      h: res.effectiveHours,
-      q: res.qty,
-      pr: res.finalSellingPrice,
-      tot: res.grandOrderTotal,
-      dep: res.deposit,
-      rem: res.remainingBalance,
-      col: this.state.partColor,
-      fil: this.state.selectedFilamentPreset,
-      due: this.state.deliveryDueDate,
-      pay: this.state.paymentMethod
-    };
-    const b64 = btoa(encodeURIComponent(JSON.stringify(payload)));
-    const url = window.location.origin + window.location.pathname + '#quote=' + b64;
-    return url;
-  }
-
-  copyShareableLink() {
-    const url = this.generateShareableLink();
-    navigator.clipboard.writeText(url).then(() => {
-      this.showToast('🔗 تم نسخ رابط عرض السعر التفاعلي للعميل بنجاح!');
-    }).catch(() => prompt('انسخ الرابط:', url));
-  }
-
-  checkUrlForSharedQuote() {
-    if (window.location.hash && window.location.hash.startsWith('#quote=')) {
-      try {
-        const b64 = window.location.hash.replace('#quote=', '');
-        const jsonStr = decodeURIComponent(atob(b64));
-        const data = JSON.parse(jsonStr);
-        if (data && data.p) {
-          this.state.projectName = data.p;
-          if (data.c) this.state.clientName = data.c;
-          if (data.ph) this.state.clientPhone = data.ph;
-          if (data.w) this.state.partWeight = data.w;
-          if (data.h) this.state.printHours = data.h;
-          if (data.q) this.state.batchQuantity = data.q;
-          if (data.col) this.state.partColor = data.col;
-          if (data.fil) this.state.selectedFilamentPreset = data.fil;
-          if (data.due) this.state.deliveryDueDate = data.due;
-          if (data.dep) this.state.depositPaid = data.dep;
-          if (data.pay) this.state.paymentMethod = data.pay;
-          this.switchTab('quote');
-          this.showToast('📄 تم فتح عرض السعر المشترك بنجاح!');
-        }
-      } catch (e) {
-        console.warn('Could not parse shared quote URL:', e);
+  resetSTLCamera() {
+    if (this.threeCamera) {
+      this.threeCamera.position.set(80, 80, 100);
+      this.threeCamera.lookAt(0, 10, 0);
+      if (this.threeControls) {
+        this.threeControls.target.set(0, 10, 0);
+        this.threeControls.update();
       }
     }
   }
+
 
   // ================= DIRECT PDF EXPORT =================
   downloadPDF() {
